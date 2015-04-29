@@ -1,2 +1,5 @@
 # dot-stuff
-my dot stuff to exchange with friends
+
+My dot stuff
+    * .emacs
+    * .zshrc
