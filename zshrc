@@ -5,7 +5,9 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
+#ZSH_THEME="robbyrussell"
+ZSH_THEME="random"
+
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -73,14 +75,17 @@ export LANG=en_US.UTF-8
 # ssh
 export SSH_KEY_PATH="~/.ssh/dsa_id"
 
+export ALTERNATE_EDITOR="emacs"
+export EDITOR="emacs -nw"
+export DIFFEDITCMD="emacs -diff"
+export DICTIONARY="fr-FR"
+export LC_TIME=fr_FR
+
 # Alias
 
 #alias e="emacs -nw"
 #alias se="sudo emacs -nw"
 #alias emacs="emacs -nw"
-
-export ALTERNATE_EDITOR="emacs"
-export EDITOR="emacsclient -t"
 
 alias e="emacsclient -t"
 alias se="sudo emacsclient -t"
@@ -93,3 +98,5 @@ alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
 alias lycos="grep -nr "
 alias dodo="systemctl suspend"
+alias yasu="yaourt -Syu"
+alias agenda="emacsclient -t /home/zobi8225/Dropbox/agenda/agenda.org"

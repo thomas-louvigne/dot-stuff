@@ -1,5 +1,6 @@
-# dot-stuff
+#+TITLE:        dot-stuff
+#+AUTHOR:       Thomas L.
 
 My dot stuff :
-    * .emacs
+    *  emacs init.el
     * .zshrc

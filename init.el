@@ -1,16 +1,5 @@
-;; dot emacs de ouam - zobi8225
+;; Dot emacs de ouam - zobi8225
 
-;;(add-to-list 'load-path (expand-file-name "~/.emacs.d") t)
-;; Pas propre..
-
-;; Enlève le warning
-;; (defadvice display-warning
-;;     (around no-warn-.emacs.d-in-load-path (type message &rest unused) activate)
-;;   "Ignore the warning about the `.emacs.d' directory being in `load-path'."
-;;   (unless (and (eq type 'initialization)
-;;                (string-prefix-p "Your `load-path' seems to contain\nyour `.emacs.d' directory"
-;;                                 message t))
-;;     ad-do-it))
 
 ;; PACKAGE
 (require 'package)
@@ -19,10 +8,17 @@
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
-                         )
+			 )
       )
 (package-initialize)
 (setq url-http-attempt-keepalives nil)
+
+
+;; Test de config de Org : ne sais pas a quoi ca sert
+(require 'org)
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
 
 
 ;; Langue dico
@@ -104,9 +100,10 @@
 (display-time-mode t) ;; affiche le temps
 
 ;; Montre les Whites space inutile en fin de ligne
-(setq-default show-trailing-whitespace t)
- (setq-default show-leading-whitespace t) ;; espace en fin de ligne
-(setq-default indicate-empty-lines t)
+;; TODO : show uniquement dans le code ET dans les .org
+;; (setq-default show-trailing-whitespace t)
+;;  (setq-default show-leading-whitespace t) ;; espace en fin de ligne
+;; (setq-default indicate-empty-lines t)
 
 ;; Efface automatiquement les espaces a chaque save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -136,7 +133,7 @@
 (custom-set-faces)
 
 
-;; Pour le BLOG ~ (Working :D)
+;; Pour le BLOG ~ (Working :D) - est ce que je l'utilise encore ?
 
 (defvar thomas-website-html-head
   "
@@ -167,6 +164,7 @@
         </div>")
 
 
+;; JE CROIS QUE CA MARCHE PAS NON PLUS
 (require 'ox-publish)
 (require 'ox-html)
 (setq org-publish-project-alist
@@ -199,14 +197,16 @@
       )
 
 
-;; Org-blog 2 twbs - MARCHE PAS
-;; (setq org-publish-project-alist
-;;       '("org-note"
-;;         :base-directory "~/Dropbox/blog/luquet/"
-;;         :publishing-directory "~/Dropbox/blog/luquet/out/"
-;;         :publishing-function org-twbs-publish-to-html
-;;         :with-sub-superscript nil
-;;         ))
 
 ;; Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
+
+;; TEST yasnippet
+;;(add-hook 'prog-mode-hook #'yas-minor-mode)
+
+;; Re-Fonctionne  -> Dev python
+(package-initialize)
+(elpy-enable)
+
+;; TEST Permet d'activer downcase region ?
+(put 'downcase-region 'disabled nil)
