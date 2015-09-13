@@ -6,7 +6,7 @@ export ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 #ZSH_THEME="robbyrussell"
-ZSH_THEME="random"
+ZSH_THEME="cypher"
 
 
 # Example aliases
@@ -57,10 +57,7 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/zobi8225/bin:"
-export MANPATH="/usr/localq/man:$MANPATH"
-
-# You may need to manually set your language environment
-export LANG=en_US.UTF-8
+export MANPATH="/usr/local/man:$MANPATH"
 
 # Preferred editor for local and remote sessions
  if [[ -n $SSH_CONNECTION ]]; then
@@ -75,20 +72,30 @@ export LANG=en_US.UTF-8
 # ssh
 export SSH_KEY_PATH="~/.ssh/dsa_id"
 
+# My Export
 export ALTERNATE_EDITOR="emacs"
 export EDITOR="emacs -nw"
 export DIFFEDITCMD="emacs -diff"
 export DICTIONARY="fr-FR"
+
+
+
+# My Local
+# export LC_ALL="en_US.UTF-8"
 export LC_TIME=fr_FR
+# You may need to manually set your language environment
+#export LANG=en_US.UTF-8
+#export LANG=fr_FR.UTF-8
+export LANG="fr_FR.UTF-8"
+
 
 # Alias
 
-#alias e="emacs -nw"
-#alias se="sudo emacs -nw"
+
 #alias emacs="emacs -nw"
 
 alias e="emacsclient -t"
-alias se="sudo emacsclient -t"
+alias se="sudo emacs -nw"
 
 alias q="exit"
 alias l="ls"
