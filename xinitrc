@@ -22,5 +22,7 @@ exec setxkbmap -option ctrl:nocaps & # Bind la touche capslock en controle
 #exec thunar --deamon & #sert à rien , tjr aussi long à se lancer
 #exec dropbox &
 exec emacs --daemon &
-#exec dbus-launch awesome
-exec dbus-launch startxfce4
+
+
+exec dbus-launch awesome
+#exec dbus-launch startxfce4
