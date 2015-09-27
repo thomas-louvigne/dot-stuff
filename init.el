@@ -120,13 +120,6 @@
 (setq org-odt-styles-file "/home/zobi8225/Dropbox/style.ott")
 
 
-;; Theme calm-forest
-
-(require 'color-theme)
-(color-theme-initialize)
-(color-theme-calm-forest)
-
-
 ;; Enlève le welcome popup
 (custom-set-variables
  '(inhibit-startup-screen t))
