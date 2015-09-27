@@ -49,10 +49,6 @@
 (global-linum-mode 1);; active le mode
 (setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
 
-;; Better default
-(ido-mode t) ;; A quoi ca sert ?
-(setq ido-enable-flex-matching t)
-
 (menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
@@ -203,3 +199,68 @@
 
 ;; TEST Permet d'activer downcase region ?
 (put 'downcase-region 'disabled nil)
+
+
+;; TEST Hack from http://sachin.pythonanywhere.com/emacshaqiba/emacs/
+;; --------------------------------------------
+;;; Google
+(defun google ()
+ "Google the selected region if any, display a query prompt otherwise."
+ (interactive)
+ (browse-url
+  (concat
+   "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+   (url-hexify-string (if mark-active
+			  (buffer-substring (region-beginning) (region-end))
+			  (read-string "Search Google: "))))))
+(global-set-key (kbd "C-x g") 'google)
+
+
+
+;;; Youtube
+(defun youtube ()
+"Search YouTube with a query or region if any."
+(interactive)
+(browse-url
+ (concat
+  "http://www.youtube.com/results?search_query="
+  (url-hexify-string (if mark-active
+			 (buffer-substring (region-beginning) (region-end))
+                         (read-string "Search YouTube: "))))))
+(global-set-key (kbd "C-x y") 'youtube)
+
+;;; Manage-window-size
+(global-set-key (kbd "<C-s-up>") 'enlarge-window)
+(global-set-key (kbd "<C-s-down>") 'shrink-window)
+(global-set-key (kbd "<C-s-left>") 'shrink-window-horizontally)
+(global-set-key (kbd "<C-s-right>") 'enlarge-window-horizontally)
+
+;;; Python Insert UTF8
+(defun python-insert-utf8()
+  "Insert default uft-8 encoding for python"
+  (interactive)
+  (newline)
+  (goto-char (point-min))
+  (insert "# -*- coding: utf-8 -*-")
+  (next-line))
+
+(add-hook 'python-mode-hook 'python-insert-utf8)
+
+
+;; Terminal at your fingerprint
+(defun visit-term-buffer ()
+  "Create or visit a terminal buffer."
+  (interactive)
+  (if (not (get-buffer "*ansi-term*"))
+      (progn
+	(split-window-sensibly (selected-window))
+	(other-window 1)
+	(ansi-term (getenv "SHELL")))
+    (switch-to-buffer-other-window "*ansi-term*")))
+(global-set-key (kbd "C-c t") 'visit-term-buffer)
+
+;; Permet de faire comme si une tache était +barré+ dans le terminal
+(require 'cl)   ; for delete*
+(setq org-emphasis-alist
+      (cons '("+" '(:strike-through t :foreground "red"))
+	    (delete* "+" org-emphasis-alist :key 'car :test 'equal)))
