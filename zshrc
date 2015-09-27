@@ -81,13 +81,8 @@ export DICTIONARY="fr-FR"
 
 
 # My Local
-# export LC_ALL="en_US.UTF-8"
-export LC_TIME=fr_FR
-# You may need to manually set your language environment
-#export LANG=en_US.UTF-8
-#export LANG=fr_FR.UTF-8
+export LC_TIME="fr_FR.UTF-8"
 export LANG="fr_FR.UTF-8"
-
 
 # Alias
 
@@ -104,6 +99,6 @@ alias dasize="du -hms /home/zobi8225/* | sort -nr | head"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
 alias lycos="grep -nr "
-alias dodo="systemctl suspend"
+alias dodo="xlock; systemctl suspend"
 alias yasu="yaourt -Syu"
 alias agenda="emacsclient -t /home/zobi8225/Dropbox/agenda/agenda.org"
