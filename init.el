@@ -125,6 +125,7 @@
  '(custom-safe-themes
    (quote
     ("2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
+ '(delete-trailing-lines t)
  '(inhibit-startup-screen t))
 
 ;; Pas écrire dans le prompt du mini buffer
@@ -196,3 +197,87 @@
 (setq org-emphasis-alist
       (cons '("+" '(:strike-through t :foreground "red"))
 	    (delete* "+" org-emphasis-alist :key 'car :test 'equal)))
+
+
+;; Test IDO -> Pas sûr que ca fonctionne
+(require 'ido)
+	(ido-mode t)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+;; EMOJI :smile:
+(add-hook 'after-init-hook #'global-emojify-mode)
+
+;; - EMAIL -
+
+(require 'mu4e)
+
+;; default
+(setq mu4e-maildir (expand-file-name "~/Maildir"))
+
+(setq mu4e-drafts-folder "/[Gmail].Drafts")
+(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+(setq mu4e-trash-folder  "/[Gmail].Trash")
+
+;; don't save message to Sent Messages, GMail/IMAP will take care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+;; setup some handy shortcuts
+(setq mu4e-maildir-shortcuts
+      '(("/INBOX"             . ?i)
+        ("/[Gmail].Sent Mail" . ?s)
+        ("/[Gmail].Trash"     . ?t)))
+
+;; allow for updating mail using 'U' in the main view:
+(setq mu4e-get-mail-command "offlineimap")
+
+;; something about ourselves
+;; I don't use a signature...
+(setq
+ user-mail-address "zobi8225@gmail.com"
+ user-full-name  "Thomas Luquet"
+ ;; message-signature
+ ;;  (concat
+ ;;    "Foo X. Bar\n"
+ ;;    "http://www.example.com\n")
+)
+
+;; sending mail -- replace USERNAME with your gmail username
+;; also, make sure the gnutls command line utils are installed
+;; package 'gnutls-bin' in Debian/Ubuntu, 'gnutls' in Archlinux.
+
+(require 'smtpmail)
+
+(setq message-send-mail-function 'smtpmail-send-it
+      starttls-use-gnutls t
+      smtpmail-starttls-credentials
+      '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials
+      (expand-file-name "~/.authinfo.gpg")
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-debug-info t)
+
+;; View
+(require 'mu4e-contrib)
+(setq mu4e-html2text-command 'mu4e-shr2text)
+
+
+;; NOTIFICATION
+(mu4e-alert-set-default-style 'libnotify)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+
+;; Mail dir extention
+(require 'mu4e-maildirs-extension)
+(mu4e-maildirs-extension)
+
+;; Open URL
+;; Use firefox to open urls
+(setq browse-url-browser-function 'browse-url-firefox)
+;; Use qutebrowser to open urls
+(setq browse-url-generic-program "qupzilla")
