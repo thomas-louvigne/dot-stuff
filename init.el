@@ -36,7 +36,7 @@
 
 ;; Company pour le HTML
 ;; Jamais testé
-(require 'company-web-html)
+(require 'company-web)
 
 ;; COMPANY for Python
 ;; On utilise JEDI pour la completion : Attention, il demande une installation un peu bizzare quand on le lence
@@ -193,7 +193,7 @@
  '(custom-enabled-themes (quote (calmer-forest)))
  '(custom-safe-themes
    (quote
-    ("2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
+    ("4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
  '(delete-trailing-lines t)
  '(inhibit-startup-screen t)
  '(send-mail-function (quote smtpmail-send-it)))
@@ -295,7 +295,8 @@
  message-signature
  (concat
   "-- \n"
-  "Thomas Luquet\n")
+  "Thomas Luquet\n"
+  "thomas@luquet.net\n")
  )
 
 
@@ -329,6 +330,7 @@
 ;; NOTIFICATION
 (mu4e-alert-set-default-style 'libnotify)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display) ;; Dans la ligne
 
 ;; Mail dir extention
 (require 'mu4e-maildirs-extension)
@@ -339,7 +341,7 @@
 ;; Use firefox to open urls
 (setq browse-url-browser-function 'browse-url-firefox)
 ;; Use qutebrowser to open urls
-(setq browse-url-generic-program "qupzilla")
+;; (setq browse-url-generic-program "qupzilla")
 
 (global-set-key (kbd "C-c C-o") 'link-hint-open-link-at-point)
 (put 'upcase-region 'disabled nil)
@@ -351,3 +353,17 @@
 ;; Permet d'afficher la norme dans python
 (package-initialize)
 (elpy-enable)
+
+;; SMEX -- TEST ---
+;; A pas compris l'utilité
+;; ------------------------------------------------------------
+;; Est sensé retenir les fonctions les plus utilisé dans emacs
+(require 'smex) ; Not needed if you use package.el
+(smex-initialize) ; Can be omitted. This might cause a (minimal) delay
+                  ; when Smex is auto-initialized on its first run.
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
