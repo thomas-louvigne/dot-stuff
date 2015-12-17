@@ -50,7 +50,7 @@ HIST_STAMPS="dd.mm.yyyy"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git archlinux sudo git battery extract)
+plugins=(git archlinux sudo git github battery extract chucknorris systemadmin)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -77,7 +77,7 @@ export ALTERNATE_EDITOR="emacs"
 export EDITOR="emacs -nw"
 export DIFFEDITCMD="emacs -diff"
 export DICTIONARY="fr-FR"
-
+export BROWSER="firefox"
 
 
 # My Local
@@ -85,8 +85,6 @@ export LC_TIME="fr_FR.UTF-8"
 export LANG="fr_FR.UTF-8"
 
 # Alias
-
-
 #alias emacs="emacs -nw"
 
 alias e="emacsclient -t"
@@ -95,10 +93,11 @@ alias se="sudo emacs -nw"
 alias q="exit"
 alias l="ls"
 alias eog="gpicview"
-alias dasize="du -hms /home/zobi8225/* | sort -nr | head"
+alias dasize="du -a * | sort -nr | head -10"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
 alias lycos="grep -nr "
-alias dodo="xlock; systemctl suspend"
+alias z="xlock;"
+alias dodo="systemctl suspend"
 alias yasu="yaourt -Syu"
 alias agenda="emacsclient -t /home/zobi8225/Dropbox/agenda/agenda.org"
