@@ -355,15 +355,58 @@
 (elpy-enable)
 
 ;; SMEX -- TEST ---
-;; A pas compris l'utilité
 ;; ------------------------------------------------------------
+;; A pas compris l'utilité
 ;; Est sensé retenir les fonctions les plus utilisé dans emacs
 (require 'smex) ; Not needed if you use package.el
 (smex-initialize) ; Can be omitted. This might cause a (minimal) delay
                   ; when Smex is auto-initialized on its first run.
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+
+
+;; LANG TOOLS
+;; ------------------------------------------------------------
+;; Permet une correction de la grammaire francaise
+(require 'langtool)
+(setq langtool-java-classpath
+      "/usr/share/languagetool:/usr/share/java/languagetool/*")
+(setq langtool-mother-tongue "fr")
+
+;; Censé faire un popup (Mais à pas l'aire de marcher...)
+(defun langtool-autoshow-detail-popup (overlays)
+  (when (require 'popup nil t)
+    ;; Do not interrupt current popup
+    (unless (or popup-instances
+                ;; suppress popup after type `C-g` .
+                (memq last-command '(keyboard-quit)))
+      (let ((msg (langtool-details-error-message overlays)))
+        (popup-tip msg)))))
+
+
+
+;; IDO VERTICAL MODE
+;; ------------------------------------------------------------
+;; Permet de proposer les trucs d'un buffer dans le sens vertical
+;; Exemple : C-x C-f
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(ido-vertical-mode 1)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+
+;; FIREPLACE
+;; ------------------------------------------------------------
+;; Marche pas dans ma config, ce qui est très triste.
+(require 'fireplace)
+
+
+;; RAINBOW MODE
+;; ------------------------------------------------------------
+;; So Many Color ! #0000ff #ffffff #ff0000 (Et vive la france !)
+(require 'rainbow-mode)
+(rainbow-mode 1)
+
+
+;; Google Contacts
+;; ------------------------------------------------------------
+;; Gère les contacts google
+;; (require 'google-contacts)
