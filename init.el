@@ -33,6 +33,9 @@
 ;; Company pour emoji :-)
 (require 'company-emoji)
 (add-to-list 'company-backends 'company-emoji)
+(emoji-fontset-enable "Symbola") ;; Permet d'utiliser symbola
+
+
 
 ;; Company pour le HTML
 ;; Jamais testé
@@ -167,14 +170,16 @@
 
 ;; Montre les Whites space inutile en fin de ligne
 ;; TODO : show uniquement dans le code ET dans les .org
-(setq-default show-trailing-whitespace t)
+;; CORRECT FOR FIRE PLACE
+;; (setq-default show-trailing-whitespace t)
 ;; (setq-default show-leading-whitespace t) ;; espace en fin de ligne
-(setq-default indicate-empty-lines t)
+;; (setq-default indicate-empty-lines t)
 
 ;; Efface automatiquement les espaces de fin de ligne a chaque save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Style pour l'export org-mode
+;; A l'aire de plus marcher
 (setq org-odt-styles-file "/home/zobi8225/Dropbox/style.ott")
 
 
@@ -384,14 +389,14 @@
 
 
 
-;; IDO VERTICAL MODE
+;; IDO VERTICAL MODE - USELSS avec helm
 ;; ------------------------------------------------------------
 ;; Permet de proposer les trucs d'un buffer dans le sens vertical
 ;; Exemple : C-x C-f
-(require 'ido-vertical-mode)
-(ido-mode 1)
-(ido-vertical-mode 1)
-(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+;;(require 'ido-vertical-mode)
+;;(ido-mode 1)
+;;(ido-vertical-mode 1)
+;;(setq ido-vertical-define-keys 'C-n-and-C-p-only)
 
 ;; FIREPLACE
 ;; ------------------------------------------------------------
@@ -408,5 +413,35 @@
 
 ;; Google Contacts
 ;; ------------------------------------------------------------
-;; Gère les contacts google
+;; Gère les contacts google - Ne marche pas malheureusement
 ;; (require 'google-contacts)
+
+
+;; Helm
+;; ------------------------------------------------------------
+;; EN TEST
+(require 'helm-config)
+(helm-mode 1)
+
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+
+(global-set-key (kbd "C-c h") 'helm-mini)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-x b") 'helm-buffers-list)
+(global-set-key (kbd "C-x m b") 'helm-bookmarks)
+(global-set-key (kbd "M-y") 'helm-show-kill-ring)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+
+;; pour les emails
+(require 'helm-mu) ;; Pour les email
+(autoload 'helm-mu "helm-mu" "" t) ;; Pas trop compris
+(autoload 'helm-mu-contacts "helm-mu" "" t) ;; pas trop compris
+;; Pour flycheck
+;;(require 'helm-flycheck) ;; Not necessary if using ELPA package
+;;(eval-after-load 'flycheck
+;;  '(define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))
+;; Pour company
+(eval-after-load 'company
+  '(progn
+     (define-key company-mode-map (kbd "C-:") 'helm-company)
+     (define-key company-active-map (kbd "C-:") 'helm-company)))
