@@ -13,7 +13,6 @@
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
-			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
 			 )
       )
 
@@ -33,19 +32,13 @@
 ;; Company pour emoji :-)
 (require 'company-emoji)
 (add-to-list 'company-backends 'company-emoji)
-(emoji-fontset-enable "Symbola") ;; Permet d'utiliser symbola
+;;(emoji-fontset-enable "Symbola") ;; Permet d'utiliser symbola
 
 
 
 ;; Company pour le HTML
 ;; Jamais testé
-(require 'company-web)
-
-;; COMPANY for Python
-;; On utilise JEDI pour la completion : Attention, il demande une installation un peu bizzare quand on le lence
-(defun my/python-mode-hook ()
-  (add-to-list 'company-backends 'company-jedi))
-(add-hook 'python-mode-hook 'my/python-mode-hook)
+;; (require 'company-web)
 
 
 ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
@@ -85,11 +78,18 @@
 
 ;; Org Mode
 ;; ---------------------------------------------------
-;; Test de config de Org : ne sais pas a quoi ca sert
 (require 'org)
-;;(define-key global-map "\C-cl" 'org-store-link)
-;;(define-key global-map "\C-ca" 'org-agenda)
-(setq org-log-done t)
+(setq org-log-done t) ;; Sait pas à quoi ca sert
+(setq org-startup-truncated nil) ;; Permet de faire de retours à la ligne
+
+
+;; Permet de faire comme si une tache était +barré+ dans le terminal
+;; Cela ne fonctionne malheureusement pas dans emacs -nw
+(require 'cl)   ; for delete*
+(setq org-emphasis-alist
+      (cons '("+" '(:strike-through t :foreground "red"))
+	    (delete* "+" org-emphasis-alist :key 'car :test 'equal)))
+
 
 
 
@@ -102,7 +102,7 @@
 
 
 
-;; Tricks
+;; Tricks divers
 ;; ---------------------------------------------------
 ;; Indentation d'une région
 (global-set-key (kbd "C-x C-a") 'indent-region)
@@ -171,7 +171,7 @@
 ;; Montre les Whites space inutile en fin de ligne
 ;; TODO : show uniquement dans le code ET dans les .org
 ;; CORRECT FOR FIRE PLACE
-;; (setq-default show-trailing-whitespace t)
+(setq-default show-trailing-whitespace t)
 ;; (setq-default show-leading-whitespace t) ;; espace en fin de ligne
 ;; (setq-default indicate-empty-lines t)
 
@@ -248,6 +248,7 @@
 
 ;; Terminal at your fingerprint
 ;; -----------------------------------------------------------------
+;; Config pour avoir un termina (ansi-term) qui sot bien
 (defun visit-term-buffer ()
   "Create or visit a terminal buffer."
   (interactive)
@@ -259,11 +260,6 @@
     (switch-to-buffer-other-window "*ansi-term*")))
 (global-set-key (kbd "C-c t") 'visit-term-buffer)
 
-;; Permet de faire comme si une tache était +barré+ dans le terminal
-(require 'cl)   ; for delete*
-(setq org-emphasis-alist
-      (cons '("+" '(:strike-through t :foreground "red"))
-	    (delete* "+" org-emphasis-alist :key 'car :test 'equal)))
 
 
 ;; EMOJI -> Ne marche pas dans le emacs -nw , mais marche bien sinon :smile:
@@ -291,6 +287,10 @@
 
 ;; allow for updating mail using 'U' in the main view:
 (setq mu4e-get-mail-command "offlineimap")
+
+;; Dossier des fichiers
+(setq mu4e-attachment-dir "~/Desktop/mailDl/")
+
 
 ;; something about ourselves
 ;; I don't use a signature...
@@ -341,6 +341,20 @@
 (require 'mu4e-maildirs-extension)
 (mu4e-maildirs-extension)
 
+;; use 'fancy' non-ascii characters in various places in mu4e
+(setq mu4e-use-fancy-chars t)
+
+
+;; A CHECKER don't save message to Sent Messages, Gmail/IMAP takes care of this
+;; (setq mu4e-sent-messages-behavior 'delete)
+
+;; Montrer les images dans emacs
+(setq
+ mu4e-view-show-images t
+ mu4e-view-image-max-width 800)
+
+
+(setq mu4e-update-interval 1200) ;; Reload tout les 20 min
 ;; Open URL dans emacs
 ;; ------------------------------------------------------------
 ;; Use firefox to open urls
@@ -348,16 +362,10 @@
 ;; Use qutebrowser to open urls
 ;; (setq browse-url-generic-program "qupzilla")
 
-(global-set-key (kbd "C-c C-o") 'link-hint-open-link-at-point)
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
+;;(global-set-key (kbd "C-c C-o") 'link-hint-open-link-at-point)
+;;(put 'upcase-region 'disabled nil)
+;;(put 'downcase-region 'disabled nil)
 
-
-;; Python : ELPY
-;; ------------------------------------------------------------
-;; Permet d'afficher la norme dans python
-(package-initialize)
-(elpy-enable)
 
 ;; SMEX -- TEST ---
 ;; ------------------------------------------------------------
@@ -376,6 +384,7 @@
 (setq langtool-java-classpath
       "/usr/share/languagetool:/usr/share/java/languagetool/*")
 (setq langtool-mother-tongue "fr")
+(setq langtool-default-language "fr")
 
 ;; Censé faire un popup (Mais à pas l'aire de marcher...)
 (defun langtool-autoshow-detail-popup (overlays)
@@ -389,21 +398,6 @@
 
 
 
-;; IDO VERTICAL MODE - USELSS avec helm
-;; ------------------------------------------------------------
-;; Permet de proposer les trucs d'un buffer dans le sens vertical
-;; Exemple : C-x C-f
-;;(require 'ido-vertical-mode)
-;;(ido-mode 1)
-;;(ido-vertical-mode 1)
-;;(setq ido-vertical-define-keys 'C-n-and-C-p-only)
-
-;; FIREPLACE
-;; ------------------------------------------------------------
-;; Marche pas dans ma config, ce qui est très triste.
-(require 'fireplace)
-
-
 ;; RAINBOW MODE
 ;; ------------------------------------------------------------
 ;; So Many Color ! #0000ff #ffffff #ff0000 (Et vive la france !)
@@ -411,28 +405,25 @@
 (rainbow-mode 1)
 
 
-;; Google Contacts
-;; ------------------------------------------------------------
-;; Gère les contacts google - Ne marche pas malheureusement
-;; (require 'google-contacts)
-
-
 ;; Helm
 ;; ------------------------------------------------------------
-;; EN TEST
 (require 'helm-config)
 (helm-mode 1)
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+;;(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ;; Bizarie censer faire que le tab équivaut à un enter
 
 (global-set-key (kbd "C-c h") 'helm-mini)
 (global-set-key (kbd "M-x") 'helm-M-x)
+
 (global-set-key (kbd "C-x b") 'helm-buffers-list)
-(global-set-key (kbd "C-x m b") 'helm-bookmarks)
+;;(global-set-key (kbd "C-x m b") 'helm-bookmarks)
 (global-set-key (kbd "M-y") 'helm-show-kill-ring)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
-;; pour les emails
+(global-set-key (kbd "M-s") 'helm-spotify)
+
+
+;; Pour les emails
 (require 'helm-mu) ;; Pour les email
 (autoload 'helm-mu "helm-mu" "" t) ;; Pas trop compris
 (autoload 'helm-mu-contacts "helm-mu" "" t) ;; pas trop compris
@@ -440,8 +431,32 @@
 ;;(require 'helm-flycheck) ;; Not necessary if using ELPA package
 ;;(eval-after-load 'flycheck
 ;;  '(define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck))
+
 ;; Pour company
 (eval-after-load 'company
   '(progn
      (define-key company-mode-map (kbd "C-:") 'helm-company)
      (define-key company-active-map (kbd "C-:") 'helm-company)))
+;; Pour le ispell (Correcteur orthographique)
+(require 'helm-ispell) ;; Pas sur de comprendre comment ca marche / a quoi ca sert
+
+;; Pour flyspell -> Check si ca marche vraiment
+(define-key flyspell-mode-map (kbd "C-;") 'helm-flyspell-correct)
+
+;; Projectitle (Pas utile pour moi je pense)
+(projectile-global-mode)
+(setq projectile-indexing-method 'native)
+(setq projectile-enable-caching t)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+
+
+
+
+
+
+;; Twittering Mode
+;; ------------------------------------------------------------
+(require 'twittering-mode)
+(setq twittering-use-master-password t)
+(setq twittering-icon-mode t)

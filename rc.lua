@@ -55,7 +55,10 @@ run_once("unclutter -root")
 -- {{{ Variable definitions
 
 -- beautiful init
-beautiful.init(os.getenv("HOME") .. "/.config/awesome/themes/multicolor/theme.lua")
+-- beautiful.init(os.getenv("HOME") .. "/.config/awesome/themes/multicolor/theme.lua")
+beautiful.init(os.getenv("HOME") .. "/.config/awesome/themes/rainbow/theme.lua")
+-- holo pas mal
+
 
 -- common
 modkey     = "Mod4"
@@ -67,8 +70,8 @@ editor     = os.getenv("EDITOR") or "nano" or "emacs"
 editor_cmd = terminal .. " -e " .. editor
 
 -- user defined
-browser    = "firefox"
-browser2   = "midori"
+browser    = "qupzilla"
+browser2   = "firefox"
 gui_editor = "emacs"
 graphics   = "gimp"
 mail       = terminal .. " -e mutt "
@@ -244,29 +247,29 @@ memwidget = lain.widgets.mem({
 })
 
 -- MPD
-mpdicon = wibox.widget.imagebox()
-mpdwidget = lain.widgets.mpd({
-    settings = function()
-        mpd_notification_preset = {
-            text = string.format("%s [%s] - %s\n%s", mpd_now.artist,
-                   mpd_now.album, mpd_now.date, mpd_now.title)
-        }
+-- mpdicon = wibox.widget.imagebox()
+-- mpdwidget = lain.widgets.mpd({
+--     settings = function()
+--         mpd_notification_preset = {
+--             text = string.format("%s [%s] - %s\n%s", mpd_now.artist,
+--                    mpd_now.album, mpd_now.date, mpd_now.title)
+--         }
 
-        if mpd_now.state == "play" then
-            artist = mpd_now.artist .. " > "
-            title  = mpd_now.title .. " "
-            mpdicon:set_image(beautiful.widget_note_on)
-        elseif mpd_now.state == "pause" then
-            artist = "mpd "
-            title  = "paused "
-        else
-            artist = ""
-            title  = ""
-            mpdicon:set_image(nil)
-        end
-        widget:set_markup(markup("#e54c62", artist) .. markup("#b2b2b2", title))
-    end
-})
+--         if mpd_now.state == "play" then
+--             artist = mpd_now.artist .. " > "
+--             title  = mpd_now.title .. " "
+--             mpdicon:set_image(beautiful.widget_note_on)
+--         elseif mpd_now.state == "pause" then
+--             artist = "mpd "
+--             title  = "paused "
+--         else
+--             artist = ""
+--             title  = ""
+--             mpdicon:set_image(nil)
+--         end
+--         widget:set_markup(markup("#e54c62", artist) .. markup("#b2b2b2", title))
+--     end
+-- })
 
 -- Spacer
 spacer = wibox.widget.textbox(" ")
@@ -352,8 +355,8 @@ for s = 1, screen.count() do
     local left_layout = wibox.layout.fixed.horizontal()
     left_layout:add(mytaglist[s])
     left_layout:add(mypromptbox[s])
-    left_layout:add(mpdicon)
-    left_layout:add(mpdwidget)
+    -- left_layout:add(mpdicon)
+    -- left_layout:add(mpdwidget)
 
     -- Widgets that are aligned to the upper right
     local right_layout = wibox.layout.fixed.horizontal()
@@ -427,13 +430,13 @@ globalkeys = awful.util.table.join(
 
 
     -- Tag browsing
-    awful.key({ modkey }, "Left",   awful.tag.viewprev       ),
-    awful.key({ modkey }, "Right",  awful.tag.viewnext       ),
-    awful.key({ modkey }, "Escape", awful.tag.history.restore),
+   awful.key({ modkey }, "Left",   awful.tag.viewprev       ),
+   awful.key({ modkey }, "Right",  awful.tag.viewnext       ),
+   awful.key({ modkey }, "Escape", awful.tag.history.restore),
 
     -- Non-empty tag browsing
-    awful.key({ altkey }, "Left", function () lain.util.tag_view_nonempty(-1) end),
-    awful.key({ altkey }, "Right", function () lain.util.tag_view_nonempty(1) end),
+    -- awful.key({ altkey }, "Left", function () lain.util.tag_view_nonempty(-1) end),
+    -- awful.key({ altkey }, "Right", function () lain.util.tag_view_nonempty(1) end),
 
     -- Default client focus
     awful.key({ altkey }, "k",
@@ -540,26 +543,27 @@ globalkeys = awful.util.table.join(
         end),
 
     -- MPD control
-    awful.key({ altkey, "Control" }, "Up",
-        function ()
-            awful.util.spawn_with_shell("mpc toggle || ncmpc toggle || pms toggle")
-            mpdwidget.update()
-        end),
-    awful.key({ altkey, "Control" }, "Down",
-        function ()
-            awful.util.spawn_with_shell("mpc stop || ncmpc stop || pms stop")
-            mpdwidget.update()
-        end),
-    awful.key({ altkey, "Control" }, "Left",
-        function ()
-            awful.util.spawn_with_shell("mpc prev || ncmpc prev || pms prev")
-            mpdwidget.update()
-        end),
-    awful.key({ altkey, "Control" }, "Right",
-        function ()
-            awful.util.spawn_with_shell("mpc next || ncmpc next || pms next")
-            mpdwidget.update()
-        end),
+    -- awful.key({ altkey, "Control" }, "Up",
+    --     function ()
+    --         awful.util.spawn_with_shell("mpc toggle || ncmpc toggle || pms toggle")
+    --         mpdwidget.update()
+    --     end),
+    -- awful.key({ altkey, "Control" }, "Down",
+    --     function ()
+    --         awful.util.spawn_with_shell("mpc stop || ncmpc stop || pms stop")
+    --         mpdwidget.update()
+    --     end),
+    -- awful.key({ altkey, "Control" }, "Left",
+    --     function ()
+    --         awful.util.spawn_with_shell("mpc prev || ncmpc prev || pms prev")
+    --         mpdwidget.update()
+    --     end),
+    -- awful.key({ altkey, "Control" }, "Right",
+    --     function ()
+    --         awful.util.spawn_with_shell("mpc next || ncmpc next || pms next")
+    --         mpdwidget.update()
+    --     end),
+
 
     -- Copy to clipboard
     awful.key({ modkey }, "c", function () os.execute("xsel -p -o | xsel -i -b") end),
