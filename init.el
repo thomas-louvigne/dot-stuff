@@ -11,7 +11,6 @@
 (setq package-archives '(
                          ("ELPA" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
 			 )
       )
@@ -201,6 +200,7 @@
     ("4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
  '(delete-trailing-lines t)
  '(inhibit-startup-screen t)
+ '(org-agenda-files (quote ("~/myCloud/agenda/agenda.org")))
  '(send-mail-function (quote smtpmail-send-it)))
 
 ;; Pas écrire dans le prompt du mini buffer
@@ -355,6 +355,7 @@
 
 
 (setq mu4e-update-interval 1200) ;; Reload tout les 20 min
+
 ;; Open URL dans emacs
 ;; ------------------------------------------------------------
 ;; Use firefox to open urls
@@ -460,3 +461,9 @@
 (require 'twittering-mode)
 (setq twittering-use-master-password t)
 (setq twittering-icon-mode t)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

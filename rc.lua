@@ -137,16 +137,25 @@ mytextclock = lain.widgets.abase({
 -- Calendar
 lain.widgets.calendar:attach(mytextclock, { font_size = 10 })
 
+-- Weather MARCHE PAS
+
+-- weathericon = wibox.widget.imagebox(beautiful.widget_weather)
+-- myweather = lain.widgets.weather({
+--     city_id = 2988507, -- placeholder
+--     settings = function()
+--         descr = weather_now["weather"][1]["description"]:lower()
+--         units = math.floor(weather_now["main"]["temp"])
+--         widget:set_markup(markup("#eca4c4", descr .. " @ " .. units .. "°C "))
+--     end
+-- })
+
+
 -- Weather
-weathericon = wibox.widget.imagebox(beautiful.widget_weather)
 myweather = lain.widgets.weather({
-    city_id = 2988507, -- placeholder
-    settings = function()
-        descr = weather_now["weather"][1]["description"]:lower()
-        units = math.floor(weather_now["main"]["temp"])
-        widget:set_markup(markup("#eca4c4", descr .. " @ " .. units .. "°C "))
-    end
+    city_id = 2988507 -- placeholder
 })
+
+
 
 -- / fs
 fsicon = wibox.widget.imagebox(beautiful.widget_fs)
@@ -361,8 +370,10 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the upper right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+
     --right_layout:add(mailicon)
     --right_layout:add(mailwidget)
+
     right_layout:add(netdownicon)
     right_layout:add(netdowninfo)
     right_layout:add(netupicon)
@@ -375,7 +386,7 @@ for s = 1, screen.count() do
     right_layout:add(cpuwidget)
     right_layout:add(fsicon)
     right_layout:add(fswidget)
-    right_layout:add(weathericon)
+    --right_layout:add(weathericon)
     right_layout:add(myweather)
     right_layout:add(tempicon)
     right_layout:add(tempwidget)
@@ -534,6 +545,7 @@ globalkeys = awful.util.table.join(
     awful.key({ altkey }, "m",
         function ()
             os.execute(string.format("amixer set %s toggle", volumewidget.channel))
+            os.execute(string.format("amixer set %s toggle", volumewidget.channel2))
             volumewidget.update()
         end),
     awful.key({ altkey, "Control" }, "m",
