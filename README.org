@@ -2,8 +2,7 @@
 #+AUTHOR:       Thomas L.
 
 My dot stuff :
-    * emacs init.el
-    * .zshrc
-    * rc.lua (pour Awesome Window Manager)
-    * .xinitrc
-    * init.el (pour emacs)
+    * . init.el (EMACS)
+    * . zshrc (oh my Zsh)
+    * . rc.lua (Awesome Window Manager)
+    * . xinitrc

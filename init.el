@@ -19,6 +19,11 @@
 (setq url-http-attempt-keepalives nil)
 
 
+;; TEST POUR PELICAN
+(require 'org)
+(require 'ox)
+
+
 ;; COMPANY
 ;; -------------------------------------------------------
 ;; Nécessaire pour avoir un popup qui propose de la completion
@@ -157,7 +162,7 @@
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
 ;; Batterie dans la buffer line
-(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
+;;(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
 
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
 (nyan-mode t)
@@ -197,7 +202,7 @@
  '(custom-enabled-themes (quote (calmer-forest)))
  '(custom-safe-themes
    (quote
-    ("4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
+    ("7997e0765add4bfcdecb5ac3ee7f64bbb03018fb1ac5597c64ccca8c88b1262f" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
  '(delete-trailing-lines t)
  '(inhibit-startup-screen t)
  '(org-agenda-files (quote ("~/myCloud/agenda/agenda.org")))
@@ -265,96 +270,96 @@
 ;; EMOJI -> Ne marche pas dans le emacs -nw , mais marche bien sinon :smile:
 (add-hook 'after-init-hook #'global-emojify-mode)
 
-;; EMAIL : MU4E
-;;-------------------------------------------------------
-(require 'mu4e)
+;; ;; EMAIL : MU4E
+;; ;;-------------------------------------------------------
+;; (require 'mu4e)
 
-;; Default
-(setq mu4e-maildir (expand-file-name "~/Maildir"))
+;; ;; Default
+;; (setq mu4e-maildir (expand-file-name "~/Maildir"))
 
-(setq mu4e-drafts-folder "/[Gmail].Drafts")
-(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-(setq mu4e-trash-folder  "/[Gmail].Trash")
+;; (setq mu4e-drafts-folder "/[Gmail].Drafts")
+;; (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+;; (setq mu4e-trash-folder  "/[Gmail].Trash")
 
-;; don't save message to Sent Messages, GMail/IMAP will take care of this
-(setq mu4e-sent-messages-behavior 'delete)
-
-;; setup some handy shortcuts
-(setq mu4e-maildir-shortcuts
-      '(("/INBOX"             . ?i)
-        ("/[Gmail].Sent Mail" . ?s)
-        ("/[Gmail].Trash"     . ?t)))
-
-;; allow for updating mail using 'U' in the main view:
-(setq mu4e-get-mail-command "offlineimap")
-
-;; Dossier des fichiers
-(setq mu4e-attachment-dir "~/Desktop/mailDl/")
-
-
-;; something about ourselves
-;; I don't use a signature...
-(setq
- user-mail-address "zobi8225@gmail.com"
- user-full-name  "Thomas Luquet"
- message-signature
- (concat
-  "-- \n"
-  "Thomas Luquet\n"
-  "thomas@luquet.net\n")
- )
-
-
-;; Permet (théoriquement) d'envoyer des mails avec org-mode
-(require 'org-mu4e)
-
-
-;; sending mail -- replace USERNAME with your gmail username
-;; also, make sure the gnutls command line utils are installed
-;; package 'gnutls-bin' in Debian/Ubuntu, 'gnutls' in Archlinux.
-
-
-(require 'smtpmail)
-
-(setq message-send-mail-function 'smtpmail-send-it
-      starttls-use-gnutls t
-      smtpmail-starttls-credentials
-      '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials
-      (expand-file-name "~/.authinfo.gpg")
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-debug-info t)
-
-;; View
-(require 'mu4e-contrib)
-(setq mu4e-html2text-command 'mu4e-shr2text)
-
-
-;; NOTIFICATION
-(mu4e-alert-set-default-style 'libnotify)
-(add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display) ;; Dans la ligne
-
-;; Mail dir extention
-(require 'mu4e-maildirs-extension)
-(mu4e-maildirs-extension)
-
-;; use 'fancy' non-ascii characters in various places in mu4e
-(setq mu4e-use-fancy-chars t)
-
-
-;; A CHECKER don't save message to Sent Messages, Gmail/IMAP takes care of this
+;; ;; don't save message to Sent Messages, GMail/IMAP will take care of this
 ;; (setq mu4e-sent-messages-behavior 'delete)
 
-;; Montrer les images dans emacs
-(setq
- mu4e-view-show-images t
- mu4e-view-image-max-width 800)
+;; ;; setup some handy shortcuts
+;; (setq mu4e-maildir-shortcuts
+;;       '(("/INBOX"             . ?i)
+;;         ("/[Gmail].Sent Mail" . ?s)
+;;         ("/[Gmail].Trash"     . ?t)))
+
+;; ;; allow for updating mail using 'U' in the main view:
+;; (setq mu4e-get-mail-command "offlineimap")
+
+;; ;; Dossier des fichiers
+;; (setq mu4e-attachment-dir "~/Desktop/mailDl/")
 
 
-(setq mu4e-update-interval 1200) ;; Reload tout les 20 min
+;; ;; something about ourselves
+;; ;; I don't use a signature...
+;; (setq
+;;  user-mail-address "zobi8225@gmail.com"
+;;  user-full-name  "Thomas Luquet"
+;;  message-signature
+;;  (concat
+;;   "-- \n"
+;;   "Thomas Luquet\n"
+;;   "thomas@luquet.net\n")
+;;  )
+
+
+;; ;; Permet (théoriquement) d'envoyer des mails avec org-mode
+;; (require 'org-mu4e)
+
+
+;; ;; sending mail -- replace USERNAME with your gmail username
+;; ;; also, make sure the gnutls command line utils are installed
+;; ;; package 'gnutls-bin' in Debian/Ubuntu, 'gnutls' in Archlinux.
+
+
+;; (require 'smtpmail)
+
+;; (setq message-send-mail-function 'smtpmail-send-it
+;;       starttls-use-gnutls t
+;;       smtpmail-starttls-credentials
+;;       '(("smtp.gmail.com" 587 nil nil))
+;;       smtpmail-auth-credentials
+;;       (expand-file-name "~/.authinfo.gpg")
+;;       smtpmail-default-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-server "smtp.gmail.com"
+;;       smtpmail-smtp-service 587
+;;       smtpmail-debug-info t)
+
+;; ;; View
+;; (require 'mu4e-contrib)
+;; (setq mu4e-html2text-command 'mu4e-shr2text)
+
+
+;; ;; NOTIFICATION
+;; (mu4e-alert-set-default-style 'libnotify)
+;; (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+;; (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display) ;; Dans la ligne
+
+;; ;; Mail dir extention
+;; (require 'mu4e-maildirs-extension)
+;; (mu4e-maildirs-extension)
+
+;; ;; use 'fancy' non-ascii characters in various places in mu4e
+;; (setq mu4e-use-fancy-chars t)
+
+
+;; ;; A CHECKER don't save message to Sent Messages, Gmail/IMAP takes care of this
+;; ;; (setq mu4e-sent-messages-behavior 'delete)
+
+;; ;; Montrer les images dans emacs
+;; (setq
+;;  mu4e-view-show-images t
+;;  mu4e-view-image-max-width 800)
+
+
+;; (setq mu4e-update-interval 1200) ;; Reload tout les 20 min
 
 ;; Open URL dans emacs
 ;; ------------------------------------------------------------
@@ -425,9 +430,9 @@
 
 
 ;; Pour les emails
-(require 'helm-mu) ;; Pour les email
-(autoload 'helm-mu "helm-mu" "" t) ;; Pas trop compris
-(autoload 'helm-mu-contacts "helm-mu" "" t) ;; pas trop compris
+;; (require 'helm-mu) ;; Pour les email
+;; (autoload 'helm-mu "helm-mu" "" t) ;; Pas trop compris
+;; (autoload 'helm-mu-contacts "helm-mu" "" t) ;; pas trop compris
 ;; Pour flycheck
 ;;(require 'helm-flycheck) ;; Not necessary if using ELPA package
 ;;(eval-after-load 'flycheck
@@ -445,25 +450,34 @@
 (define-key flyspell-mode-map (kbd "C-;") 'helm-flyspell-correct)
 
 ;; Projectitle (Pas utile pour moi je pense)
-(projectile-global-mode)
-(setq projectile-indexing-method 'native)
-(setq projectile-enable-caching t)
-(setq projectile-completion-system 'helm)
-(helm-projectile-on)
+;; MIT EN TEST
+;; (projectile-global-mode)
+;; (setq projectile-indexing-method 'native)
+;; (setq projectile-enable-caching t)
+;; (setq projectile-completion-system 'helm)
+;; (helm-projectile-on)
 
 
 
 
+;; ;; Twittering Mode
+;; ;; ------------------------------------------------------------
+;; (require 'twittering-mode)
+;; (setq twittering-use-master-password t)
+;; (setq twittering-icon-mode t)
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  )
 
 
-;; Twittering Mode
-;; ------------------------------------------------------------
-(require 'twittering-mode)
-(setq twittering-use-master-password t)
-(setq twittering-icon-mode t)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; TEST du stop debug (pour pelican) ?
+(setq ad-redefinition-action 'accept)
+
+(setq org-capture-templates
+      (quote (
+	      ("x" "org-protocol" entry (file "~/web.org")
+	       "* TODO Review %c\n%U\n%i\n" :immediate-finish))))
+(put 'erase-buffer 'disabled nil)
