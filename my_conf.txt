@@ -1,36 +1,3 @@
 Resuming in non X mode: xdpyinfo not found. For package install advice run: inxi --recommends
-[1;34mSystem:   [0;37m [1;34mHost:[0;37m vitriol [1;34mKernel:[0;37m 4.7.0-1-ARCH x86_64 (64 bit [1;34mgcc:[0;37m 6.1.1)[0;37m
-[1;34m          [0;37m [1;34mDesktop:[0;37m Xfce 4.12.3 (Gtk 2.24.30) [1;34mDistro:[0;37m Arch Linux[0;37m
-[1;34mMachine:  [0;37m [1;34mMobo:[0;37m ASUSTeK [1;34mmodel:[0;37m P6T DELUXE V2 [1;34mv:[0;37m Rev 1.xx[0;37m
-[1;34m          [0;37m [1;34mBios:[0;37m American Megatrends [1;34mv:[0;37m 1202 [1;34mdate:[0;37m 12/22/2010[0;37m
-[1;34mCPU:      [0;37m [1;34mQuad core[0;37m Intel Core i7 930 (-HT-MCP-)[0;37m [1;34mcache:[0;37m 8192 KB[0;37m
-[1;34m          [0;37m [1;34mflags:[0;37m (lm nx sse sse2 sse3 sse4_1 sse4_2 ssse3 vmx) [1;34mbmips:[0;37m 22458[0;37m
-[1;34m          [0;37m [1;34mclock speeds:[0;37m [1;34mmax:[0;37m 2801 MHz [1;34m1:[0;37m 1733 MHz [1;34m2:[0;37m 1733 MHz [1;34m3:[0;37m 1867 MHz[0;37m
-[1;34m          [0;37m [1;34m4:[0;37m 1600 MHz [1;34m5:[0;37m 1600 MHz [1;34m6:[0;37m 1733 MHz [1;34m7:[0;37m 1600 MHz [1;34m8:[0;37m 1867 MHz[0;37m
-[1;34mGraphics: [0;37m [1;34mCard:[0;37m NVIDIA GF104 [GeForce GTX 460] [1;34mbus-ID:[0;37m 02:00.0[0;37m
-[1;34m          [0;37m [1;34mDisplay Server:[0;37m N/A [1;34mdrivers:[0;37m nvidia (unloaded: nouveau)[0;37m
-[1;34m          [0;37m [1;34mResolution:[0;37m 80x24[0;37m
-[1;34mAudio:    [0;37m [1;34mCard-1[0;37m NVIDIA GF104 High Definition Audio Controller[0;37m
-[1;34m          [0;37m [1;34mdriver:[0;37m snd_hda_intel [1;34mbus-ID:[0;37m 02:00.1[0;37m
-[1;34m          [0;37m [1;34mCard-2[0;37m Intel 82801JI (ICH10 Family) HD Audio Controller[0;37m
-[1;34m          [0;37m [1;34mdriver:[0;37m snd_hda_intel [1;34mbus-ID:[0;37m 00:1b.0[0;37m
-[1;34m          [0;37m [1;34mSound:[0;37m Advanced Linux Sound Architecture [1;34mv:[0;37m k4.7.0-1-ARCH[0;37m
-[1;34mNetwork:  [0;37m [1;34mCard-1:[0;37m Marvell 88E8056 PCI-E Gigabit Ethernet Controller[0;37m
-[1;34m          [0;37m [1;34mdriver:[0;37m sky2 [1;34mport:[0;37m b800 [1;34mbus-ID:[0;37m 04:00.0[0;37m
-[1;34m          [0;37m [1;34mIF:[0;37m enp4s0 [1;34mstate:[0;37m down [1;34mmac:[0;37m e0:cb:4e:88:0e:a2[0;37m
-[1;34m          [0;37m [1;34mCard-2:[0;37m Marvell 88E8056 PCI-E Gigabit Ethernet Controller[0;37m
-[1;34m          [0;37m [1;34mdriver:[0;37m sky2 [1;34mport:[0;37m d800 [1;34mbus-ID:[0;37m 06:00.0[0;37m
-[1;34m          [0;37m [1;34mIF:[0;37m enp6s0 [1;34mstate:[0;37m up [1;34mspeed:[0;37m 1000 Mbps [1;34mduplex:[0;37m full[0;37m
-[1;34m          [0;37m [1;34mmac:[0;37m e0:cb:4e:88:0e:a3[0;37m
-[1;34mDrives:   [0;37m [1;34mHDD Total Size:[0;37m 3064.6GB (16.6% used)[0;37m
-[1;34m          [0;37m [1;34mID-1:[0;37m /dev/sda [1;34mmodel:[0;37m M4 [1;34msize:[0;37m 64.0GB[0;37m
-[1;34m          [0;37m [1;34mID-2:[0;37m /dev/sdb [1;34mmodel:[0;37m ST2000DM001 [1;34msize:[0;37m 2000.4GB[0;37m
-[1;34m          [0;37m [1;34mID-3:[0;37m /dev/sdc [1;34mmodel:[0;37m WDC_WD10EACS [1;34msize:[0;37m 1000.2GB[0;37m
-[1;34mPartition:[0;37m [1;34mID-1:[0;37m / [1;34msize:[0;37m 59G [1;34mused:[0;37m 33G (59%) [1;34mfs:[0;37m ext4 [1;34mdev:[0;37m /dev/sda2[0;37m
-[1;34m          [0;37m [1;34mID-2:[0;37m /boot [1;34msize:[0;37m 477M [1;34mused:[0;37m 43M (10%) [1;34mfs:[0;37m ext4 [1;34mdev:[0;37m /dev/sda1[0;37m
-[1;34m          [0;37m [1;34mID-3:[0;37m /home [1;34msize:[0;37m 917G [1;34mused:[0;37m 441G (51%) [1;34mfs:[0;37m ext4 [1;34mdev:[0;37m /dev/sdc1[0;37m
-[1;34mSensors:  [0;37m [1;34mSystem Temperatures: cpu:[0;37m 39.5C [1;34mmobo:[0;37m 37.0C [1;34mgpu:[0;37m 0.0:51C[0;37m
-[1;34m          [0;37m [1;34mFan Speeds (in rpm): cpu:[0;37m 948 [1;34mpsu:[0;37m 0 [1;34msys-1:[0;37m 839 [1;34msys-2:[0;37m 0 [1;34msys-3:[0;37m 0[0;37m
-[1;34mInfo:     [0;37m [1;34mProcesses:[0;37m 205 [1;34mUptime:[0;37m 3:40 [1;34mMemory:[0;37m 2637.6/7978.4MB[0;37m
-[1;34m          [0;37m [1;34mInit:[0;37m systemd [1;34mGcc sys:[0;37m 6.1.1 [1;34mClient:[0;37m Shell (zsh 5.2) [1;34minxi:[0;37m 2.3.0[0;37m [0;37m
+[1;34mCPU[0;37m~Quad core Intel Core i7 930 (-HT-MCP-) [1;34mspeed/max[0;37m~1600/2801 MHz [1;34mKernel[0;37m~4.7.0-1-ARCH x86_64 [1;34mUp[0;37m~3:49 [1;34mMem[0;37m~2692.7/7978.4MB [1;34mHDD[0;37m~3064.6GB(16.6% used) [1;34mProcs[0;37m~208 [1;34mClient[0;37m~Shell [1;34minxi[0;37m~2.3.0 [0;37m [0;37m
 [0m
