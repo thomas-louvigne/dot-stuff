@@ -2,7 +2,8 @@
 #+AUTHOR:       Thomas L.
 
 My dot stuff :
-    * . init.el (EMACS)
+    * init.el (EMACS)
     * . zshrc (oh my Zsh)
-    * . rc.lua (Awesome Window Manager)
+    * rc.lua (Awesome Window Manager)
     * . xinitrc
+    * autoexec.cfg (CS:GO)
