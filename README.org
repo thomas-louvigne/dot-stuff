@@ -5,5 +5,6 @@ My dot stuff :
     * init.el (EMACS)
     * . zshrc (oh my Zsh)
     * rc.lua (Awesome Window Manager)
-    * . xinitrc
+    * . xinitrc (x configuration)
+    * hwinfo_short.txt (Hardware Information)
     * autoexec.cfg (CS:GO)

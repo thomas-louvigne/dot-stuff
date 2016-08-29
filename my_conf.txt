@@ -1,3 +1,0 @@
-Resuming in non X mode: xdpyinfo not found. For package install advice run: inxi --recommends
-[1;34mCPU[0;37m~Quad core Intel Core i7 930 (-HT-MCP-) [1;34mspeed/max[0;37m~1600/2801 MHz [1;34mKernel[0;37m~4.7.0-1-ARCH x86_64 [1;34mUp[0;37m~3:52 [1;34mMem[0;37m~2563.8/7978.4MB [1;34mHDD[0;37m~3064.6GB(16.6% used) [1;34mProcs[0;37m~205 [1;34mClient[0;37m~Shell [1;34minxi[0;37m~2.3.0 [0;37m [0;37m
-[0m
