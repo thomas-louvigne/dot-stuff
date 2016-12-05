@@ -3,8 +3,9 @@
 
 My dot stuff :
     * init.el (EMACS)
-    * . zshrc (oh my Zsh)
+    * zshrc (oh my Zsh)
     * rc.lua (Awesome Window Manager)
-    * . xinitrc (x configuration)
+    * xinitrc (x configuration)
     * hwinfo_short.txt (Hardware Information)
     * autoexec.cfg (CS:GO)
+    * gitignore (globale, conf from : https://www.gitignore.io/)
