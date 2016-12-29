@@ -1,11 +1,16 @@
 #+TITLE:        dot-stuff
 #+AUTHOR:       Thomas L.
 
-My dot stuff :
+* My dot stuff :
     * init.el (EMACS)
     * zshrc (oh my Zsh)
-    * rc.lua (Awesome Window Manager)
+    * rc.lua (Awesome Window Manager /!\ pas utilisé depuis longtemps, peut être pas a jour /!\)
     * xinitrc (x configuration)
-    * hwinfo_short.txt (Hardware Information)
+    * hwinfo_short.txt (Hardware Information )
     * autoexec.cfg (CS:GO)
     * gitignore (globale, conf from : https://www.gitignore.io/)
+
+* TODO
+** rc.lua | A updater (cf attendre la version 4 de awesome WM)
+** xinitrc | A updater
+** hwinfo_short.txt | A updater
