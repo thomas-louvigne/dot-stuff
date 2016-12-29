@@ -1,8 +1,6 @@
 ;; Dot emacs de ouam - zobi8225
 
 
-
-
 ;; PACKAGE Source
 ;; ---------------------------------------------------
 ;; Il y a peut etre trop de list-package dans ma list...
@@ -19,7 +17,6 @@
 (setq url-http-attempt-keepalives nil)
 
 
-;; TEST POUR PELICAN
 (require 'org)
 (require 'ox)
 
@@ -149,6 +146,7 @@
 ;;(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
 
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
+(require 'nyan-mode)
 (nyan-mode t)
 
 ;; Affiche l'heure dans la barre du bas
@@ -183,13 +181,15 @@
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
- '(custom-enabled-themes (quote (calmer-forest)))
+ '(custom-enabled-themes (quote (tango-dark)))
  '(custom-safe-themes
    (quote
     ("7997e0765add4bfcdecb5ac3ee7f64bbb03018fb1ac5597c64ccca8c88b1262f" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
  '(delete-trailing-lines t)
  '(inhibit-startup-screen t)
- )
+ '(package-selected-packages
+   (quote
+    (js2-mode json-mode web-mode csgo-conf-mode dired-rainbow rainbow-delimiters volume use-package rainbow-mode nyan-mode helm-ispell helm-gitignore helm-flycheck helm-firefox flyspell-popup flyspell-correct-popup company))))
 
 ;; Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
@@ -261,7 +261,10 @@
 ;; ------------------------------------------------------------
 ;; So Many Color ! #0000ff #ffffff #ff0000 (Et vive la france !)
 (require 'rainbow-mode)
-(rainbow-mode 1)
+;; Pour le mettre en global :
+(define-globalized-minor-mode my-global-rainbow-mode rainbow-mode
+  (lambda () (rainbow-mode 1)))
+(my-global-rainbow-mode 1)
 
 
 ;; Helm
@@ -281,7 +284,6 @@
 
 (global-set-key (kbd "M-s") 'helm-spotify)
 
-
 ;; Pour company
 (eval-after-load 'company
   '(progn
@@ -295,3 +297,64 @@
 
 
 
+;; Rainbow délimiters
+;; ------------------------------------------------------------
+;; Met les parenthèses en "rainbows", très utile pour ne plus se perdre dans les parenthès
+
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+(custom-set-faces
+ ;; On peut aussi mettre des tailles
+ ;;'(rainbow-delimiters-depth-1-face ((t (:foreground "red" :height 2.0))))
+ ;; '(rainbow-delimiters-depth-2-face ((t (:foreground "orange" :height 1.8))))
+
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "red" ))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "green" ))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "blue" ))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "violet"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "purple"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "black" ))))
+ '(rainbow-delimiters-unmatched-face ((t (:background "cyan"))))
+
+ )
+
+
+;; Counter Strike :Global Offensive
+;; ------------------------------------------------------------
+;; Parce que emacs à un mode pour le fichier autoexe de counf de CS:GO
+(require 'csgo-conf-mode)
+
+;; web-mode
+;; ------------------------------------------------------------
+;; Mode que je trouve mieux pour le JS que js2-mode
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+
+;; adjust indents for web-mode to 2 spaces
+(defun my-web-mode-hook ()
+  "Hooks for Web mode. Adjust indents"
+  ;;; http://web-mode.org/
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
+
+
+;; INSTALLÉ AUTOMATIQUEMENT quand on choisie son thème
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
