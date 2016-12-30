@@ -234,9 +234,10 @@
 (prefer-coding-system 'utf-8)
 
 
-;; Terminal at your fingerprint
+;; Terminal at your fingerprint (alt x -> ansi-term)
 ;; -----------------------------------------------------------------
 ;; Config pour avoir un terminal (ansi-term) qui soit bien
+(setq multi-term-program "/bin/zsh") ;; Force l'utilisation de zsh dans le terme
 (defun visit-term-buffer ()
   "Create or visit a terminal buffer."
   (interactive)
@@ -313,7 +314,7 @@
  '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
  '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
  '(rainbow-delimiters-depth-4-face ((t (:foreground "green" ))))
- '(rainbow-delimiters-depth-5-face ((t (:foreground "blue" ))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "white" ))))
  '(rainbow-delimiters-depth-6-face ((t (:foreground "violet"))))
  '(rainbow-delimiters-depth-7-face ((t (:foreground "purple"))))
  '(rainbow-delimiters-depth-8-face ((t (:foreground "black" ))))
