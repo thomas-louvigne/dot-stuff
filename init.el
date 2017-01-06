@@ -1,5 +1,6 @@
-;; Dot emacs de ouam - zobi8225
+;; Dot emacs de ouam - Thomas Luquet
 
+(setq user-full-name "Thomas Luquet")
 
 ;; PACKAGE Source
 ;; ---------------------------------------------------
@@ -10,6 +11,9 @@
                          ("ELPA" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
+			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
+
+
 			 )
       )
 
@@ -184,12 +188,12 @@
  '(custom-enabled-themes (quote (tango-dark)))
  '(custom-safe-themes
    (quote
-    ("7997e0765add4bfcdecb5ac3ee7f64bbb03018fb1ac5597c64ccca8c88b1262f" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
+    ("98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "7997e0765add4bfcdecb5ac3ee7f64bbb03018fb1ac5597c64ccca8c88b1262f" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
  '(delete-trailing-lines t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (js2-mode json-mode web-mode csgo-conf-mode dired-rainbow rainbow-delimiters volume use-package rainbow-mode nyan-mode helm-ispell helm-gitignore helm-flycheck helm-firefox flyspell-popup flyspell-correct-popup company))))
+    (erc-colorize which-key elpy material-theme js2-mode json-mode web-mode csgo-conf-mode dired-rainbow rainbow-delimiters volume use-package rainbow-mode nyan-mode helm-ispell helm-gitignore helm-flycheck helm-firefox flyspell-popup flyspell-correct-popup company))))
 
 ;; Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
@@ -237,6 +241,7 @@
 ;; Terminal at your fingerprint (alt x -> ansi-term)
 ;; -----------------------------------------------------------------
 ;; Config pour avoir un terminal (ansi-term) qui soit bien
+;; http://rawsyntax.com/blog/learn-emacs-zsh-and-multi-term/
 (setq multi-term-program "/bin/zsh") ;; Force l'utilisation de zsh dans le terme
 (defun visit-term-buffer ()
   "Create or visit a terminal buffer."
@@ -248,6 +253,12 @@
 	(ansi-term (getenv "SHELL")))
     (switch-to-buffer-other-window "*ansi-term*")))
 (global-set-key (kbd "C-c t") 'visit-term-buffer)
+;; Permet d'éviter qu il montre les white space dans le term mais semble pas hyper bien marcher....
+(add-hook 'term-mode-hook
+          (lambda ()
+            (setq show-trailing-whitespace nil)
+(autopair-mode -1)))
+
 
 
 ;; Open URL dans emacs
@@ -301,26 +312,26 @@
 ;; Rainbow délimiters
 ;; ------------------------------------------------------------
 ;; Met les parenthèses en "rainbows", très utile pour ne plus se perdre dans les parenthès
+;; TODO UTILISER LE THEME MATERIAL, voir si c'est encore nécessaire
+;; https://github.com/cpaulik/emacs-material-theme
 
 (require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (custom-set-faces
- ;; On peut aussi mettre des tailles
- ;;'(rainbow-delimiters-depth-1-face ((t (:foreground "red" :height 2.0))))
- ;; '(rainbow-delimiters-depth-2-face ((t (:foreground "orange" :height 1.8))))
-
- '(rainbow-delimiters-depth-1-face ((t (:foreground "red" ))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "red"))))
  '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
  '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
- '(rainbow-delimiters-depth-4-face ((t (:foreground "green" ))))
- '(rainbow-delimiters-depth-5-face ((t (:foreground "white" ))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "green"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "white"))))
  '(rainbow-delimiters-depth-6-face ((t (:foreground "violet"))))
  '(rainbow-delimiters-depth-7-face ((t (:foreground "purple"))))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "black" ))))
- '(rainbow-delimiters-unmatched-face ((t (:background "cyan"))))
-
- )
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "pink"))))
+ '(rainbow-delimiters-unmatched-face ((t (:background "cyan")))))
 
 
 ;; Counter Strike :Global Offensive
@@ -348,14 +359,33 @@
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
   (setq web-mode-code-indent-offset 2))
-(add-hook 'web-mode-hook  'my-web-mode-hook)
+(add-hook 'web-mode-hook 'my-web-mode-hook)
 
 
 
-;; INSTALLÉ AUTOMATIQUEMENT quand on choisie son thème
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;; Markdown mode
+;; ------------------------------------------------------------
+(autoload 'markdown-mode "markdown-mode"
+"Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+
+;; [TEST] Elpy
+;; ------------------------------------------------------------
+;; Truc qui gère tout python, mais demande pas mal d'autres trucs à installer
+;; Checker : https://github.com/jorgenschaefer/elpy
+
+(package-initialize)
+(elpy-enable)
+(setenv "PATH" (concat (getenv "PATH") ":/home/tlu/.local/bin")) ;; Dossier des binaires python (nottament pour flake8)
+(setq exec-path (append exec-path '("/home/tlu/.local/bin")))
+
+
+;; [TEST] Which-Key
+;; ------------------------------------------------------------
+;; popup qui affiche les raccourcis clavier qu on peut faire
+(require 'which-key)
+(which-key-mode)
+(which-key-setup-side-window-right)
+(which-key-setup-minibuffer)

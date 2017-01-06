@@ -50,13 +50,13 @@ HIST_STAMPS="dd.mm.yyyy"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git archlinux sudo git github battery extract systemadmin node emacs)
+plugins=(git archlinux sudo github battery extract systemadmin node emacs python pyenv virtualenv)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/zobi8225/bin:"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/zobi8225/bin:/home/zobi8225/.local/bin/:"
 export MANPATH="/usr/local/man:$MANPATH"
 
 # Preferred editor for local and remote sessions
@@ -100,4 +100,4 @@ alias lycos="grep -nr "
 alias z="xlock;"
 alias dodo="systemctl suspend"
 alias yasu="yaourt -Syu"
-alias agenda="emacsclient -t /home/zobi8225/myCloud/agenda/agenda.org"
+alias agenda="emacsclient -t /home/tlu/ownCloud/agenda/agenda.org"
