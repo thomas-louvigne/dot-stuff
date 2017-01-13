@@ -1,4 +1,8 @@
-;; Dot emacs de ouam - Thomas Luquet
+;; DOT EMACS - Thomas Luquet
+;; ---------------------------------------------------
+;; Vous trouverez ici mon .emacs.d/init.el
+;; Il est un peu en bordel mais commenté, n'hésitez pas à me dire vos suggestions/ conseils
+
 
 (setq user-full-name "Thomas Luquet")
 
@@ -12,8 +16,6 @@
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
 			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
-
-
 			 )
       )
 
@@ -25,14 +27,68 @@
 (require 'ox)
 
 
+;; Tricks divers
+;; ---------------------------------------------------
+;; Plein de trucs divers et nécessaire
+
+;; Indentation d'une région
+(global-set-key (kbd "C-x C-a") 'indent-region)
+
+;; Pour avoir les parenthese coloré automatiquement
+(show-paren-mode 1)
+
+;; Pour pouvoir commenter une region
+(global-set-key (kbd "C-C C-C") 'comment-dwim)
+
+;; Pour avoir le numéro de la ligne à gauche
+(global-linum-mode 1);; active le mode
+(setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
+
+
+;; Pas de menubar en haut ni de scroll bar
+(menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) ;; Enlever la scrollbar
+  (scroll-bar-mode -1))
+
+;; Permet de changer le répertoire de sauvegarde automatique (évite d'avoir des fichier qui trenne partout)
+(require 'saveplace)
+(setq-default save-place t)
+
+;; Permet de changer le dossier de backup
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist
+    '(("." . "~/.emacs.d/saved_places"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)       ; use versioned backups
+
+
+;; Expend
+(global-set-key (kbd "M-/") 'hippie-expand)
+
+;; Buffer list
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+
+;; Search
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+
+
+
 ;; COMPANY
 ;; -------------------------------------------------------
-;; Nécessaire pour avoir un popup qui propose de la completion
+;; Nécessaire pour avoir un popup qui propose de la completion (pour le code et l'orthographe)
 
 (require 'popup)
 (require 'company)
-;; La on dit que c'est pour tout
-(add-hook 'after-init-hook 'global-company-mode)
+(add-hook 'after-init-hook 'global-company-mode) ;; La on dit que c'est pour tout
 
 
 ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
@@ -61,10 +117,6 @@
     (message "company-ispell enabled!"))))
 
 
-;; ---------------------------------------------------
-
-
-
 ;; Org Mode
 ;; ---------------------------------------------------
 (require 'org)
@@ -87,67 +139,32 @@
 (require 'flyspell)
 (add-hook 'org-mode-hook 'turn-on-flyspell) ;; Ajoute automatiquement le flysper aux fichier org
 (setq ispell-dictionary "french")
-;; ---------------------------------------------------
 
 
 
-;; Tricks divers
-;; ---------------------------------------------------
-;; Indentation d'une région
-(global-set-key (kbd "C-x C-a") 'indent-region)
 
-;; Pour avoir les parenthese coloré automatiquement
-(show-paren-mode 1)
-
-;; Pour pouvoir commenter une region
-(global-set-key (kbd "C-C C-C") 'comment-dwim)
-
-;; Pour avoir le numéro de la ligne à gauche
-(global-linum-mode 1);; active le mode
-(setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
+;; [TEST] Which-Key
+;; ------------------------------------------------------------
+;; popup qui affiche les raccourcis clavier qu on peut faire
+(require 'which-key)
+(which-key-mode)
+(which-key-setup-side-window-right)
+(which-key-setup-minibuffer)
 
 
-;; Better default
-(menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) ;; Enlever la scrollbar
-  (scroll-bar-mode -1))
-
-;; Affiche le volume
+;; Alsa Volume manager
+;; ----------------------------------
+;; Permet d'afficher et de changer le volume du son du PC (très pratique)
 (require 'volume)
 
 
-;; Permet de changer le répertoire de sauvegarde automatique
-(require 'saveplace)
-(setq-default save-place t)
+;; Button Line
+;; ----------------------------------
+;; tas de conneries qui s'affiche dans la bar du bas
 
-;; Permet de changer le dossier de backup
-(setq
-   backup-by-copying t      ; don't clobber symlinks
-   backup-directory-alist
-    '(("." . "~/.emacs.d/saved_places"))    ; don't litter my fs tree
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)       ; use versioned backups
-
-
-;; Expend
-(global-set-key (kbd "M-/") 'hippie-expand)
-
-;; Buffer list
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-
-;; Search
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
 
 ;; Batterie dans la buffer line
-;;(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
+(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
 
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
 (require 'nyan-mode)
@@ -158,33 +175,34 @@
 (setq display-time-24hr-format t display-time-day-and-date t display-time-interval 50 display-time-default-load-average nil display-time-mail-string "")
 (display-time-mode t) ;; affiche le temps
 
+;; Clean White Space
+;; ----------------------------------
 ;; Montre les Whites space inutile en fin de ligne
 ;; TODO : show uniquement dans le code ET dans les .org
-;; CORRECT FOR FIRE PLACE
 (setq-default show-trailing-whitespace t)
-;; (setq-default show-leading-whitespace t) ;; espace en fin de ligne
-;; (setq-default indicate-empty-lines t)
+(setq-default show-leading-whitespace t) ;; espace en fin de ligne
+(setq-default indicate-empty-lines t)
 
 ;; Efface automatiquement les espaces de fin de ligne a chaque save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+;; org-export stysheet
+;; ----------------------------------
 ;; Style pour l'export org-mode
-;; A l'aire de plus marcher
+;; TODO : le reset pour owncloud
 (setq org-odt-styles-file "/home/zobi8225/Dropbox/style.ott")
 
 
 ;; THEME
 ;; ----------------------------------
-
-;; TODO UTILISER LE THEME MATERIAL, voir si c'est encore nécessaire
-;; https://github.com/cpaulik/emacs-material-theme
-
 (load-theme 'material t)
 
 ;; Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
 
-;; Pour Googlé facilement une connerie
+;; Google
+;; ----------------------------------
+;; Pour Googler facilement une connerie
 (defun google ()
   "Google the selected region if any, display a query prompt otherwise."
   (interactive)
@@ -198,20 +216,11 @@
 
 
 
-;;; Youtube : (useless)
-(defun youtube ()
-  "Search YouTube with a query or region if any."
-  (interactive)
-  (browse-url
-   (concat
-    "http://www.youtube.com/results?search_query="
-    (url-hexify-string (if mark-active
-			   (buffer-substring (region-beginning) (region-end))
-                         (read-string "Search YouTube: "))))))
-(global-set-key (kbd "C-x y") 'youtube)
-
+;; Resize des fenetre dans emacs
+;; -----------------------------------------------------------------
 ;; Augmente ou diminue rapidement la taille des fenetre (C-X 2/3)
 ;; Ne marche pas dans emacs -nw :-(
+
 (global-set-key (kbd "C-s-<left>") 'shrink-window-horizontally)
 (global-set-key (kbd "C-s-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "C-s-<down>") 'shrink-window)
@@ -219,12 +228,13 @@
 
 
 ;; UTF8 Partout : Parce que c'est le turfu
+;; -----------------------------------------------------------------
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
 
-;; Terminal at your fingerprint (alt x -> ansi-term)
+;; Terminal (alt x -> ansi-term)
 ;; -----------------------------------------------------------------
 ;; Config pour avoir un terminal (ansi-term) qui soit bien
 ;; http://rawsyntax.com/blog/learn-emacs-zsh-and-multi-term/
@@ -242,11 +252,11 @@
 (global-set-key (kbd "C-c t") 'visit-term-buffer)
 ;; Permet d'éviter qu il montre les white space dans le term mais semble pas hyper bien marcher....
 
-;; TODO : Ne marche pas
-;; (add-hook 'term-mode-hook
-;;           (lambda ()
-;;             (setq show-trailing-whitespace nil)
-;; (autopair-mode -1)))
+;; Permet de ne pas voir les white space dans le term
+(add-hook 'term-mode-hook
+          (lambda ()
+            (setq show-trailing-whitespace nil)
+))
 
 
 
@@ -349,8 +359,6 @@
 (add-hook 'web-mode-hook 'my-web-mode-hook)
 
 
-
-
 ;; Markdown mode
 ;; ------------------------------------------------------------
 (autoload 'markdown-mode "markdown-mode"
@@ -370,21 +378,10 @@
 (setq exec-path (append exec-path '("/home/tlu/.local/bin")))
 
 
-
-
-;; [TEST] Which-Key
-;; ------------------------------------------------------------
-;; popup qui affiche les raccourcis clavier qu on peut faire
-(require 'which-key)
-(which-key-mode)
-(which-key-setup-side-window-right)
-(which-key-setup-minibuffer)
-
-
 ;; [TEST] Floobits
 ;; ------------------------------------------------------------
 ;; Permet de taffer à plusieurs sur un projet
-
+;; Apparement, il ne nécessite pas de d'appel dans le fichier de conf...
 
 ;; [TEST] ox-reveal
 ;; ------------------------------------------------------------
