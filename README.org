@@ -10,7 +10,7 @@
     * autoexec.cfg (CS:GO)
     * gitignore (globale, conf from : https://www.gitignore.io/)
 
-* TODO
-** rc.lua | A updater (cf attendre la version 4 de awesome WM)
-** xinitrc | A updater
-** hwinfo_short.txt | A updater
+* Need to update
+** rc.lua : A updater (cf attendre la version 4 de awesome WM)
+** xinitrc : A updater
+** hwinfo_short.txt : A updater
