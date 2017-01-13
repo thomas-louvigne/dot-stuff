@@ -5,8 +5,8 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-#ZSH_THEME="robbyrussell"
-ZSH_THEME="cypher"
+ZSH_THEME="robbyrussell"
+#ZSH_THEME="cypher"
 
 
 # Example aliases
@@ -50,13 +50,23 @@ HIST_STAMPS="dd.mm.yyyy"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git archlinux sudo github battery extract systemadmin node emacs python pyenv virtualenv)
+
+
+# User configuration
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/zobi8225/bin:/home/zobi8225/.local/bin/:"
+
+# [test] Pour pyenv
+export PATH="/home/tlu/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+
+plugins=(git archlinux sudo git battery extract systemadmin node emacs python pyenv virtualenv pip)
 
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
 
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/zobi8225/bin:/home/zobi8225/.local/bin/:"
+
 export MANPATH="/usr/local/man:$MANPATH"
 
 # Preferred editor for local and remote sessions
