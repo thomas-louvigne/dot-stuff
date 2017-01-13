@@ -175,25 +175,11 @@
 
 ;; THEME
 ;; ----------------------------------
-;; Enlève le welcome popup
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
- '(custom-enabled-themes (quote (tango-dark)))
- '(custom-safe-themes
-   (quote
-    ("98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "7997e0765add4bfcdecb5ac3ee7f64bbb03018fb1ac5597c64ccca8c88b1262f" "4904daa168519536b08ca4655d798ca0fb50d3545e6244cefcf7d0c7b338af7e" "2affb26fb9a1b9325f05f4233d08ccbba7ec6e0c99c64681895219f964aac7af" "91faf348ce7c8aa9ec8e2b3885394263da98ace3defb23f07e0ba0a76d427d46" default)))
- '(delete-trailing-lines t)
- '(inhibit-startup-screen t)
- '(package-selected-packages
-   (quote
-    (erc-colorize which-key elpy material-theme js2-mode json-mode web-mode csgo-conf-mode dired-rainbow rainbow-delimiters volume use-package rainbow-mode nyan-mode helm-ispell helm-gitignore helm-flycheck helm-firefox flyspell-popup flyspell-correct-popup company))))
+
+;; TODO UTILISER LE THEME MATERIAL, voir si c'est encore nécessaire
+;; https://github.com/cpaulik/emacs-material-theme
+
+(load-theme 'material t)
 
 ;; Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
@@ -243,6 +229,7 @@
 ;; Config pour avoir un terminal (ansi-term) qui soit bien
 ;; http://rawsyntax.com/blog/learn-emacs-zsh-and-multi-term/
 (setq multi-term-program "/bin/zsh") ;; Force l'utilisation de zsh dans le terme
+
 (defun visit-term-buffer ()
   "Create or visit a terminal buffer."
   (interactive)
@@ -254,10 +241,12 @@
     (switch-to-buffer-other-window "*ansi-term*")))
 (global-set-key (kbd "C-c t") 'visit-term-buffer)
 ;; Permet d'éviter qu il montre les white space dans le term mais semble pas hyper bien marcher....
-(add-hook 'term-mode-hook
-          (lambda ()
-            (setq show-trailing-whitespace nil)
-(autopair-mode -1)))
+
+;; TODO : Ne marche pas
+;; (add-hook 'term-mode-hook
+;;           (lambda ()
+;;             (setq show-trailing-whitespace nil)
+;; (autopair-mode -1)))
 
 
 
@@ -312,8 +301,6 @@
 ;; Rainbow délimiters
 ;; ------------------------------------------------------------
 ;; Met les parenthèses en "rainbows", très utile pour ne plus se perdre dans les parenthès
-;; TODO UTILISER LE THEME MATERIAL, voir si c'est encore nécessaire
-;; https://github.com/cpaulik/emacs-material-theme
 
 (require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
@@ -339,7 +326,7 @@
 ;; Parce que emacs à un mode pour le fichier autoexe de counf de CS:GO
 (require 'csgo-conf-mode)
 
-;; web-mode
+;; Web-mode
 ;; ------------------------------------------------------------
 ;; Mode que je trouve mieux pour le JS que js2-mode
 (require 'web-mode)
@@ -378,8 +365,11 @@
 
 (package-initialize)
 (elpy-enable)
+
 (setenv "PATH" (concat (getenv "PATH") ":/home/tlu/.local/bin")) ;; Dossier des binaires python (nottament pour flake8)
 (setq exec-path (append exec-path '("/home/tlu/.local/bin")))
+
+
 
 
 ;; [TEST] Which-Key
@@ -389,3 +379,25 @@
 (which-key-mode)
 (which-key-setup-side-window-right)
 (which-key-setup-minibuffer)
+
+
+;; [TEST] Floobits
+;; ------------------------------------------------------------
+;; Permet de taffer à plusieurs sur un projet
+
+
+;; [TEST] ox-reveal
+;; ------------------------------------------------------------
+;; Permet de faire de beau powerpoint
+(require 'ox-reveal)
+(setq org-reveal-root "file:///home/tlu/Desktop/octo/reveal.js")
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (ox-reveal which-key web-mode volume use-package rainbow-mode rainbow-delimiters nyan-mode material-theme markdown-preview-mode markdown-preview-eww json-mode js2-mode helm-ispell helm-gitignore helm-flycheck helm-firefox flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode))))
