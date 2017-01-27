@@ -47,24 +47,29 @@ HIST_STAMPS="dd.mm.yyyy"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-
 
 # User configuration
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/zobi8225/bin:/home/zobi8225/.local/bin/:"
 
-# [test] Pour pyenv
+# [Test] For virtualenv
+export WORKON_HOME=~/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+
+
+# [Test] Pour pyenv
 export PATH="/home/tlu/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 
-plugins=(git archlinux sudo git battery extract systemadmin node emacs python pyenv virtualenv pip)
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
 
+plugins=(git archlinux sudo git battery extract systemadmin node emacs python pyenv virtualenv pip common-aliases git-extras autojump)
+
+# c'est bizare de faire ca...
 source $ZSH/oh-my-zsh.sh
-
 
 
 export MANPATH="/usr/local/man:$MANPATH"
@@ -82,13 +87,14 @@ export MANPATH="/usr/local/man:$MANPATH"
 # ssh
 export SSH_KEY_PATH="~/.ssh/dsa_id"
 
+
+
 # My Export
 export ALTERNATE_EDITOR="emacs"
 export EDITOR="emacs -nw"
 export DIFFEDITCMD="emacs -diff"
 export DICTIONARY="fr-FR"
 export BROWSER="firefox"
-
 
 # My Local
 export LC_TIME="fr_FR.UTF-8"
