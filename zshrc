@@ -49,17 +49,17 @@ HIST_STAMPS="dd.mm.yyyy"
 
 
 # User configuration
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/zobi8225/bin:/home/zobi8225/.local/bin/:"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/tlu/.local/bin/:"
 
 # [Test] For virtualenv
-export WORKON_HOME=~/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+#export WORKON_HOME=~/.virtualenvs
+#export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 
 
 # [Test] Pour pyenv
-export PATH="/home/tlu/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+#export PATH="/home/tlu/.pyenv/bin:$PATH"
+#eval "$(pyenv init -)"
+#eval "$(pyenv virtualenv-init -)"
 
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
@@ -96,6 +96,9 @@ export DIFFEDITCMD="emacs -diff"
 export DICTIONARY="fr-FR"
 export BROWSER="firefox"
 
+# [TEST] pour steam-manjaro
+export LIBGL_DRI3_DISABLE=1 steam
+
 # My Local
 export LC_TIME="fr_FR.UTF-8"
 export LANG="fr_FR.UTF-8"
@@ -112,7 +115,7 @@ alias eog="gpicview"
 alias dasize="du -a * | sort -nr | head -10"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
-alias lycos="grep -nr "
+alias lycos="grep -nr --exclude-dir=venv"
 alias z="xlock;"
 alias dodo="systemctl suspend"
 alias yasu="yaourt -Syu"

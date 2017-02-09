@@ -82,7 +82,7 @@
 
 
 
-;; COMPANY
+;; COMPANY 1
 ;; -------------------------------------------------------
 ;; Nécessaire pour avoir un popup qui propose de la completion (pour le code et l'orthographe)
 
@@ -387,8 +387,8 @@
     (setq flymake-check-was-interrupted t))
 (ad-activate 'flymake-post-syntax-check)
 
-(setenv "PATH" (concat (getenv "PATH") ":/home/tlu/.local/bin")) ;; Dossier des binaires python (nottament pour flake8)
-(setq exec-path (append exec-path '("/home/tlu/.local/bin")))
+;; (setenv "PATH" (concat (getenv "PATH") ":/home/tlu/.local/bin")) ;; Dossier des binaires python (nottament pour flake8)
+;; (setq exec-path (append exec-path '("/home/tlu/.local/bin")))
 
 
 ;; DOT EMACS - Thomas Luquet
@@ -442,14 +442,16 @@
 (menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode) ;; Enlever la scrollbar
+(when (fboundp 'scroll-bar-mode) ;; Enleve la scrollbar
   (scroll-bar-mode -1))
+(setq inhibit-startup-message t) ;; Enleve le startup message
+
 
 ;; Permet de changer le répertoire de sauvegarde automatique (évite d'avoir des fichier qui trenne partout)
 (require 'saveplace)
 (setq-default save-place t)
 
-;; Permet de changer le dossier de backup
+;; [NEED TO VERIFY] Permet de changer le dossier de backup
 (setq
    backup-by-copying t      ; don't clobber symlinks
    backup-directory-alist
@@ -479,7 +481,7 @@
 ;; -------------------------------------------------------
 ;; Nécessaire pour avoir un popup qui propose de la completion (pour le code et l'orthographe)
 
-(require 'popup)
+;;(require 'popup)
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode) ;; La on dit que c'est pour tout
 
@@ -777,9 +779,32 @@
 ;; Permet de faire de beau powerpoint à partir des .org
 ;; Attention, dans le .org, il faut checker le PATH du js
 (require 'ox-reveal)
+
+
+;;Move text
+;; ------------------------------------------------------------
+;; Permet de bouger des lignes et des regions de lignes avec Meta (alt)
+(move-text-default-bindings)
+
+
+;; [Test] Multiple cursor
+;; ------------------------------------------------------------
+;; Emacs porn : http://emacsrocks.com/e13.html
+(require 'multiple-cursors)
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+;;(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+;;(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+(global-set-key (kbd "C-c e") 'mc/edit-lines)
+
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(elpy-mode-hook (quote (hl-line-mode))))
+ '(package-selected-packages
+   (quote
+    (move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-gitignore helm-flycheck helm-firefox golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel))))
