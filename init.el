@@ -82,7 +82,7 @@
 
 
 
-;; COMPANY 1
+;; COMPANY
 ;; -------------------------------------------------------
 ;; Nécessaire pour avoir un popup qui propose de la completion (pour le code et l'orthographe)
 
@@ -157,7 +157,6 @@
 
 
 
-
 ;; [TEST] Which-Key
 ;; ------------------------------------------------------------
 ;; popup qui affiche les raccourcis clavier qu on peut faire
@@ -215,25 +214,13 @@
 ;; Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
 
-;; Google
-;; ----------------------------------
-;; Pour Googler facilement une connerie
-(defun google ()
-  "Google the selected region if any, display a query prompt otherwise."
-  (interactive)
-  (browse-url
-   (concat
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
-    (url-hexify-string (if mark-active
-			   (buffer-substring (region-beginning) (region-end))
-			 (read-string "Search Google: "))))))
-(global-set-key (kbd "C-x g") 'google)
 
 
 ;; Golden resize des windows
 ;; -----------------------------------------------------------------
+;; Permet d'ajuster la taille des windows, mais ca fou un peu la gerbde...
 (require 'golden-ratio)
-(golden-ratio-mode 1)
+;;(golden-ratio-mode 1)
 
 ;; UTF8 Partout : Parce que c'est le turfu
 ;; -----------------------------------------------------------------
@@ -246,6 +233,7 @@
 ;; -----------------------------------------------------------------
 ;; Config pour avoir un terminal (ansi-term) qui soit bien
 ;; http://rawsyntax.com/blog/learn-emacs-zsh-and-multi-term/
+
 (setq multi-term-program "/bin/zsh") ;; Force l'utilisation de zsh dans le terme
 
 (defun visit-term-buffer ()
@@ -271,8 +259,6 @@
 ;; ------------------------------------------------------------
 ;; Use firefox to open urls
 (setq browse-url-browser-function 'browse-url-firefox)
-;; Use qutebrowser to open urls
-;; (setq browse-url-generic-program "qupzilla")
 
 
 ;; RAINBOW MODE
@@ -327,7 +313,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(dired-directory ((t (:inherit (default font-lock-function-name-face) :foreground "yellow" :underline nil))))
+ '(dired-directory ((t (:inherit (default font-lock-function-name-face) :foreground "green" :underline nil))))
  '(rainbow-delimiters-depth-1-face ((t (:foreground "red"))))
  '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
  '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
@@ -790,14 +776,23 @@
 ;; [Test] Multiple cursor
 ;; ------------------------------------------------------------
 ;; Emacs porn : http://emacsrocks.com/e13.html
+;; Faire marcher le truc en emacs -nw
+
 (require 'multiple-cursors)
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-;;(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-;;(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;;(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C-S-e") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
-(global-set-key (kbd "C-c e") 'mc/edit-lines)
+;;(global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
+(global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
 
+;; [Test] Neotree
+;; ------------------------------------------------------------
+;; Permet de voir le dossier dans lequel on est
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
 
 
 (custom-set-variables
@@ -807,4 +802,4 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-gitignore helm-flycheck helm-firefox golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel))))
+    (neotree pyenv-mode move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-gitignore helm-flycheck helm-firefox golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel))))
