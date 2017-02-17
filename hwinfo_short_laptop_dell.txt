@@ -1,0 +1,61 @@
+cpu:
+                       Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz, 3044 MHz
+                       Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz, 888 MHz
+                       Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz, 825 MHz
+                       Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz, 1030 MHz
+keyboard:
+  /dev/input/event0    AT Translated Set 2 keyboard
+mouse:
+  /dev/input/mice      PS/2 Generic Mouse
+  /dev/input/mice      SynPS/2 Synaptics TouchPad
+joystick:
+  /dev/input/event6    ST LIS3LV02DL Accelerometer
+monitor:
+                       LCD Monitor
+graphics card:
+                       Intel Sky Lake Integrated Graphics
+sound:
+                       Intel Audio device
+storage:
+                       Intel SATA controller
+network:
+  enp0s31f6            Intel Ethernet Connection I219-V
+  wlp2s0               Intel Wireless 8260
+network interface:
+  wlp2s0               Ethernet network interface
+  lo                   Loopback network interface
+  enp0s31f6            Ethernet network interface
+disk:
+  /dev/sda             SanDisk SD7SN6S-
+partition:
+  /dev/sda1            Partition
+  /dev/sda2            Partition
+  /dev/sda3            Partition
+usb controller:
+                       Intel USB Controller
+bios:
+                       BIOS
+bridge:
+                       Intel PCI bridge
+                       Intel Sky Lake Host Bridge/DRAM Registers
+                       Intel PCI bridge
+                       Intel ISA bridge
+hub:
+                       Linux Foundation 2.0 root hub
+                       Linux Foundation 3.0 root hub
+memory:
+                       Main Memory
+bluetooth:
+                       Intel Bluetooth Device
+unknown:
+                       FPU
+                       DMA controller
+                       PIC
+                       Keyboard controller
+                       Intel Signal processing controller
+                       Intel Signal processing controller
+                       Intel SMBus
+                       Intel Memory controller
+                       Intel Communication controller
+                       Realtek Unclassified device
+                       Chicony Electronics HP HD Camera
