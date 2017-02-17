@@ -11,5 +11,5 @@
     * gitignore (globale, conf from : https://www.gitignore.io/)
 
 * Need to update :
-  - xinitrc : A updater
-  - hwinfo_short.txt : A updater
+  - xinitrc : A updater / supprimer
+  - hwinfo_short_pc_fix_old.txt.txt : A updater
