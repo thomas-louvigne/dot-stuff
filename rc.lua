@@ -59,11 +59,11 @@ run_once({ "urxvtd", "unclutter -root" })
 -- }}}
 
 -- {{{ Variable definitions
-local chosen_theme = "powerarrow-darker"
+local chosen_theme = "powerarrow-dark"
 local modkey       = "Mod4"
 local altkey       = "Mod1"
 --local terminal     = "urxvtc" or "xterm"
-local terminal     = "sakura" or "xterm"
+local terminal     = "xfce4-terminal" or "xterm"
 local editor       = os.getenv("EDITOR") or "emacs" or "nano"
 local gui_editor   = "gvim"
 local browser      = "firefox"
