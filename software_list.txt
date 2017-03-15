@@ -1,0 +1,9 @@
+awesomewm
+htop
+emacs
+steam
+zsh
+playerctl
+spotify
+xfce4-terminal
+hunspell-fr
