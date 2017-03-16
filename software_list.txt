@@ -1,4 +1,4 @@
-awesomewm
+awesome
 htop
 emacs
 steam
@@ -9,3 +9,5 @@ xfce4-terminal
 hunspell-fr
 weechat
 openssh
+tree
+xsel
