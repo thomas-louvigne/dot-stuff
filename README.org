@@ -12,6 +12,7 @@
     * gitignore (globale, conf from : https://www.gitignore.io/)
 
 * Need to update :
+  - init.el : How to install all emacs package in one command line ?
   - xinitrc : A updater / supprimer
   - hwinfo_short_pc_fix_old.txt : A updater
 * After Install
