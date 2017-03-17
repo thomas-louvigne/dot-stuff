@@ -1,4 +1,4 @@
-awesomewm
+awesome
 htop
 emacs
 steam
@@ -7,3 +7,7 @@ playerctl
 spotify
 xfce4-terminal
 hunspell-fr
+weechat
+openssh
+tree
+xsel

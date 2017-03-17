@@ -8,8 +8,14 @@
     * xinitrc (x configuration)
     * hwinfo_short.txt (Hardware Information )
     * autoexec.cfg (CS:GO)
+    * software_list.txt ( Use with ~# pacman software_list.txt -S~ )
     * gitignore (globale, conf from : https://www.gitignore.io/)
 
 * Need to update :
+  - init.el : How to install all emacs package in one command line ?
   - xinitrc : A updater / supprimer
-  - hwinfo_short_pc_fix_old.txt.txt : A updater
+  - hwinfo_short_pc_fix_old.txt : A updater
+* After Install
+  - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh
+  - ~$ git config --global user.email "thomas@luquet.net"~
+  - ~$ git config --global user.name "Thomas Luquet"~
