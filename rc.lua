@@ -69,7 +69,7 @@ local gui_editor   = "gvim"
 local browser      = "firefox"
 
 awful.util.terminal = terminal
-awful.util.tagnames = { "web", "dev", "test", "dev2", "agenda", "music", "irc", "rambox" }
+awful.util.tagnames = { "web", "dev", "test", "dev2", "agenda", "mail", "irc", "rambox", "music", }
 awful.layout.layouts = {
    awful.layout.suit.tile,
    awful.layout.suit.tile,
@@ -576,6 +576,10 @@ awful.rules.rules = {
    -- Set Firefox to always map on the first tag on screen 1.
    { rule = { class = "Firefox" },
      properties = { screen = 1, tag = screen[1].tags[1] } },
+   { rule = { class = "nylas" },
+     properties = { screen = 1, tag = screen[1].tags[6] } },
+   { rule = { class = "rambox" },
+     properties = { screen = 1, tag = screen[1].tags[8] } },
 
    -- { rule = { class = "Gimp", role = "gimp-image-window" },
    --       properties = { maximized = true } },
