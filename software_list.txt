@@ -11,3 +11,5 @@ weechat
 openssh
 tree
 xsel
+pidgin
+purple-facebook-git
