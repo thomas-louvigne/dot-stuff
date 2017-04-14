@@ -155,17 +155,6 @@
 (add-hook 'org-mode-hook 'turn-on-flyspell) ;; Ajoute automatiquement le flysper aux fichier org
 (setq ispell-dictionary "french")
 
-
-
-;; [TEST] Which-Key
-;; ------------------------------------------------------------
-;; popup qui affiche les raccourcis clavier qu on peut faire
-(require 'which-key)
-(which-key-mode)
-(which-key-setup-side-window-right)
-;;(which-key-setup-minibuffer)
-
-
 ;; Alsa Volume manager
 ;; ----------------------------------
 ;; Permet d'afficher et de changer le volume du son du PC (très pratique)
@@ -405,7 +394,7 @@
 
 ;; Neotree
 ;; ------------------------------------------------------------
-;; Permet d'avoir une arboressance des dans lequel on est
+;; Permet d'avoir une arboressance/menu des dossiers dans lesquel on est
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 
@@ -418,7 +407,7 @@
 (defalias 'exit-tramp 'tramp-cleanup-all-buffers)
 (define-key global-map (kbd "C-c s") 'helm-tramp)
 
-;; [Test] Changer de buffer ou de windows facilement <F6>
+;; Changer de buffer ou de windows facilement <F6>
 ;; ------------------------------------------------------------
 ;; Pas hyper utile
 (defun other-window-or-switch-buffer ()
@@ -435,7 +424,39 @@ to next buffer otherwise."
 ;;
 (projectile-mode)
 
+;; [Test] Personal macro
+;; ------------------------------------------------------------
+;; TODO : Creat a function creator in python
+;; Creat #Given , #When #Then for test in python
+(fset 'givenwhenthen
+   "# Given\C-m# When\C-m# Then")
+(global-set-key (kbd "C-c g") 'givenwhenthen)
 
+;; Semble ne pas marcher
+(fset 'pythonUnitTest
+   "@pytest.mark.unit_test\C-mdef test_(self):\C-m#Given\C-m# When\C-m# Then\C-massert 2 == 2\C-m pass")
+(global-set-key (kbd "C-c u") 'givenwhenthen)
+
+
+;; [TEST] Playerctl
+;; ------------------------------------------------------------
+;; (add-to-list 'load-path "~/.emacs.d/me")
+(require 'playerctl)
+(define-key global-map (kbd "C-c C-SPC") 'playerctl-play-pause-song)
+(define-key global-map (kbd "C-c C-n") 'playerctl-next-song)
+
+
+;; Yasnippet
+;; ------------------------------------------------------------
+(add-to-list 'load-path
+              "~/.emacs.d/plugins/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
+
+
+;; [TEST] org-jira
+;; ------------------------------------------------------------
+(setq jiralib-url "https://sieaf-transverse.atlassian.net")
 
 ;; [END]
 ;; ------------------------------------------------------------
@@ -455,7 +476,7 @@ to next buffer otherwise."
  '(hl-sexp-background-color "#121212")
  '(package-selected-packages
    (quote
-    (helm-projectile projectile bonjourmadame helm-tramp lua-mode neotree pyenv-mode move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-gitignore helm-flycheck helm-firefox golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel)))
+    (playerctl org-jira package-lint ox-minutes helm-projectile projectile bonjourmadame helm-tramp lua-mode neotree pyenv-mode move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-gitignore helm-flycheck helm-firefox golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel)))
  '(pyvenv-mode t)
  '(pyvenv-tracking-ask-before-change nil)
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python")

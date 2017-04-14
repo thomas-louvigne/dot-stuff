@@ -575,11 +575,13 @@ awful.rules.rules = {
 
    -- Set Firefox to always map on the first tag on screen 1.
    { rule = { class = "Firefox" },
-     properties = { screen = 1, tag = screen[1].tags[1] } },
+     properties = { screen = 1, tag = screen[1].tags["web"] } },
    { rule = { class = "nylas" },
      properties = { screen = 1, tag = screen[1].tags[6] } },
    { rule = { class = "rambox" },
-     properties = { screen = 1, tag = screen[1].tags[8] } },
+     properties = { screen = 1, tag = screen[1].tags["rambox"] } },
+   { rule = { class = "pidgin" },
+     properties = { screen = 1, tag = screen[1].tags["irc"] } },
 
    -- { rule = { class = "Gimp", role = "gimp-image-window" },
    --       properties = { maximized = true } },

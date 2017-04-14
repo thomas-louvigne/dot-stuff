@@ -49,12 +49,12 @@ HIST_STAMPS="dd.mm.yyyy"
 
 
 # User configuration
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/tlu/.local/bin/:"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/tlu/.local/bin/:/home/tlu/.gem/ruby/2.4.0/bin:"
+export PYENV_ROOT="$HOME/.pyenv"
 
 # [Test] For virtualenv
 #export WORKON_HOME=~/.virtualenvs
 #export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-
 
 # [Test] Pour pyenv
 #export PATH="/home/tlu/.pyenv/bin:$PATH"
@@ -66,7 +66,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/tl
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 
-plugins=(git archlinux sudo git battery extract systemadmin node emacs python pyenv virtualenv pip common-aliases git-extras autojump)
+plugins=(git archlinux sudo git battery extract systemadmin node emacs python pyenv virtualenv pip common-aliases git-extras autojump vagrant)
 
 # c'est bizare de faire ca...
 source $ZSH/oh-my-zsh.sh
@@ -115,8 +115,11 @@ alias eog="gpicview"
 alias dasize="du -a * | sort -nr | head -10"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
-alias lycos="grep -nr --exclude-dir=venv"
+alias lycos="grep -nr --exclude-dir={venv,.git,.cache,__pycache__,.tmp} --exclude=\*.{pyc,#}"
 alias z="xlock;"
 alias dodo="systemctl suspend"
 alias yasu="yaourt -Syu"
 alias agenda="emacsclient -t /home/tlu/ownCloud/agenda/agenda.org"
+alias today="python2 /usr/bin/gcalcli agenda 7am 11:55pm"
+alias addcal="python2 /usr/bin/gcalcli add --calendar 'Thomas L.'"
+alias week="python2 /usr/bin/gcalcli agenda"
