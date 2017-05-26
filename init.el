@@ -46,7 +46,7 @@
 
 
 ;; Pas de menubar en haut ni de scroll bar
-(menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
+;;(menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) ;; Enlever la scrollbar
@@ -66,7 +66,6 @@
    kept-old-versions 2
    version-control t)       ; use versioned backups
 
-
 ;; Expend
 (global-set-key (kbd "M-/") 'hippie-expand)
 
@@ -80,6 +79,10 @@
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
+;; Navigate
+;; changed beacause ELPY bind M-> & M-<
+(global-set-key (kbd "<S-up>") 'beginning-of-buffer)
+(global-set-key (kbd "<S-down>") 'end-of-buffer)
 
 
 ;; COMPANY
@@ -175,7 +178,7 @@
 
 ;; Affiche l'heure dans la barre du bas
 ;; Set le buffer du de la date et du temps
-(setq display-time-24hr-format t display-time-day-and-date t display-time-interval 50 display-time-default-load-average nil display-time-mail-string "")
+;;(setq display-time-24hr-format t display-time-day-and-date t display-time-interval 50 display-time-default-load-average nil display-time-mail-string "")
 (display-time-mode t) ;; affiche le temps
 
 ;; Clean White Space
@@ -203,13 +206,6 @@
 ;; Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
 
-
-
-;; Golden resize des windows
-;; -----------------------------------------------------------------
-;; Permet d'ajuster la taille des windows, mais ca fou un peu la gerbde...
-;; (require 'golden-ratio)
-;; (golden-ratio-mode 1)
 
 ;; UTF8 Partout : Parce que c'est le turfu
 ;; -----------------------------------------------------------------
@@ -260,33 +256,33 @@
 (my-global-rainbow-mode 1)
 
 
-;; Helm
+;; [Test] Helm
 ;; ------------------------------------------------------------
-(require 'helm-config)
-(helm-mode 1)
+;; (require 'helm-config)
+;;(helm-mode 1)
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ;; Bizarie censer faire que le tab équivaut à un enter
+;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ;; Bizarie censer faire que le tab équivaut à un enter
 
-(global-set-key (kbd "C-c h") 'helm-mini)
-(global-set-key (kbd "M-x") 'helm-M-x)
+;; (global-set-key (kbd "C-c h") 'helm-mini)
+;; (global-set-key (kbd "M-x") 'helm-M-x)
 
-(global-set-key (kbd "C-x b") 'helm-buffers-list)
-;;(global-set-key (kbd "C-x m b") 'helm-bookmarks)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+;; (global-set-key (kbd "C-x b") 'helm-buffers-list)
+;; ;;(global-set-key (kbd "C-x m b") 'helm-bookmarks)
+;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
-(global-set-key (kbd "M-s") 'helm-spotify)
+;; (global-set-key (kbd "M-s") 'helm-spotify)
 
-;; Pour company
-(eval-after-load 'company
-  '(progn
-     (define-key company-mode-map (kbd "C-:") 'helm-company)
-     (define-key company-active-map (kbd "C-:") 'helm-company)))
-;; Pour le ispell (Correcteur orthographique)
-(require 'helm-ispell) ;; Pas sur de comprendre comment ca marche / a quoi ca sert
+;; ;; Pour company
+;; (eval-after-load 'company
+;;   '(progn
+;;      (define-key company-mode-map (kbd "C-:") 'helm-company)
+;;      (define-key company-active-map (kbd "C-:") 'helm-company)))
+;; ;; Pour le ispell (Correcteur orthographique)
+;; (require 'helm-ispell) ;; Pas sur de comprendre comment ca marche / a quoi ca sert
 
-;; Pour flyspell -> Check si ca marche vraiment
-(define-key flyspell-mode-map (kbd "C-;") 'helm-flyspell-correct)
+;; ;; Pour flyspell -> Check si ca marche vraiment
+;; (define-key flyspell-mode-map (kbd "C-;") 'helm-flyspell-correct)
 
 
 
@@ -424,7 +420,7 @@ to next buffer otherwise."
 ;;
 (projectile-mode)
 
-;; [Test] Personal macro
+;; Personal macro
 ;; ------------------------------------------------------------
 ;; TODO : Creat a function creator in python
 ;; Creat #Given , #When #Then for test in python
@@ -434,32 +430,80 @@ to next buffer otherwise."
 
 ;; Semble ne pas marcher
 (fset 'pythonUnitTest
-   "@pytest.mark.unit_test\C-mdef test_(self):\C-m#Given\C-m# When\C-m# Then\C-massert 2 == 2\C-m pass")
-(global-set-key (kbd "C-c u") 'givenwhenthen)
+   "\C-m@pytest.mark.unit_test\C-mdef test_(self):\C-m# Given\C-m# When\C-m# Then\C-massert 2 == 2\C-m pass")
+(global-set-key (kbd "C-c u") 'pythonUnitTest)
 
 
-;; [TEST] Playerctl
+;; Playerctl
 ;; ------------------------------------------------------------
-;; (add-to-list 'load-path "~/.emacs.d/me")
+;; Développé par moi :-)
 (require 'playerctl)
 (define-key global-map (kbd "C-c C-SPC") 'playerctl-play-pause-song)
 (define-key global-map (kbd "C-c C-n") 'playerctl-next-song)
 
-
 ;; Yasnippet
 ;; ------------------------------------------------------------
+;; Déjà Ajouté dans elpy, mais permet de créer "automatiquement" des bouts de code
 (add-to-list 'load-path
               "~/.emacs.d/plugins/yasnippet")
 (require 'yasnippet)
 (yas-global-mode 1)
 
-
-;; [TEST] org-jira
+;; [TEST] Anzu mode
 ;; ------------------------------------------------------------
-(setq jiralib-url "https://sieaf-transverse.atlassian.net")
+;; Remplace le search de base par un truc qui affiche le nombre d'occurence
+;; (Même chose avec le query-replace)
+(global-anzu-mode +1)
 
-;; [END]
+;; [TEST]
 ;; ------------------------------------------------------------
+;; Permet de montrer ce qui a changé dans git
+(global-git-gutter-mode +1)
+
+;; [TEST] Flycheck
+;; ------------------------------------------------------------
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; Flymake-coffee
+;; ------------------------------------------------------------
+;; Flymake de coffee
+;; /!\ Il faut installer coffeelint sur votre OS
+(require 'flymake-coffee)
+
+
+
+;; [TEST] Dumb-Jump
+;; ------------------------------------------------------------
+(use-package dumb-jump
+  :bind (("M-g o" . dumb-jump-go-other-window)
+         ("M-g j" . dumb-jump-go)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config (setq dumb-jump-selector 'helm)
+  :ensure)
+
+;; [TEST] Ivy
+;; ------------------------------------------------------------
+(setq ivy-use-virtual-buffers t)
+(setq ivy-count-format "(%d/%d) ")
+
+(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+
+
+;; [TEST] imenu
+;; ------------------------------------------------------------
+(imenu-list-minor-mode)
+(global-set-key (kbd "<f7>") #'imenu-list-smart-toggle)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -469,14 +513,19 @@ to next buffer otherwise."
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
    (vector "#ffffff" "#f36c60" "#8bc34a" "#fff59d" "#4dd0e1" "#b39ddb" "#81d4fa" "#262626"))
+ '(coffee-tab-width 2)
  '(custom-safe-themes
    (quote
     ("5dc0ae2d193460de979a463b907b4b2c6d2c9c4657b2e9e66b8898d2592e3de5" default)))
+ '(elpy-test-discover-runner-command (quote ("pytest" "-m" "unit_test")))
+ '(elpy-test-runner (quote elpy-test-pytest-runner))
  '(fci-rule-color "#3a3a3a")
+ '(flycheck-coffeelintrc "/home/tlu/.coffeelint.json")
  '(hl-sexp-background-color "#121212")
+ '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (playerctl org-jira package-lint ox-minutes helm-projectile projectile bonjourmadame helm-tramp lua-mode neotree pyenv-mode move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-gitignore helm-flycheck helm-firefox golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel)))
+    (imenu-list helm-spotify-plus counsel-spotify counsel-dash counsel-gtags counsel-projectile counsel dumb-jump ducpel flymake-cursor flymake-coffee coffee-fof mastodon tdd-status-mode-line git-gutter anzu playerctl org-jira package-lint ox-minutes projectile bonjourmadame lua-mode neotree pyenv-mode move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-flycheck golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel)))
  '(pyvenv-mode t)
  '(pyvenv-tracking-ask-before-change nil)
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python")
@@ -502,4 +551,12 @@ to next buffer otherwise."
      (320 . "#ff9800")
      (340 . "#fff59d")
      (360 . "#8bc34a"))))
- '(vc-annotate-very-old-color nil))
+ '(vc-annotate-very-old-color nil)
+ '(yas-buffer-local-condition (quote always))
+ '(yas-triggers-in-field t))
+(add-hook 'coffee-mode-hook 'flymake-coffee-load)
+
+
+
+;; [END]
+;; ------------------------------------------------------------
