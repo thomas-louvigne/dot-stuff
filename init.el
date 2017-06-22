@@ -1,9 +1,10 @@
-;; DOT EMACS - Thomas Luquet
+;;; Package: DOT EMACS --- Thomas Luquet
 ;; ---------------------------------------------------
+;;;Commentary:
 ;; Vous trouverez ici mon .emacs.d/init.el
 ;; Il est un peu en bordel mais commenté, n'hésitez pas à me dire vos suggestions/ conseils
 
-
+;;; Code:
 (setq user-full-name "Thomas Luquet")
 
 ;; PACKAGE Source
@@ -25,7 +26,6 @@
 
 (require 'org)
 (require 'ox)
-
 
 ;; Tricks divers
 ;; ---------------------------------------------------
@@ -66,12 +66,14 @@
    kept-old-versions 2
    version-control t)       ; use versioned backups
 
+;; Permet d'avoir une couleur differente du texte quand le texte est modifier par un autre éditeur
+(global-highlight-changes-mode t)
+
 ;; Expend
 (global-set-key (kbd "M-/") 'hippie-expand)
 
 ;; Buffer list
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-
 
 ;; Search
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
@@ -92,7 +94,6 @@
 (require 'popup)
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode) ;; La on dit que c'est pour tout
-
 
 ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
 (setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
@@ -128,7 +129,7 @@
 
 
 ;; Permet de faire comme si une tache était +barré+ dans le terminal
-;; Cela ne fonctionne malheureusement pas dans emacs -nw
+;; Cela ne fonctionne +malheureusement+ pas dans emacs -nw
 (require 'cl)   ; for delete*
 (setq org-emphasis-alist
       (cons '("+" '(:strike-through t :foreground "red"))
@@ -146,28 +147,18 @@
       (quote (("TODO" :foreground "red" :weight bold)
               ("DREAM" :foreground "yellow" :weight bold)
 	      ("SUN" :foreground "green" :weight bold)
-              ("DONE" :foreground "forest green" :weight bold)
-              ("MEETING" :foreground "forest green" :weight bold)
-              ("PHONE" :foreground "forest green" :weight bold))))
+              ("DONE" :foreground "forest green" :weight bold))))
 
-
-
-;; Correcteur orthographique / dictinnaire
+;; [TEST] Correcteur orthographique / dictinnaire
 ;; ---------------------------------------------------
-(require 'flyspell)
-(add-hook 'org-mode-hook 'turn-on-flyspell) ;; Ajoute automatiquement le flysper aux fichier org
-(setq ispell-dictionary "french")
+;; EST EN TRAIN DE PASSER à Grammacollect
+;; (require 'flyspell)
+;; (add-hook 'org-mode-hook 'turn-on-flyspell) ;; Ajoute automatiquement le flysper aux fichier org
+;; (setq ispell-dictionary "french")
 
-;; Alsa Volume manager
-;; ----------------------------------
-;; Permet d'afficher et de changer le volume du son du PC (très pratique)
-(require 'volume)
-
-
-;; Button Line
+;; Bottom Line
 ;; ----------------------------------
 ;; tas de conneries qui s'affiche dans la bar du bas
-
 
 ;; Batterie dans la buffer line
 (display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
@@ -256,36 +247,6 @@
 (my-global-rainbow-mode 1)
 
 
-;; [Test] Helm
-;; ------------------------------------------------------------
-;; (require 'helm-config)
-;;(helm-mode 1)
-
-;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ;; Bizarie censer faire que le tab équivaut à un enter
-
-;; (global-set-key (kbd "C-c h") 'helm-mini)
-;; (global-set-key (kbd "M-x") 'helm-M-x)
-
-;; (global-set-key (kbd "C-x b") 'helm-buffers-list)
-;; ;;(global-set-key (kbd "C-x m b") 'helm-bookmarks)
-;; (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
-
-;; (global-set-key (kbd "M-s") 'helm-spotify)
-
-;; ;; Pour company
-;; (eval-after-load 'company
-;;   '(progn
-;;      (define-key company-mode-map (kbd "C-:") 'helm-company)
-;;      (define-key company-active-map (kbd "C-:") 'helm-company)))
-;; ;; Pour le ispell (Correcteur orthographique)
-;; (require 'helm-ispell) ;; Pas sur de comprendre comment ca marche / a quoi ca sert
-
-;; ;; Pour flyspell -> Check si ca marche vraiment
-;; (define-key flyspell-mode-map (kbd "C-;") 'helm-flyspell-correct)
-
-
-
 ;; Rainbow délimiters
 ;; ------------------------------------------------------------
 ;; Met les parenthèses en "rainbows", très utile pour ne plus se perdre dans les parenthès
@@ -355,11 +316,6 @@
 
 (global-set-key (kbd "C-c C-s") 'elpy-rgrep-symbol)
 
-;; [TEST] Floobits
-;; ------------------------------------------------------------
-;; Permet de taffer à plusieurs sur un projet
-;; Apparement, il ne nécessite pas de d'appel dans le fichier de conf...
-
 ;; ox-reveal
 ;; ------------------------------------------------------------
 ;; Permet de faire de beau powerpoint à partir des .org
@@ -367,16 +323,17 @@
 (require 'ox-reveal)
 
 
-;;Move text
+;; Move text
 ;; ------------------------------------------------------------
-;; Permet de bouger des lignes et des regions de lignes avec Meta  (alt) + Maj + fleche haut ou bas
+;; Permet de bouger des lignes sélectionné (regions) avec  M-S ^ /
+;; Alt + Maj + fleche haut ou bas
 (move-text-default-bindings)
 
 
 ;; Multiple cursor
 ;; ------------------------------------------------------------
 ;; Emacs porn : http://emacsrocks.com/e13.html
-;; Faire marcher le truc en emacs -nw
+;; A pas encore bien compris comment utiliser les "like this"
 
 (require 'multiple-cursors)
 
@@ -394,7 +351,6 @@
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 
-
 ;; [Test] Tramp
 ;; ------------------------------------------------------------
 ;; Permet de se connecter en ssh depuis emacs
@@ -403,7 +359,7 @@
 (defalias 'exit-tramp 'tramp-cleanup-all-buffers)
 (define-key global-map (kbd "C-c s") 'helm-tramp)
 
-;; Changer de buffer ou de windows facilement <F6>
+;; Changer de buffer ou de windows facilement <F5>
 ;; ------------------------------------------------------------
 ;; Pas hyper utile
 (defun other-window-or-switch-buffer ()
@@ -413,7 +369,8 @@ to next buffer otherwise."
   (if (one-window-p)
       (switch-to-buffer nil)
     (other-window 1)))
-(global-set-key (kbd "<f6>") #'other-window-or-switch-buffer)
+(global-set-key (kbd "<f5>") #'other-window-or-switch-buffer)
+(global-set-key (kbd "<f6>") #'delete-window)
 
 ;; [Test] Projectile
 ;; ------------------------------------------------------------
@@ -449,13 +406,13 @@ to next buffer otherwise."
 (require 'yasnippet)
 (yas-global-mode 1)
 
-;; [TEST] Anzu mode
+;; Anzu mode
 ;; ------------------------------------------------------------
 ;; Remplace le search de base par un truc qui affiche le nombre d'occurence
 ;; (Même chose avec le query-replace)
 (global-anzu-mode +1)
 
-;; [TEST]
+;; Gutter
 ;; ------------------------------------------------------------
 ;; Permet de montrer ce qui a changé dans git
 (global-git-gutter-mode +1)
@@ -472,18 +429,20 @@ to next buffer otherwise."
 
 
 
-;; [TEST] Dumb-Jump
+;; Dumb-Jump
 ;; ------------------------------------------------------------
+;; Permet d'aller directement à la définition de la fonction
+;; Supprort quasiment tout les language
 (use-package dumb-jump
   :bind (("M-g o" . dumb-jump-go-other-window)
          ("M-g j" . dumb-jump-go)
          ("M-g i" . dumb-jump-go-prompt)
          ("M-g x" . dumb-jump-go-prefer-external)
          ("M-g z" . dumb-jump-go-prefer-external-other-window))
-  :config (setq dumb-jump-selector 'helm)
+  :config (setq dumb-jump-selector 'ivy)
   :ensure)
 
-;; [TEST] Ivy
+;; Ivy
 ;; ------------------------------------------------------------
 (setq ivy-use-virtual-buffers t)
 (setq ivy-count-format "(%d/%d) ")
@@ -500,9 +459,14 @@ to next buffer otherwise."
 
 ;; [TEST] imenu
 ;; ------------------------------------------------------------
+;; Permet d'avoir un menu avec les class / methodes du buffer
 (imenu-list-minor-mode)
 (global-set-key (kbd "<f7>") #'imenu-list-smart-toggle)
 
+
+;; [TEST] Test grammalecte
+;; ------------------------------------------------------------
+(load-file "/home/tlu/.emacs.d/me/flycheck-grammalecte/flycheck-grammalecte.el")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -519,44 +483,18 @@ to next buffer otherwise."
     ("5dc0ae2d193460de979a463b907b4b2c6d2c9c4657b2e9e66b8898d2592e3de5" default)))
  '(elpy-test-discover-runner-command (quote ("pytest" "-m" "unit_test")))
  '(elpy-test-runner (quote elpy-test-pytest-runner))
- '(fci-rule-color "#3a3a3a")
  '(flycheck-coffeelintrc "/home/tlu/.coffeelint.json")
  '(hl-sexp-background-color "#121212")
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (imenu-list helm-spotify-plus counsel-spotify counsel-dash counsel-gtags counsel-projectile counsel dumb-jump ducpel flymake-cursor flymake-coffee coffee-fof mastodon tdd-status-mode-line git-gutter anzu playerctl org-jira package-lint ox-minutes projectile bonjourmadame lua-mode neotree pyenv-mode move-text camcorder which-key web-mode volume use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize helm-ispell helm-flycheck golden-ratio flyspell-popup flyspell-correct-popup floobits flappymacs erc-colorize elpy dired-rainbow csgo-conf-mode coffee-mode babel)))
+    (imenu-list  counsel-spotify counsel-dash counsel-gtags counsel-projectile counsel dumb-jump ducpel flymake-cursor flymake-coffee coffee-fof git-gutter anzu playerctl org-jira package-lint ox-minutes projectile lua-mode neotree pyenv-mode move-text camcorder web-mode use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize flyspell-popup flyspell-correct-popup elpy dired-rainbow csgo-conf-mode coffee-mode babel)))
  '(pyvenv-mode t)
  '(pyvenv-tracking-ask-before-change nil)
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python")
  '(pyvenv-workon t)
- '(vc-annotate-background nil)
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#f36c60")
-     (40 . "#ff9800")
-     (60 . "#fff59d")
-     (80 . "#8bc34a")
-     (100 . "#81d4fa")
-     (120 . "#4dd0e1")
-     (140 . "#b39ddb")
-     (160 . "#f36c60")
-     (180 . "#ff9800")
-     (200 . "#fff59d")
-     (220 . "#8bc34a")
-     (240 . "#81d4fa")
-     (260 . "#4dd0e1")
-     (280 . "#b39ddb")
-     (300 . "#f36c60")
-     (320 . "#ff9800")
-     (340 . "#fff59d")
-     (360 . "#8bc34a"))))
- '(vc-annotate-very-old-color nil)
  '(yas-buffer-local-condition (quote always))
  '(yas-triggers-in-field t))
 (add-hook 'coffee-mode-hook 'flymake-coffee-load)
 
-
-
-;; [END]
-;; ------------------------------------------------------------
+;;; [END]
