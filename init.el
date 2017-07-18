@@ -13,7 +13,6 @@
 
 (require 'package)
 (setq package-archives '(
-                         ("ELPA" . "http://tromey.com/elpa/")
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
 			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
@@ -23,6 +22,7 @@
 (package-initialize)
 (setq url-http-attempt-keepalives nil)
 
+(setq use-package-always-ensure t)
 
 (require 'org)
 (require 'ox)
@@ -37,8 +37,6 @@
 ;; Pour avoir les parenthese coloré automatiquement
 (show-paren-mode 1)
 
-;; Pour pouvoir commenter une region
-(global-set-key (kbd "C-C C-C") 'comment-dwim)
 
 ;; Pour avoir le numéro de la ligne à gauche
 (global-linum-mode 1);; active le mode
@@ -67,7 +65,7 @@
    version-control t)       ; use versioned backups
 
 ;; Permet d'avoir une couleur differente du texte quand le texte est modifier par un autre éditeur
-(global-highlight-changes-mode t)
+;;(global-highlight-changes-mode t)
 
 ;; Expend
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -87,38 +85,38 @@
 (global-set-key (kbd "<S-down>") 'end-of-buffer)
 
 
-;; COMPANY
+;; [TEST] COMPANY
 ;; -------------------------------------------------------
 ;; Nécessaire pour avoir un popup qui propose de la completion (pour le code et l'orthographe)
-
-(require 'popup)
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode) ;; La on dit que c'est pour tout
+;; Re - TEST
+;;(require 'popup)
+;;(require 'company)
+(add-hook 'after-init-hook 'global-company-mode) ;; Là on dit que c'est pour tout
 
 ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
 (setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
 
 ;; "text-mode" is a major mode for editing files of text in a human language"
 ;; most major modes for non-programmers inherit from text-mode
-(defun text-mode-hook-setup ()
-  ;; make `company-backends' local is critcal
-  ;; or else, you will have completion in every major mode, that's very annoying!
-  (make-local-variable 'company-backends)
+;; (defun text-mode-hook-setup ()
+;;   ;; make `company-backends' local is critcal
+;;   ;; or else, you will have completion in every major mode, that's very annoying!
+;;   (make-local-variable 'company-backends)
 
-  ;; company-ispell is the plugin to complete words
-  (add-to-list 'company-backends 'company-ispell) )
+;;   ;; company-ispell is the plugin to complete words
+;;   (add-to-list 'company-backends 'company-ispell) )
 
-(add-hook 'text-mode-hook 'text-mode-hook-setup)
+;; (add-hook 'text-mode-hook 'text-mode-hook-setup)
 
-(defun toggle-company-ispell ()
-  (interactive)
-  (cond
-   ((memq 'company-ispell company-backends)
-    (setq company-backends (delete 'company-ispell company-backends))
-    (message "company-ispell disabled"))
-   (t
-    (add-to-list 'company-backends 'company-ispell)
-    (message "company-ispell enabled!"))))
+;; (defun toggle-company-ispell ()
+;;   (interactive)
+;;   (cond
+;;    ((memq 'company-ispell company-backends)
+;;     (setq company-backends (delete 'company-ispell company-backends))
+;;     (message "company-ispell disabled"))
+;;    (t
+;;     (add-to-list 'company-backends 'company-ispell)
+;;     (message "company-ispell enabled!"))))
 
 
 ;; Org Mode
@@ -130,14 +128,13 @@
 
 ;; Permet de faire comme si une tache était +barré+ dans le terminal
 ;; Cela ne fonctionne +malheureusement+ pas dans emacs -nw
-(require 'cl)   ; for delete*
-(setq org-emphasis-alist
-      (cons '("+" '(:strike-through t :foreground "red"))
-	    (delete* "+" org-emphasis-alist :key 'car :test 'equal)))
+;; (require 'cl)   ; for delete*
+;; (setq org-emphasis-alist
+;;       (cons '("+" '(:strike-through t :foreground "blue"))
+;; 	    (delete* "+" org-emphasis-alist :key 'car :test 'equal)))
 
 (setq org-todo-keywords
       '((sequence "TODO" "DOOING" "DONE")))
-
 
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "DREAM(d)" "SUN(s)" "|" "DONE(d)")
@@ -167,9 +164,11 @@
 (require 'nyan-mode)
 (nyan-mode t)
 
+;; permet Pas écrire dans le prompt du mini buffer
+(setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
+
 ;; Affiche l'heure dans la barre du bas
 ;; Set le buffer du de la date et du temps
-;;(setq display-time-24hr-format t display-time-day-and-date t display-time-interval 50 display-time-default-load-average nil display-time-mail-string "")
 (display-time-mode t) ;; affiche le temps
 
 ;; Clean White Space
@@ -192,11 +191,7 @@
 
 ;; THEME
 ;; ----------------------------------
-(load-theme 'material t)
-
-;; Pas écrire dans le prompt du mini buffer
-(setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
-
+ (load-theme 'material t)
 
 ;; UTF8 Partout : Parce que c'est le turfu
 ;; -----------------------------------------------------------------
@@ -240,8 +235,8 @@
 ;; RAINBOW MODE
 ;; ------------------------------------------------------------
 ;; So Many Color ! #0000ff #ffffff #ff0000 (Et vive la france !)
-(require 'rainbow-mode)
-;; Pour le mettre en global :
+;; (require 'rainbow-mode)
+;; ;; Pour le mettre en global :
 (define-globalized-minor-mode my-global-rainbow-mode rainbow-mode
   (lambda () (rainbow-mode 1)))
 (my-global-rainbow-mode 1)
@@ -251,7 +246,7 @@
 ;; ------------------------------------------------------------
 ;; Met les parenthèses en "rainbows", très utile pour ne plus se perdre dans les parenthès
 
-(require 'rainbow-delimiters)
+;;(require 'rainbow-delimiters)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 (custom-set-faces
@@ -351,14 +346,6 @@
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
 
-;; [Test] Tramp
-;; ------------------------------------------------------------
-;; Permet de se connecter en ssh depuis emacs
-(require 'tramp)
-(setq tramp-default-method "ssh")
-(defalias 'exit-tramp 'tramp-cleanup-all-buffers)
-(define-key global-map (kbd "C-c s") 'helm-tramp)
-
 ;; Changer de buffer ou de windows facilement <F5>
 ;; ------------------------------------------------------------
 ;; Pas hyper utile
@@ -375,7 +362,7 @@ to next buffer otherwise."
 ;; [Test] Projectile
 ;; ------------------------------------------------------------
 ;;
-(projectile-mode)
+;; (projectile-mode)
 
 ;; Personal macro
 ;; ------------------------------------------------------------
@@ -406,18 +393,12 @@ to next buffer otherwise."
 (require 'yasnippet)
 (yas-global-mode 1)
 
-;; Anzu mode
-;; ------------------------------------------------------------
-;; Remplace le search de base par un truc qui affiche le nombre d'occurence
-;; (Même chose avec le query-replace)
-(global-anzu-mode +1)
-
 ;; Gutter
 ;; ------------------------------------------------------------
 ;; Permet de montrer ce qui a changé dans git
 (global-git-gutter-mode +1)
 
-;; [TEST] Flycheck
+;; Flycheck
 ;; ------------------------------------------------------------
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
@@ -426,6 +407,32 @@ to next buffer otherwise."
 ;; Flymake de coffee
 ;; /!\ Il faut installer coffeelint sur votre OS
 (require 'flymake-coffee)
+
+;; Ivy
+;; ------------------------------------------------------------
+(setq ivy-use-virtual-buffers t)
+(setq ivy-count-format "(%d/%d) ")
+
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+;;(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+;;(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+
 
 
 
@@ -442,22 +449,8 @@ to next buffer otherwise."
   :config (setq dumb-jump-selector 'ivy)
   :ensure)
 
-;; Ivy
-;; ------------------------------------------------------------
-(setq ivy-use-virtual-buffers t)
-(setq ivy-count-format "(%d/%d) ")
 
-(global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-
-
-;; [TEST] imenu
+;; Imenu-list
 ;; ------------------------------------------------------------
 ;; Permet d'avoir un menu avec les class / methodes du buffer
 (imenu-list-minor-mode)
@@ -466,35 +459,47 @@ to next buffer otherwise."
 
 ;; [TEST] Test grammalecte
 ;; ------------------------------------------------------------
-(load-file "/home/tlu/.emacs.d/me/flycheck-grammalecte/flycheck-grammalecte.el")
+;; Y a encore plein de trucs a travailler
+;; (load-file "/home/tlu/.emacs.d/me/flycheck-grammalecte/flycheck-grammalecte.el")
+
+;; [TEST] Editor Config
+;; ------------------------------------------------------------
+;; (use-package editorconfig
+;;   :ensure t
+;;   :config
+;;   (editorconfig-mode 1))
+
+;; [TEST] Pomodori
+;; ------------------------------------------------------------
+(global-set-key (kbd "<f12>") #'pomidor)
+(setq alert-default-style 'libnotify)
+(setq pomidor-sound-tick nil
+      pomidor-sound-tack nil
+      )
+
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars)
+;; End:
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default bold shadow italic underline bold bold-italic bold])
- '(ansi-color-names-vector
-   (vector "#ffffff" "#f36c60" "#8bc34a" "#fff59d" "#4dd0e1" "#b39ddb" "#81d4fa" "#262626"))
  '(coffee-tab-width 2)
- '(custom-safe-themes
-   (quote
-    ("5dc0ae2d193460de979a463b907b4b2c6d2c9c4657b2e9e66b8898d2592e3de5" default)))
+ '(custom-enabled-themes (quote (wombat)))
  '(elpy-test-discover-runner-command (quote ("pytest" "-m" "unit_test")))
  '(elpy-test-runner (quote elpy-test-pytest-runner))
  '(flycheck-coffeelintrc "/home/tlu/.coffeelint.json")
- '(hl-sexp-background-color "#121212")
+ '(font-use-system-font t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (imenu-list  counsel-spotify counsel-dash counsel-gtags counsel-projectile counsel dumb-jump ducpel flymake-cursor flymake-coffee coffee-fof git-gutter anzu playerctl org-jira package-lint ox-minutes projectile lua-mode neotree pyenv-mode move-text camcorder web-mode use-package rainbow-mode rainbow-delimiters ox-reveal ox-html5slide nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode js2-mode htmlize flyspell-popup flyspell-correct-popup elpy dired-rainbow csgo-conf-mode coffee-mode babel)))
+    (flymake-json flycheck counsel-dash counsel-gtags counsel-projectile counsel dumb-jump ducpel flymake-cursor flymake-coffee coffee-fof git-gutter anzu playerctl org-jira package-lint ox-minutes projectile lua-mode neotree pyenv-mode move-text camcorder web-mode use-package rainbow-mode rainbow-delimiters ox-reveal nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup elpy dired-rainbow csgo-conf-mode coffee-mode)))
  '(pyvenv-mode t)
  '(pyvenv-tracking-ask-before-change nil)
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python")
  '(pyvenv-workon t)
- '(yas-buffer-local-condition (quote always))
- '(yas-triggers-in-field t))
 (add-hook 'coffee-mode-hook 'flymake-coffee-load)
 
 ;;; [END]
