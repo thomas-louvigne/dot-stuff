@@ -11,3 +11,4 @@ weechat
 openssh
 tree
 xsel
+the_silver_searcher
