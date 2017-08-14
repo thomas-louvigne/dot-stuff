@@ -1,9 +1,8 @@
-;;; Package: DOT EMACS --- Thomas Luquet
-;; ---------------------------------------------------
-;;;Commentary:
+;;; dot-emacs --- Thomas Luquet
+;;
 ;; Vous trouverez ici mon .emacs.d/init.el
 ;; Il est un peu en bordel mais commenté, n'hésitez pas à me dire vos suggestions/ conseils
-
+(setq debug-on-error  t)
 ;;; Code:
 (setq user-full-name "Thomas Luquet")
 
@@ -15,9 +14,9 @@
 (setq package-archives '(
                          ("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "http://melpa.org/packages/")
-			 ("elpy" . "https://jorgenschaefer.github.io/packages/")
 			 )
       )
+
 
 (package-initialize)
 (setq url-http-attempt-keepalives nil)
@@ -37,10 +36,13 @@
 ;; Pour avoir les parenthese coloré automatiquement
 (show-paren-mode 1)
 
-
 ;; Pour avoir le numéro de la ligne à gauche
 (global-linum-mode 1);; active le mode
 (setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
+
+;; [Test] a garder pour qd on passera en emacs 26
+(when (version<= "26.0.50" emacs-version )
+  (global-display-line-numbers-mode))
 
 
 ;; Pas de menubar en haut ni de scroll bar
@@ -87,37 +89,12 @@
 
 ;; [TEST] COMPANY
 ;; -------------------------------------------------------
-;; Nécessaire pour avoir un popup qui propose de la completion (pour le code et l'orthographe)
-;; Re - TEST
 ;;(require 'popup)
 ;;(require 'company)
 (add-hook 'after-init-hook 'global-company-mode) ;; Là on dit que c'est pour tout
 
 ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
 (setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
-
-;; "text-mode" is a major mode for editing files of text in a human language"
-;; most major modes for non-programmers inherit from text-mode
-;; (defun text-mode-hook-setup ()
-;;   ;; make `company-backends' local is critcal
-;;   ;; or else, you will have completion in every major mode, that's very annoying!
-;;   (make-local-variable 'company-backends)
-
-;;   ;; company-ispell is the plugin to complete words
-;;   (add-to-list 'company-backends 'company-ispell) )
-
-;; (add-hook 'text-mode-hook 'text-mode-hook-setup)
-
-;; (defun toggle-company-ispell ()
-;;   (interactive)
-;;   (cond
-;;    ((memq 'company-ispell company-backends)
-;;     (setq company-backends (delete 'company-ispell company-backends))
-;;     (message "company-ispell disabled"))
-;;    (t
-;;     (add-to-list 'company-backends 'company-ispell)
-;;     (message "company-ispell enabled!"))))
-
 
 ;; Org Mode
 ;; ---------------------------------------------------
@@ -158,10 +135,10 @@
 ;; tas de conneries qui s'affiche dans la bar du bas
 
 ;; Batterie dans la buffer line
-(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
+;; (display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
 
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
-(require 'nyan-mode)
+;;(require 'nyan-mode)
 (nyan-mode t)
 
 ;; permet Pas écrire dans le prompt du mini buffer
@@ -169,9 +146,9 @@
 
 ;; Affiche l'heure dans la barre du bas
 ;; Set le buffer du de la date et du temps
-(display-time-mode t) ;; affiche le temps
+;; (display-time-mode t) ;; affiche le temps
 
-;; Clean White Space
+;; Clean White Space (Trailing whitespace)
 ;; ----------------------------------
 ;; Montre les Whites space inutile en fin de ligne
 ;; TODO : show uniquement dans le code ET dans les .org
@@ -191,7 +168,9 @@
 
 ;; THEME
 ;; ----------------------------------
- (load-theme 'material t)
+;; (setq sml/no-confirm-load-theme t)
+(load-theme 'zenburn t)
+;; (load-theme 'dracula t)
 
 ;; UTF8 Partout : Parce que c'est le turfu
 ;; -----------------------------------------------------------------
@@ -225,6 +204,12 @@
             (setq show-trailing-whitespace nil)
 ))
 
+;; Imenu-list
+;; ------------------------------------------------------------
+;; Permet d'avoir un menu avec les class / methodes du buffer
+(imenu-list-minor-mode t)
+(global-set-key (kbd "<f8>") #'imenu-list-smart-toggle)
+
 
 ;; Open URL dans emacs
 ;; ------------------------------------------------------------
@@ -254,7 +239,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(dired-directory ((t (:inherit (default font-lock-function-name-face) :foreground "green" :underline nil))))
  '(rainbow-delimiters-depth-1-face ((t (:foreground "pink"))))
  '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
  '(rainbow-delimiters-depth-3-face ((t (:foreground "#FFFF00"))))
@@ -286,10 +270,11 @@
 
 ;; adjust indents for web-mode to 2 spaces
 (defun my-web-mode-hook ()
-  "Hooks for Web mode. Adjust indents"
+  "Hooks for Web mode. Adjust indent."
   ;;; http://web-mode.org/
   (setq web-mode-markup-indent-offset 2)
   (setq web-mode-css-indent-offset 2)
+  (setq web-mode-json-indent-offset 2)
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook 'my-web-mode-hook)
 
@@ -300,16 +285,6 @@
 "Major mode for editing Markdown files" t)
 (add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
-
-;; [TEST] Elpy
-;; ------------------------------------------------------------
-;; Truc qui gère tout python, mais demande pas mal d'autres trucs à installer
-;; Checker : https://github.com/jorgenschaefer/elpy
-;;(package-initialize)
-(elpy-enable)
-(defalias 'workon 'pyvenv-workon)
-
-(global-set-key (kbd "C-c C-s") 'elpy-rgrep-symbol)
 
 ;; ox-reveal
 ;; ------------------------------------------------------------
@@ -333,50 +308,65 @@
 (require 'multiple-cursors)
 
 ;; (global-set-key (kbd "C-S-e") 'mc/edit-lines)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 ;;(global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
 (global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
 
-;; Neotree
+;; Changer de buffer ou de windows facilement <F5> / <f6 , <f7>>
 ;; ------------------------------------------------------------
-;; Permet d'avoir une arboressance/menu des dossiers dans lesquel on est
-(require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
-
-;; Changer de buffer ou de windows facilement <F5>
-;; ------------------------------------------------------------
-;; Pas hyper utile
 (defun other-window-or-switch-buffer ()
-  "Call `other-window' if more than one window is visible, switch
-to next buffer otherwise."
+  "Call `other-window' if more than one window is visible, switch to next buffer otherwise."
   (interactive)
   (if (one-window-p)
       (switch-to-buffer nil)
     (other-window 1)))
-(global-set-key (kbd "<f5>") #'other-window-or-switch-buffer)
-(global-set-key (kbd "<f6>") #'delete-window)
 
-;; [Test] Projectile
+(global-set-key (kbd "<f5>") #'split-window-right)
+(global-set-key (kbd "<f6>") #'other-window-or-switch-buffer)
+(global-set-key (kbd "<f7>") #'delete-window)
+
+
+;; [Test] Back to Helm
+;; ------------------------------------------------------------
+;;(require 'helm-config)
+(helm-mode 1)
+(global-set-key (kbd "M-x") #'helm-M-x)
+(global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+(global-set-key (kbd "C-x C-f") #'helm-find-files)
+
+;; Helm-ag
+(custom-set-variables
+ '(helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
+ '(helm-ag-command-option "--all-text")
+ '(helm-ag-insert-at-point 'symbol) ;; LA FONCTION LA PLUS UTILE DU MONDE
+ '(helm-ag-ignore-buffer-patterns '("\\.txt\\'" "\\.mkd\\'")))
+
+
+;; Projectile
 ;; ------------------------------------------------------------
 ;;
-;; (projectile-mode)
+(projectile-mode)
+;;(counsel-projectile-on)
+(helm-projectile-on)
 
-;; Personal macro
-;; ------------------------------------------------------------
-;; TODO : Creat a function creator in python
-;; Creat #Given , #When #Then for test in python
-(fset 'givenwhenthen
-   "# Given\C-m# When\C-m# Then")
-(global-set-key (kbd "C-c g") 'givenwhenthen)
 
-;; Semble ne pas marcher
-(fset 'pythonUnitTest
-   "\C-m@pytest.mark.unit_test\C-mdef test_(self):\C-m# Given\C-m# When\C-m# Then\C-massert 2 == 2\C-m pass")
-(global-set-key (kbd "C-c u") 'pythonUnitTest)
-
+(use-package projectile
+  :init (progn
+          (projectile-global-mode)
+          (setq projectile-enable-caching t)
+          (setq projectile-ignored-directories  '("node" "_output"))
+          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "pkg" "bin") )
+          )
+  :bind (
+         ("<f1>" . helm-projectile-switch-project) ;; Change le projet de travail
+	 ("<f2>" . helm-projectile)  ;; Cherche un fichier
+         ("<f3>" . helm-projectile-ag) ;; Sorte de grep
+	 ("<f4>" . helm-projectile-switch-to-buffer) ;; Switch entre les buffer
+         )
+:ensure t)
 
 ;; Playerctl
 ;; ------------------------------------------------------------
@@ -384,98 +374,85 @@ to next buffer otherwise."
 (require 'playerctl)
 (define-key global-map (kbd "C-c C-SPC") 'playerctl-play-pause-song)
 (define-key global-map (kbd "C-c C-n") 'playerctl-next-song)
+(define-key global-map (kbd "C-c C-p") 'playerctl-previous-song)
 
 ;; Yasnippet
 ;; ------------------------------------------------------------
 ;; Déjà Ajouté dans elpy, mais permet de créer "automatiquement" des bouts de code
-(add-to-list 'load-path
-              "~/.emacs.d/plugins/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
+;; (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
+;; (require 'yasnippet)
+;;(yas-global-mode 1)
 
-;; Gutter
+;; [Test qd on l'enleve] Gutter
 ;; ------------------------------------------------------------
 ;; Permet de montrer ce qui a changé dans git
-(global-git-gutter-mode +1)
+(global-git-gutter-mode t)
 
 ;; Flycheck
 ;; ------------------------------------------------------------
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; Flymake-coffee
-;; ------------------------------------------------------------
-;; Flymake de coffee
-;; /!\ Il faut installer coffeelint sur votre OS
-(require 'flymake-coffee)
 
 ;; Ivy
 ;; ------------------------------------------------------------
-(setq ivy-use-virtual-buffers t)
-(setq ivy-count-format "(%d/%d) ")
+;; ;; A remplacer par helm
+;; (setq ivy-use-virtual-buffers t)
+;; (setq ivy-count-format "(%d/%d) ")
 
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(global-set-key "\C-s" 'swiper)
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
-;;(global-set-key (kbd "<f6>") 'ivy-resume)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "C-c g") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(global-set-key (kbd "C-x l") 'counsel-locate)
-;;(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+;; (ivy-mode 1)
+;; (setq ivy-use-virtual-buffers t)
+;; (setq enable-recursive-minibuffers t)
+;; (global-set-key "\C-s" 'swiper)
+;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+
+;; (global-set-key (kbd "M-x") 'counsel-M-x)
+;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;; (global-set-key (kbd "C-c g") 'counsel-git)
+;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;; (global-set-key (kbd "C-c k") 'counsel-ag)
+;; (global-set-key (kbd "C-x l") 'counsel-locate)
+;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
 
 
-
-
-;; Dumb-Jump
+;; [REMAPER] Dumb-Jump
 ;; ------------------------------------------------------------
 ;; Permet d'aller directement à la définition de la fonction
 ;; Supprort quasiment tout les language
+;; -> uselss avec ivy / projectile / ag
 (use-package dumb-jump
   :bind (("M-g o" . dumb-jump-go-other-window)
          ("M-g j" . dumb-jump-go)
          ("M-g i" . dumb-jump-go-prompt)
          ("M-g x" . dumb-jump-go-prefer-external)
          ("M-g z" . dumb-jump-go-prefer-external-other-window))
-  :config (setq dumb-jump-selector 'ivy)
+
   :ensure)
-
-
-;; Imenu-list
-;; ------------------------------------------------------------
-;; Permet d'avoir un menu avec les class / methodes du buffer
-(imenu-list-minor-mode)
-(global-set-key (kbd "<f7>") #'imenu-list-smart-toggle)
-
+;;   :config (setq dumb-jump-selector 'ivy)
 
 ;; [TEST] Test grammalecte
 ;; ------------------------------------------------------------
 ;; Y a encore plein de trucs a travailler
 ;; (load-file "/home/tlu/.emacs.d/me/flycheck-grammalecte/flycheck-grammalecte.el")
 
-;; [TEST] Editor Config
-;; ------------------------------------------------------------
-;; (use-package editorconfig
-;;   :ensure t
-;;   :config
-;;   (editorconfig-mode 1))
 
 ;; [TEST] Pomodori
 ;; ------------------------------------------------------------
 (global-set-key (kbd "<f12>") #'pomidor)
 (setq alert-default-style 'libnotify)
 (setq pomidor-sound-tick nil
-      pomidor-sound-tack nil
-      )
+      pomidor-sound-tack nil)
+
+;; [Test] Magit
+;; ------------------------------------------------------------
+(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+
+;; [TEST] Anaconda-mode
+;; ------------------------------------------------------------
+;; Mode pour python en remplacement de elpy
+(add-hook 'python-mode-hook 'anaconda-mode)
+(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+(remove-hook 'anaconda-mode-response-read-fail-hook
+	     'anaconda-mode-show-unreadable-response)
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars)
@@ -486,20 +463,9 @@ to next buffer otherwise."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(coffee-tab-width 2)
- '(custom-enabled-themes (quote (wombat)))
- '(elpy-test-discover-runner-command (quote ("pytest" "-m" "unit_test")))
- '(elpy-test-runner (quote elpy-test-pytest-runner))
- '(flycheck-coffeelintrc "/home/tlu/.coffeelint.json")
  '(font-use-system-font t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (flymake-json flycheck counsel-dash counsel-gtags counsel-projectile counsel dumb-jump ducpel flymake-cursor flymake-coffee coffee-fof git-gutter anzu playerctl org-jira package-lint ox-minutes projectile lua-mode neotree pyenv-mode move-text camcorder web-mode use-package rainbow-mode rainbow-delimiters ox-reveal nyan-mode multiple-cursors material-theme markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup elpy dired-rainbow csgo-conf-mode coffee-mode)))
- '(pyvenv-mode t)
- '(pyvenv-tracking-ask-before-change nil)
- '(pyvenv-virtualenvwrapper-python "/usr/bin/python")
- '(pyvenv-workon t)
-(add-hook 'coffee-mode-hook 'flymake-coffee-load)
-
+    (helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck dumb-jump flymake-cursor flymake-coffee git-gutter playerctl org-jira package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-mode rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode coffee-mode))))
 ;;; [END]
