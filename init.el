@@ -37,8 +37,8 @@
 (show-paren-mode 1)
 
 ;; Pour avoir le numéro de la ligne à gauche
-(global-linum-mode 1);; active le mode
-(setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
+;; (global-linum-mode 1);; active le mode
+;; (setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
 
 ;; [Test] a garder pour qd on passera en emacs 26
 (when (version<= "26.0.50" emacs-version )
@@ -117,11 +117,11 @@
       (quote ((sequence "TODO(t)" "DREAM(d)" "SUN(s)" "|" "DONE(d)")
               (sequence  "PHONE" "MEETING"))))
 
-(setq org-todo-keyword-faces
-      (quote (("TODO" :foreground "red" :weight bold)
-              ("DREAM" :foreground "yellow" :weight bold)
-	      ("SUN" :foreground "green" :weight bold)
-              ("DONE" :foreground "forest green" :weight bold))))
+;; (setq org-todo-keyword-faces
+;;       (quote (("TODO" :foreground "red" :weight bold)
+;;               ("DREAM" :foreground "yellow" :weight bold)
+;; 	      ("SUN" :foreground "green" :weight bold)
+;;               ("DONE" :foreground "forest green" :weight bold))))
 
 ;; [TEST] Correcteur orthographique / dictinnaire
 ;; ---------------------------------------------------
@@ -217,14 +217,14 @@
 (setq browse-url-browser-function 'browse-url-firefox)
 
 
-;; RAINBOW MODE
+;; [Fait foirer les couleur dans magit] RAINBOW MODE
 ;; ------------------------------------------------------------
 ;; So Many Color ! #0000ff #ffffff #ff0000 (Et vive la france !)
 ;; (require 'rainbow-mode)
 ;; ;; Pour le mettre en global :
-(define-globalized-minor-mode my-global-rainbow-mode rainbow-mode
-  (lambda () (rainbow-mode 1)))
-(my-global-rainbow-mode 1)
+;; (define-globalized-minor-mode my-global-rainbow-mode rainbow-mode
+;;   (lambda () (rainbow-mode 1)))
+;; (my-global-rainbow-mode 1)
 
 
 ;; Rainbow délimiters
@@ -306,13 +306,6 @@
 ;; A pas encore bien compris comment utiliser les "like this"
 
 (require 'multiple-cursors)
-
-;; (global-set-key (kbd "C-S-e") 'mc/edit-lines)
-;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
-
-;;(global-set-key (kbd "C-S-SPC") 'set-rectangular-region-anchor)
 (global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
 
 ;; Changer de buffer ou de windows facilement <F5> / <f6 , <f7>>
@@ -332,20 +325,22 @@
 ;; [Test] Back to Helm
 ;; ------------------------------------------------------------
 ;;(require 'helm-config)
-(helm-mode 1)
 (global-set-key (kbd "M-x") #'helm-M-x)
 (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
+(global-set-key (kbd "C-s") #'helm-occur)
+
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+(setq helm-autoresize-max-height 0)
+(setq helm-autoresize-min-height 20)
+(helm-autoresize-mode 1)
+(helm-mode 1)
+
 
 ;; Helm-ag
 ;; ------------------------------------------------------------
 ;; AG => Sorte de grep
 ;; Avec projectile, permet de trouver l'occurence d'un mot dans un projet
-(custom-set-variables
- '(helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
- '(helm-ag-command-option "--all-text")
- '(helm-ag-insert-at-point 'symbol) ;; LA FONCTION LA PLUS UTILE DU MONDE
- '(helm-ag-ignore-buffer-patterns '("\\.txt\\'" "\\.mkd\\'")))
 
 
 ;; Projectile
@@ -406,10 +401,6 @@
 (setq pomidor-sound-tick nil
       pomidor-sound-tack nil)
 
-;; [Test] Magit
-;; ------------------------------------------------------------
-(add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-
 ;; [TEST] Anaconda-mode
 ;; ------------------------------------------------------------
 ;; Mode pour python en remplacement de elpy
@@ -418,9 +409,6 @@
 (remove-hook 'anaconda-mode-response-read-fail-hook
 	     'anaconda-mode-show-unreadable-response)
 
-;; Local Variables:
-;; byte-compile-warnings: (not free-vars)
-;; End:
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -428,8 +416,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(font-use-system-font t)
+ '(helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
+ '(helm-ag-ignore-buffer-patterns (quote ("\\.html\\'" "\\.htm\\'")))
+ '(helm-ag-ignore-directory (quote ("html_cov" "node_module")))
+ '(helm-ag-insert-at-point (quote symbol))
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck dumb-jump flymake-cursor flymake-coffee git-gutter playerctl org-jira package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-mode rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode coffee-mode))))
+    (helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode))))
+
+
+;; Local Variables:
+;; byte-compile-warnings: (not free-vars)
+;; End:
+
 ;;; [END]
