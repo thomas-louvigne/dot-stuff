@@ -338,6 +338,9 @@
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
 
 ;; Helm-ag
+;; ------------------------------------------------------------
+;; AG => Sorte de grep
+;; Avec projectile, permet de trouver l'occurence d'un mot dans un projet
 (custom-set-variables
  '(helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
  '(helm-ag-command-option "--all-text")
@@ -349,9 +352,7 @@
 ;; ------------------------------------------------------------
 ;;
 (projectile-mode)
-;;(counsel-projectile-on)
 (helm-projectile-on)
-
 
 (use-package projectile
   :init (progn
@@ -385,49 +386,12 @@
 
 ;; [Test qd on l'enleve] Gutter
 ;; ------------------------------------------------------------
-;; Permet de montrer ce qui a changé dans git
+;; Permet de montrer ce qui a changé dans git dans le linum
 (global-git-gutter-mode t)
 
 ;; Flycheck
 ;; ------------------------------------------------------------
 (add-hook 'after-init-hook #'global-flycheck-mode)
-
-
-;; Ivy
-;; ------------------------------------------------------------
-;; ;; A remplacer par helm
-;; (setq ivy-use-virtual-buffers t)
-;; (setq ivy-count-format "(%d/%d) ")
-
-;; (ivy-mode 1)
-;; (setq ivy-use-virtual-buffers t)
-;; (setq enable-recursive-minibuffers t)
-;; (global-set-key "\C-s" 'swiper)
-;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
-
-;; (global-set-key (kbd "M-x") 'counsel-M-x)
-;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-;; (global-set-key (kbd "C-c g") 'counsel-git)
-;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-;; (global-set-key (kbd "C-c k") 'counsel-ag)
-;; (global-set-key (kbd "C-x l") 'counsel-locate)
-;; (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-
-
-;; [REMAPER] Dumb-Jump
-;; ------------------------------------------------------------
-;; Permet d'aller directement à la définition de la fonction
-;; Supprort quasiment tout les language
-;; -> uselss avec ivy / projectile / ag
-(use-package dumb-jump
-  :bind (("M-g o" . dumb-jump-go-other-window)
-         ("M-g j" . dumb-jump-go)
-         ("M-g i" . dumb-jump-go-prompt)
-         ("M-g x" . dumb-jump-go-prefer-external)
-         ("M-g z" . dumb-jump-go-prefer-external-other-window))
-
-  :ensure)
-;;   :config (setq dumb-jump-selector 'ivy)
 
 ;; [TEST] Test grammalecte
 ;; ------------------------------------------------------------
