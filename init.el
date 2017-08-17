@@ -1,14 +1,15 @@
 ;;; dot-emacs --- Thomas Luquet
 ;;
 ;; Vous trouverez ici mon .emacs.d/init.el
-;; Il est un peu en bordel mais commenté, n'hésitez pas à me dire vos suggestions/ conseils
-(setq debug-on-error  t)
+;; Il est un peu en bordel mais assé commenté
+;; N'hésitez pas à me dire vos suggestions/ conseils
+;;
+;;
 ;;; Code:
 (setq user-full-name "Thomas Luquet")
 
 ;; PACKAGE Source
 ;; ---------------------------------------------------
-;; Il y a peut etre trop de list-package dans ma list...
 
 (require 'package)
 (setq package-archives '(
@@ -17,10 +18,8 @@
 			 )
       )
 
-
 (package-initialize)
 (setq url-http-attempt-keepalives nil)
-
 (setq use-package-always-ensure t)
 
 (require 'org)
@@ -44,19 +43,18 @@
 (when (version<= "26.0.50" emacs-version )
   (global-display-line-numbers-mode))
 
-
 ;; Pas de menubar en haut ni de scroll bar
-;;(menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
+(menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) ;; Enlever la scrollbar
   (scroll-bar-mode -1))
 
-;; Permet de changer le répertoire de sauvegarde automatique (évite d'avoir des fichier qui trenne partout)
+;; Permet de changer le répertoire de sauvegarde automatique (évite d'avoir des fichiers ~  qui trennent partout)
 (require 'saveplace)
 (setq-default save-place t)
 
-;; Permet de changer le dossier de backup
+;; Permet de configurer le dossier de backup des fichiers
 (setq
    backup-by-copying t      ; don't clobber symlinks
    backup-directory-alist
@@ -66,8 +64,6 @@
    kept-old-versions 2
    version-control t)       ; use versioned backups
 
-;; Permet d'avoir une couleur differente du texte quand le texte est modifier par un autre éditeur
-;;(global-highlight-changes-mode t)
 
 ;; Expend
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -87,7 +83,7 @@
 (global-set-key (kbd "<S-down>") 'end-of-buffer)
 
 
-;; [TEST] COMPANY
+;; COMPANY
 ;; -------------------------------------------------------
 ;;(require 'popup)
 ;;(require 'company)
@@ -102,51 +98,43 @@
 (setq org-log-done t) ;; Sait pas à quoi ca sert
 (setq org-startup-truncated nil) ;; Permet de faire de retours à la ligne
 
-
-;; Permet de faire comme si une tache était +barré+ dans le terminal
-;; Cela ne fonctionne +malheureusement+ pas dans emacs -nw
-;; (require 'cl)   ; for delete*
-;; (setq org-emphasis-alist
-;;       (cons '("+" '(:strike-through t :foreground "blue"))
-;; 	    (delete* "+" org-emphasis-alist :key 'car :test 'equal)))
-
 (setq org-todo-keywords
       '((sequence "TODO" "DOOING" "DONE")))
 
-(setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "DREAM(d)" "SUN(s)" "|" "DONE(d)")
-              (sequence  "PHONE" "MEETING"))))
-
-;; (setq org-todo-keyword-faces
-;;       (quote (("TODO" :foreground "red" :weight bold)
-;;               ("DREAM" :foreground "yellow" :weight bold)
-;; 	      ("SUN" :foreground "green" :weight bold)
-;;               ("DONE" :foreground "forest green" :weight bold))))
 
 ;; [TEST] Correcteur orthographique / dictinnaire
 ;; ---------------------------------------------------
 ;; EST EN TRAIN DE PASSER à Grammacollect
-;; (require 'flyspell)
-;; (add-hook 'org-mode-hook 'turn-on-flyspell) ;; Ajoute automatiquement le flysper aux fichier org
-;; (setq ispell-dictionary "french")
+;;(require 'flyspell)
+(add-hook 'org-mode-hook 'turn-on-flyspell) ;; Ajoute automatiquement le flysper aux fichier org
+(setq ispell-dictionary "french")
+
+;; [TEST] Test grammalecte
+;; ------------------------------------------------------------
+;; Y a encore plein de trucs a travailler
+;; (load-file "/home/tlu/.emacs.d/me/flycheck-grammalecte/flycheck-grammalecte.el")
+
 
 ;; Bottom Line
 ;; ----------------------------------
 ;; tas de conneries qui s'affiche dans la bar du bas
 
 ;; Batterie dans la buffer line
-;; (display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
+(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
 
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
 ;;(require 'nyan-mode)
 (nyan-mode t)
 
-;; permet Pas écrire dans le prompt du mini buffer
-(setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
-
 ;; Affiche l'heure dans la barre du bas
 ;; Set le buffer du de la date et du temps
-;; (display-time-mode t) ;; affiche le temps
+(display-time-mode t) ;; affiche le temps
+
+;; Utilise diminish.el <3
+;; Permet de retirer les minor-mod inutile de la botom line
+
+;; permet Pas écrire dans le prompt du mini buffer
+(setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
 
 ;; Clean White Space (Trailing whitespace)
 ;; ----------------------------------
@@ -308,7 +296,7 @@
 (require 'multiple-cursors)
 (global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
 
-;; Changer de buffer ou de windows facilement <F5> / <f6 , <f7>>
+;; Changer de buffer facilement <F5> / <f6 , <f7>>
 ;; ------------------------------------------------------------
 (defun other-window-or-switch-buffer ()
   "Call `other-window' if more than one window is visible, switch to next buffer otherwise."
@@ -322,9 +310,11 @@
 (global-set-key (kbd "<f7>") #'delete-window)
 
 
-;; [Test] Back to Helm
+;; Helm
 ;; ------------------------------------------------------------
-;;(require 'helm-config)
+;; Permet d'améliorer le M-x et pas mal d'autre chose
+(require 'helm-mode)
+(require 'helm-config)
 (global-set-key (kbd "M-x") #'helm-M-x)
 (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
 (global-set-key (kbd "C-x C-f") #'helm-find-files)
@@ -366,6 +356,8 @@
 
 ;; Playerctl
 ;; ------------------------------------------------------------
+;; Permet de changer de musique, notament spotify, depuis emacs
+;; Nécessiste playerctl
 ;; Développé par moi :-)
 (require 'playerctl)
 (define-key global-map (kbd "C-c C-SPC") 'playerctl-play-pause-song)
@@ -374,40 +366,34 @@
 
 ;; Yasnippet
 ;; ------------------------------------------------------------
-;; Déjà Ajouté dans elpy, mais permet de créer "automatiquement" des bouts de code
+;; Permet de générer automatiquement du code
 ;; (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
 ;; (require 'yasnippet)
-;;(yas-global-mode 1)
+(yas-global-mode 1)
 
-;; [Test qd on l'enleve] Gutter
+;; Git Gutter
 ;; ------------------------------------------------------------
-;; Permet de montrer ce qui a changé dans git dans le linum
+;; Permet de montrer ce qui a changé dans git dans le linum (la bar de gauche)
 (global-git-gutter-mode t)
 
 ;; Flycheck
 ;; ------------------------------------------------------------
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
-;; [TEST] Test grammalecte
-;; ------------------------------------------------------------
-;; Y a encore plein de trucs a travailler
-;; (load-file "/home/tlu/.emacs.d/me/flycheck-grammalecte/flycheck-grammalecte.el")
-
-
-;; [TEST] Pomodori
+;; Pomodori
 ;; ------------------------------------------------------------
 (global-set-key (kbd "<f12>") #'pomidor)
 (setq alert-default-style 'libnotify)
 (setq pomidor-sound-tick nil
       pomidor-sound-tack nil)
 
-;; [TEST] Anaconda-mode
+;; Anaconda-mode
 ;; ------------------------------------------------------------
 ;; Mode pour python en remplacement de elpy
 (add-hook 'python-mode-hook 'anaconda-mode)
 (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-(remove-hook 'anaconda-mode-response-read-fail-hook
-	     'anaconda-mode-show-unreadable-response)
+ ;; (remove-hook 'anaconda-mode-response-read-fail-hook
+ ;; 	     'anaconda-mode-show-unreadable-response)
 
 
 (custom-set-variables
@@ -423,7 +409,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode))))
+    (diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode))))
 
 
 ;; Local Variables:
