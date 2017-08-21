@@ -404,7 +404,7 @@
  '(font-use-system-font t)
  '(helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
  '(helm-ag-ignore-buffer-patterns (quote ("\\.html\\'" "\\.htm\\'")))
- '(helm-ag-ignore-directory (quote ("html_cov" "node_module")))
+ '(helm-ag-ignore-directory (quote ("html_cov" "node_module" ".tmp" "dist")))
  '(helm-ag-insert-at-point (quote symbol))
  '(inhibit-startup-screen t)
  '(package-selected-packages
