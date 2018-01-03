@@ -49,18 +49,8 @@ HIST_STAMPS="dd.mm.yyyy"
 
 
 # User configuration
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/tlu/.local/bin/:/home/tlu/.gem/ruby/2.4.0/bin:"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/tlu/.local/bin/:"
 export PYENV_ROOT="$HOME/.pyenv"
-
-# [Test] For virtualenv
-#export WORKON_HOME=~/.virtualenvs
-#export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-
-# [Test] Pour pyenv
-#export PATH="/home/tlu/.pyenv/bin:$PATH"
-#eval "$(pyenv init -)"
-#eval "$(pyenv virtualenv-init -)"
-
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -87,14 +77,14 @@ export MANPATH="/usr/local/man:$MANPATH"
 # ssh
 export SSH_KEY_PATH="~/.ssh/dsa_id"
 
-
-
 # My Export
-export ALTERNATE_EDITOR="emacs"
-export EDITOR="emacs -nw"
+export EDITOR="emacsclient -t"
+export ALTERNATE_EDITOR="nano"
 export DIFFEDITCMD="emacs -diff"
 export DICTIONARY="fr-FR"
 export BROWSER="firefox"
+export PYTEST_ADDOPTS="--color=yes"
+export CHROME_BIN=/usr/bin/chromium
 
 # [TEST] pour steam-manjaro
 export LIBGL_DRI3_DISABLE=1 steam
@@ -115,11 +105,15 @@ alias eog="gpicview"
 alias dasize="du -a * | sort -nr | head -10"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
-alias lycos="grep -nr --exclude-dir={venv,.git,.cache,__pycache__,.tmp} --exclude=\*.{pyc,#}"
+alias lycos="grep -nr --exclude-dir={downloads,venv,bower_components,.idea,.git,.cache,__pycache__,.tmp,libs,dist,node_modules,.vagrant,htmlcov,cov_html} --exclude=\*.{pyc,~,#,log,coverage}"
 alias z="xlock;"
 alias dodo="systemctl suspend"
 alias yasu="yaourt -Syu"
-alias agenda="emacsclient -t /home/tlu/ownCloud/agenda/agenda.org"
+alias agenda="emacsclient -t /home/tlu/Dropbox/agenda/agenda.org"
 alias today="python2 /usr/bin/gcalcli agenda 7am 11:55pm"
 alias addcal="python2 /usr/bin/gcalcli add --calendar 'Thomas L.'"
 alias week="python2 /usr/bin/gcalcli agenda"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

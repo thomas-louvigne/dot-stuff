@@ -36,8 +36,8 @@
 (show-paren-mode 1)
 
 ;; Pour avoir le numéro de la ligne à gauche
-;; (global-linum-mode 1);; active le mode
-;; (setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
+(global-linum-mode 1);; active le mode
+(setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
 
 ;; [Test] a garder pour qd on passera en emacs 26
 (when (version<= "26.0.50" emacs-version )
@@ -82,6 +82,9 @@
 (global-set-key (kbd "<S-up>") 'beginning-of-buffer)
 (global-set-key (kbd "<S-down>") 'end-of-buffer)
 
+;; Désactive l'indentation avec des tabs
+;; -------------------------------------------------------
+(setq-default indent-tabs-mode nil)
 
 ;; COMPANY
 ;; -------------------------------------------------------
@@ -97,9 +100,9 @@
 (require 'org)
 (setq org-log-done t) ;; Sait pas à quoi ca sert
 (setq org-startup-truncated nil) ;; Permet de faire de retours à la ligne
-
+(setq org-export-with-sub-superscripts nil) ;; Évites les erreures qd on export les caractères __
 (setq org-todo-keywords
-      '((sequence "TODO" "DOOING" "DONE")))
+      '((sequence "TODO" "DOING" "DONE")))
 
 
 ;; [TEST] Correcteur orthographique / dictinnaire
@@ -120,7 +123,7 @@
 ;; tas de conneries qui s'affiche dans la bar du bas
 
 ;; Batterie dans la buffer line
-(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
+;;(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
 
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
 ;;(require 'nyan-mode)
@@ -132,6 +135,22 @@
 
 ;; Utilise diminish.el <3
 ;; Permet de retirer les minor-mod inutile de la botom line
+;;(diminished-modes t)
+(diminish 'anaconda-eldoc-mode)
+(diminish 'edebug-mode)
+(diminish 'flycheck-mode)
+(diminish 'helm-mode)
+(diminish 'rainbow-delimiters-mode)
+(diminish 'yas-mode)
+(diminish 'yas-minor-mode)
+(diminish 'projectile-mode)
+(diminish 'python-mode)
+(diminish 'eldoc-mode)
+(diminish 'company-mode)
+(diminish 'git-gutter)
+
+;; Permet de voir les lignes et les columns du curseur
+(column-number-mode t)
 
 ;; permet Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
@@ -144,7 +163,7 @@
 (setq-default show-leading-whitespace t) ;; espace en fin de ligne
 (setq-default indicate-empty-lines t)
 
-;; Efface automatiquement les espaces de fin de ligne a chaque save
+;; Efface automatiquement les espaces de fin de ligne a chaque sauve
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; org-export stysheet
@@ -195,24 +214,15 @@
 ;; Imenu-list
 ;; ------------------------------------------------------------
 ;; Permet d'avoir un menu avec les class / methodes du buffer
-(imenu-list-minor-mode t)
-(global-set-key (kbd "<f8>") #'imenu-list-smart-toggle)
+;; Merde un peu qd on lance emacs en deamon
+;; (imenu-list-minor-mode t)
+;; (global-set-key (kbd "<f8>") #'imenu-list-smart-toggle)
 
 
 ;; Open URL dans emacs
 ;; ------------------------------------------------------------
 ;; Use firefox to open urls
 (setq browse-url-browser-function 'browse-url-firefox)
-
-
-;; [Fait foirer les couleur dans magit] RAINBOW MODE
-;; ------------------------------------------------------------
-;; So Many Color ! #0000ff #ffffff #ff0000 (Et vive la france !)
-;; (require 'rainbow-mode)
-;; ;; Pour le mettre en global :
-;; (define-globalized-minor-mode my-global-rainbow-mode rainbow-mode
-;;   (lambda () (rainbow-mode 1)))
-;; (my-global-rainbow-mode 1)
 
 
 ;; Rainbow délimiters
@@ -247,6 +257,8 @@
 ;; ------------------------------------------------------------
 ;; Mode que je trouve mieux pour le JS que js2-mode
 (require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.htm\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
@@ -255,6 +267,7 @@
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.json\\'" . web-mode))
 
 ;; adjust indents for web-mode to 2 spaces
 (defun my-web-mode-hook ()
@@ -265,6 +278,12 @@
   (setq web-mode-json-indent-offset 2)
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook 'my-web-mode-hook)
+
+(setq web-mode-enable-current-element-highlight t)
+(setq web-mode-enable-current-column-highlight t)
+(setq web-mode-enable-auto-pairing t)
+(setq web-mode-enable-css-colorization t)
+(setq web-mode-enable-block-face t)
 
 
 ;; Markdown mode
@@ -281,20 +300,12 @@
 (require 'ox-reveal)
 
 
-;; Move text
+
+;; [Test] Move text
 ;; ------------------------------------------------------------
 ;; Permet de bouger des lignes sélectionné (regions) avec  M-S ^ /
 ;; Alt + Maj + fleche haut ou bas
 (move-text-default-bindings)
-
-
-;; Multiple cursor
-;; ------------------------------------------------------------
-;; Emacs porn : http://emacsrocks.com/e13.html
-;; A pas encore bien compris comment utiliser les "like this"
-
-(require 'multiple-cursors)
-(global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
 
 ;; Changer de buffer facilement <F5> / <f6 , <f7>>
 ;; ------------------------------------------------------------
@@ -354,6 +365,12 @@
          )
 :ensure t)
 
+;; [Test] AC-mode
+;; ------------------------------------------------------------
+(ac-config-default)
+(ac-set-trigger-key "TAB")
+
+
 ;; Playerctl
 ;; ------------------------------------------------------------
 ;; Permet de changer de musique, notament spotify, depuis emacs
@@ -364,7 +381,7 @@
 (define-key global-map (kbd "C-c C-n") 'playerctl-next-song)
 (define-key global-map (kbd "C-c C-p") 'playerctl-previous-song)
 
-;; Yasnippet
+;; [Test] Yasnippet
 ;; ------------------------------------------------------------
 ;; Permet de générer automatiquement du code
 ;; (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
@@ -392,8 +409,47 @@
 ;; Mode pour python en remplacement de elpy
 (add-hook 'python-mode-hook 'anaconda-mode)
 (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
- ;; (remove-hook 'anaconda-mode-response-read-fail-hook
- ;; 	     'anaconda-mode-show-unreadable-response)
+(add-hook 'python-mode-hook 'ac-anaconda-setup)
+
+
+;; Other Pyton stuff
+;; ------------------------------------------------------------
+(use-package importmagic
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'importmagic-mode))
+(add-hook 'python-mode-hook 'importmagic-mode)
+
+
+;; [Test] AngularJS stuff
+;; ------------------------------------------------------------
+(add-to-list 'ac-modes 'angular-mode)
+(add-to-list 'ac-modes 'angular-html-mode)
+
+
+;; [TEST] File name completion
+;; ------------------------------------------------------------
+(setq read-file-name-completion-ignore-case t)
+(setq read-buffer-completion-ignore-case t)
+(mapc (lambda (x)
+        (add-to-list 'completion-ignored-extensions x))
+      '(".aux" ".bbl" ".blg" ".exe"
+        ".log" ".meta" ".out" ".pdf"
+        ".synctex.gz" ".tdo" ".toc"
+        "-pkg.el" "-autoloads.el"
+        "auto/"))
+
+;; Multiple cursor
+;; ------------------------------------------------------------
+;; Emacs porn : http://emacsrocks.com/e13.html
+;; A pas encore bien compris comment utiliser les "like this"
+
+(require 'multiple-cursors)
+(global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
+;;(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines) don't work
+(global-set-key (kbd "<f10>") 'mc/mark-next-like-this)
+(global-set-key (kbd "<f9>") 'mc/mark-previous-like-this)
+(global-set-key (kbd "<f11>") 'mc/mark-all-like-this)
 
 
 (custom-set-variables
@@ -409,7 +465,8 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode))))
+    (importmagic exec-path-from-shell angular-mode htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode))))
+
 
 
 ;; Local Variables:
