@@ -1,5 +1,5 @@
 ;;; dot-emacs --- Thomas Luquet
-;;
+;;; Commentary:
 ;; Vous trouverez ici mon .emacs.d/init.el
 ;; Il est un peu en bordel mais assé commenté
 ;; N'hésitez pas à me dire vos suggestions/ conseils
@@ -36,12 +36,8 @@
 (show-paren-mode 1)
 
 ;; Pour avoir le numéro de la ligne à gauche
-(global-linum-mode 1);; active le mode
-(setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
-
-;; [Test] a garder pour qd on passera en emacs 26
-(when (version<= "26.0.50" emacs-version )
-  (global-display-line-numbers-mode))
+;; (global-linum-mode 1);; active le mode
+;; (setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
 
 ;; Pas de menubar en haut ni de scroll bar
 (menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
@@ -56,13 +52,13 @@
 
 ;; Permet de configurer le dossier de backup des fichiers
 (setq
-   backup-by-copying t      ; don't clobber symlinks
-   backup-directory-alist
-    '(("." . "~/.emacs.d/saved_places"))    ; don't litter my fs tree
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)       ; use versioned backups
+ backup-by-copying t      ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.emacs.d/saved_places"))    ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)       ; use versioned backups
 
 
 ;; Expend
@@ -81,8 +77,20 @@
 ;; changed beacause ELPY bind M-> & M-<
 (global-set-key (kbd "<S-up>") 'beginning-of-buffer)
 (global-set-key (kbd "<S-down>") 'end-of-buffer)
+(global-set-key (kbd "C-d") 'kill-whole-line) ;; remplacement du kill-char totalement uselss
 
-;; Désactive l'indentation avec des tabs
+
+;; Multiple cursor
+;; ------------------------------------------------------------
+;; Emacs porn : http://emacsrocks.com/e13.html
+
+(require 'multiple-cursors)
+(global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
+(global-set-key (kbd "<f10>") 'mc/mark-next-like-this)
+(global-set-key (kbd "<f9>") 'mc/mark-previous-like-this)
+(global-set-key (kbd "<f11>") 'mc/mark-all-like-this)
+
+;; [TEST] Désactive l'indentation avec des tabs
 ;; -------------------------------------------------------
 (setq-default indent-tabs-mode nil)
 
@@ -93,7 +101,7 @@
 (add-hook 'after-init-hook 'global-company-mode) ;; Là on dit que c'est pour tout
 
 ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
-(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
+(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode python-mode))
 
 ;; Org Mode
 ;; ---------------------------------------------------
@@ -125,6 +133,10 @@
 ;; Batterie dans la buffer line
 ;;(display-battery-mode t) ;; Sert a afficher la batterie (utile pour les PC portable)
 
+;; Permet de voir les lignes et les columns du curseur
+(column-number-mode t)
+(line-number-mode t)
+
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
 ;;(require 'nyan-mode)
 (nyan-mode t)
@@ -143,16 +155,19 @@
 (diminish 'rainbow-delimiters-mode)
 (diminish 'yas-mode)
 (diminish 'yas-minor-mode)
-(diminish 'projectile-mode)
 (diminish 'python-mode)
 (diminish 'eldoc-mode)
 (diminish 'company-mode)
 (diminish 'git-gutter)
+(diminish 'python)
+(diminish 'elpy-mode)
+(diminish 'projectile-mode)
+(diminish 'git-gutter-mode)
+(diminish 'flymake-mode)
+;;(diminish 'server-clients-mode)
 
-;; Permet de voir les lignes et les columns du curseur
-(column-number-mode t)
 
-;; permet Pas écrire dans le prompt du mini buffer
+;; Permet Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
 
 ;; Clean White Space (Trailing whitespace)
@@ -177,7 +192,7 @@
 ;; ----------------------------------
 ;; (setq sml/no-confirm-load-theme t)
 (load-theme 'zenburn t)
-;; (load-theme 'dracula t)
+
 
 ;; UTF8 Partout : Parce que c'est le turfu
 ;; -----------------------------------------------------------------
@@ -185,6 +200,10 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
+;; [TEST] force la font a 10
+;; -----------------------------------------------------------------
+
+(set-frame-font "DejaVu Sans Mono-10")
 
 ;; Terminal (alt x -> ansi-term)
 ;; -----------------------------------------------------------------
@@ -203,7 +222,18 @@
 	(ansi-term (getenv "SHELL")))
     (switch-to-buffer-other-window "*ansi-term*")))
 (global-set-key (kbd "C-c t") 'visit-term-buffer)
-;; Permet d'éviter qu il montre les white space dans le term mais semble pas hyper bien marcher....
+
+;; Couleur pour le terminal lors d'une compile (ou d'un test)
+(require 'ansi-color)
+(defun endless/colorize-compilation ()
+  "Colorize from `compilation-filter-start' to `point'."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region
+     compilation-filter-start (point))))
+
+(add-hook 'compilation-filter-hook
+          #'endless/colorize-compilation)
+
 
 ;; Permet de ne pas voir les white space dans le term
 (add-hook 'term-mode-hook
@@ -217,6 +247,58 @@
 ;; Merde un peu qd on lance emacs en deamon
 ;; (imenu-list-minor-mode t)
 ;; (global-set-key (kbd "<f8>") #'imenu-list-smart-toggle)
+
+;; [TEST] Treemacs
+;; ------------------------------------------------------------
+;; permet d'avoir un menu en arbre
+(use-package treemacs
+  :ensure t
+  :defer t
+  :config
+  (progn
+    (setq treemacs-change-root-without-asking nil
+          treemacs-collapse-dirs              (if (executable-find "python") 3 0)
+          treemacs-file-event-delay           5000
+          treemacs-follow-after-init          t
+          treemacs-goto-tag-strategy          'refetch-index
+          treemacs-indentation                2
+          treemacs-indentation-string         " "
+          treemacs-is-never-other-window      nil
+          treemacs-never-persist              nil
+          treemacs-no-png-images              nil
+          treemacs-recenter-after-file-follow nil
+          treemacs-recenter-after-tag-follow  nil
+          treemacs-show-hidden-files          t
+          treemacs-silent-filewatch           nil
+          treemacs-silent-refresh             nil
+          treemacs-sorting                    'alphabetic-desc
+          treemacs-tag-follow-cleanup         t
+          treemacs-tag-follow-delay           1.5
+          treemacs-winum-number               10
+          treemacs-width                      45)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null (executable-find "python3"))))
+      (`(t . t)
+       (treemacs-git-mode 'extended))
+      (`(t . _)
+       (treemacs-git-mode 'simple))))
+  :bind
+  (:map global-map
+        ([f8]         . treemacs-toggle)
+        ("M-0"        . treemacs-select-window)
+        ("C-c 1"      . treemacs-delete-other-windows)
+        ))
+(use-package treemacs-projectile
+  :defer t
+  :ensure t
+  :config
+  (setq treemacs-header-function #'treemacs-projectile-create-header))
+
+
+
 
 
 ;; Open URL dans emacs
@@ -256,34 +338,72 @@
 ;; Web-mode
 ;; ------------------------------------------------------------
 ;; Mode que je trouve mieux pour le JS que js2-mode
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.htm\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.json\\'" . web-mode))
 
-;; adjust indents for web-mode to 2 spaces
+;; use web-mode for .jsx files
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
+
+;; http://www.flycheck.org/manual/latest/index.html
+(require 'flycheck)
+
+;; turn on flychecking globally
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+
+;; customize flycheck temp file prefix
+(setq-default flycheck-temp-prefix ".flycheck")
+
+;; disable json-jsonlist checking for json files
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(json-jsonlist)))
+
+;; https://github.com/purcell/exec-path-from-shell
+;; only need exec-path-from-shell on OSX
+;; this hopefully sets up path and other vars better
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+
+
+;; use local eslint from node_modules before global
+;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
+(defun my/use-eslint-from-node-modules ()
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                        root))))
+    (when (and eslint (file-executable-p eslint))
+      (setq-local flycheck-javascript-eslint-executable eslint))))
+(add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
+
+;; adjust indents for web-mode to 1 spaces
 (defun my-web-mode-hook ()
-  "Hooks for Web mode. Adjust indent."
+  "Hooks for Web mode,  adjust indentation."
   ;;; http://web-mode.org/
-  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-markup-indent-offset 1)
   (setq web-mode-css-indent-offset 2)
-  (setq web-mode-json-indent-offset 2)
+  (setq web-mode-indent-style 1)
   (setq web-mode-code-indent-offset 2))
-(add-hook 'web-mode-hook 'my-web-mode-hook)
+(add-hook 'web-mode-hook  'my-web-mode-hook)
 
-(setq web-mode-enable-current-element-highlight t)
-(setq web-mode-enable-current-column-highlight t)
-(setq web-mode-enable-auto-pairing t)
-(setq web-mode-enable-css-colorization t)
-(setq web-mode-enable-block-face t)
+;; Semble pas marcher
+(eval-after-load 'web-mode
+  '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
+
+;; Semble pas marcher non plus
+;; (add-hook 'web-mode-hook
+;;           (lambda ()
+;;              (add-hook 'beffore-save-hook 'eslint-fix)))
+
 
 
 ;; Markdown mode
@@ -365,10 +485,10 @@
          )
 :ensure t)
 
-;; [Test] AC-mode
+;; AC-mode
 ;; ------------------------------------------------------------
 (ac-config-default)
-(ac-set-trigger-key "TAB")
+;;(ac-set-trigger-key "TAB")
 
 
 ;; Playerctl
@@ -404,52 +524,55 @@
 (setq pomidor-sound-tick nil
       pomidor-sound-tack nil)
 
-;; Anaconda-mode
+;; [TEST] Elpy
 ;; ------------------------------------------------------------
-;; Mode pour python en remplacement de elpy
-(add-hook 'python-mode-hook 'anaconda-mode)
-(add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-(add-hook 'python-mode-hook 'ac-anaconda-setup)
+(package-initialize)
+(elpy-enable)
+
+(setq elpy-rpc-backend "jedi")
+(pyvenv-activate "/home/tlu/working/sief/sief-back/venv/")
+
+;; [TEST] Devrait choisir entre company et yasnipiet
+(defun company-yasnippet-or-completion ()
+  "Solve company yasnippet conflicts."
+  (interactive)
+  (let ((yas-fallback-behavior
+         (apply 'company-complete-common nil)))
+    (yas-expand)))
+
+(add-hook 'company-mode-hook
+          (lambda ()
+            (substitute-key-definition
+             'company-complete-common
+             'company-yasnippet-or-completion
+             company-active-map)))
+
+;; sert a rien
+(setq ansi-color-for-comint-mode t)
 
 
-;; Other Pyton stuff
+;; [TEST] terminal interpreter
+(setq
+ python-shell-interpreter "ipython3"
+ python-shell-interpreter-args "--simple-prompt --pprint")
+
+
+;; [TEST] Compilation (et test avec elpy) dans une frame en bas
 ;; ------------------------------------------------------------
-(use-package importmagic
-    :ensure t
-    :config
-    (add-hook 'python-mode-hook 'importmagic-mode))
-(add-hook 'python-mode-hook 'importmagic-mode)
+(defun down-compilation-frame-hook ()
+  "Permet d'avoir la fenetre de compilation ou de test vers le bas de l'écran"
+  (when (not (get-buffer-window "*compilation*"))
+    (save-selected-window
+      (save-excursion
+        (let* ((w (split-window-vertically))
+               (h (window-height w)))
+          (select-window w)
+          (switch-to-buffer "*compilation*")
+          (shrink-window (- h compilation-window-height)))))))
+(add-hook 'compilation-mode-hook 'down-compilation-frame-hook)
 
 
-;; [Test] AngularJS stuff
-;; ------------------------------------------------------------
-(add-to-list 'ac-modes 'angular-mode)
-(add-to-list 'ac-modes 'angular-html-mode)
 
-
-;; [TEST] File name completion
-;; ------------------------------------------------------------
-(setq read-file-name-completion-ignore-case t)
-(setq read-buffer-completion-ignore-case t)
-(mapc (lambda (x)
-        (add-to-list 'completion-ignored-extensions x))
-      '(".aux" ".bbl" ".blg" ".exe"
-        ".log" ".meta" ".out" ".pdf"
-        ".synctex.gz" ".tdo" ".toc"
-        "-pkg.el" "-autoloads.el"
-        "auto/"))
-
-;; Multiple cursor
-;; ------------------------------------------------------------
-;; Emacs porn : http://emacsrocks.com/e13.html
-;; A pas encore bien compris comment utiliser les "like this"
-
-(require 'multiple-cursors)
-(global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
-;;(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines) don't work
-(global-set-key (kbd "<f10>") 'mc/mark-next-like-this)
-(global-set-key (kbd "<f9>") 'mc/mark-previous-like-this)
-(global-set-key (kbd "<f11>") 'mc/mark-all-like-this)
 
 
 (custom-set-variables
@@ -457,6 +580,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(elpy-test-pytest-runner-command (quote ("pytest" "-p no:sugar
+")))
+ '(elpy-test-runner (quote elpy-test-pytest-runner))
  '(font-use-system-font t)
  '(helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
  '(helm-ag-ignore-buffer-patterns (quote ("\\.html\\'" "\\.htm\\'")))
@@ -465,7 +591,8 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (importmagic exec-path-from-shell angular-mode htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ company-anaconda flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode))))
+    (add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
+ '(pyvenv-mode t))
 
 
 
