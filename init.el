@@ -97,7 +97,7 @@
 ;; COMPANY
 ;; -------------------------------------------------------
 ;;(require 'popup)
-;;(require 'company)
+(require 'company)
 (add-hook 'after-init-hook 'global-company-mode) ;; Là on dit que c'est pour tout
 
 ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
@@ -274,7 +274,6 @@
           treemacs-sorting                    'alphabetic-desc
           treemacs-tag-follow-cleanup         t
           treemacs-tag-follow-delay           1.5
-          treemacs-winum-number               10
           treemacs-width                      45)
 
     (treemacs-follow-mode t)
@@ -337,11 +336,18 @@
 
 ;; Web-mode
 ;; ------------------------------------------------------------
-;; Mode que je trouve mieux pour le JS que js2-mode
-
+(require 'web-mode)
 ;; use web-mode for .jsx files
 (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
+;; use web-mode for html
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+
 
 ;; http://www.flycheck.org/manual/latest/index.html
 (require 'flycheck)
@@ -371,6 +377,22 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
+;; adjust indents for web-mode to 1 spaces
+(defun my-web-mode-hook ()
+  "Hooks for Web mode,  adjust indentation."
+  ;;; http://web-mode.org/
+  (setq web-mode-markup-indent-offset 1)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-indent-style 1)
+  (setq web-mode-code-indent-offset 2))
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
+
+
+
+;; ESLINT
+;; ------------------------------------------------------------
+;; Linter configurable
 
 ;; use local eslint from node_modules before global
 ;; http://emacs.stackexchange.com/questions/21205/flycheck-with-file-relative-eslint-executable
@@ -385,26 +407,62 @@
       (setq-local flycheck-javascript-eslint-executable eslint))))
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
-;; adjust indents for web-mode to 1 spaces
-(defun my-web-mode-hook ()
-  "Hooks for Web mode,  adjust indentation."
-  ;;; http://web-mode.org/
-  (setq web-mode-markup-indent-offset 1)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-indent-style 1)
-  (setq web-mode-code-indent-offset 2))
-(add-hook 'web-mode-hook  'my-web-mode-hook)
+;; Le package n'étant pas terrible j'ai pris ca ici :
+;; https://github.com/rustyconover/eslint-fix/blob/483709dbad2100160df770a87c35e00248bb8f68/eslint-fix.el
+(defun eslint-fix ()
+  "Format the current file with ESLint."
+  (interactive)
+  (let* ((root (locate-dominating-file
+                (or (buffer-file-name) default-directory)
+                "node_modules"))
+         (eslint (and root
+                      (expand-file-name "node_modules/.bin/eslint"
+                                        root))))
+    (progn (call-process eslint nil "*ESLint Errors*" nil "--fix" buffer-file-name)
+           (revert-buffer t t t))
+    ))
 
-;; Semble pas marcher
-(eval-after-load 'web-mode
-  '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
+;; [TEST] JS2-mode
+;; ------------------------------------------------------------
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; Better imenu
+(add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
 
-;; Semble pas marcher non plus
-;; (add-hook 'web-mode-hook
-;;           (lambda ()
-;;              (add-hook 'beffore-save-hook 'eslint-fix)))
+(require 'js2-refactor)
+(require 'xref-js2)
+
+(add-hook 'js2-mode-hook #'js2-refactor-mode)
+(js2r-add-keybindings-with-prefix "C-c C-r")
+;; a vérifier
+(define-key js2-mode-map (kbd "C-k") #'js2r-kill)
+
+(add-hook 'js2-mode-hook (lambda ()
+  (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
 
 
+;;(add-to-list 'load-path "~/.emacs.d/elpa/tern-20170925.1333/")
+;;(autoload 'tern-mode "tern.el" nil t)
+
+;; [Marche pas] Company term (better completion)
+;; (add-to-list 'company-backends 'company-tern)
+;; (add-hook 'js2-mode-hook (lambda ()
+;;                            (tern-mode)
+;;                            (company-mode)))
+
+(add-hook 'js2-mode-hook (lambda ()
+                           (company-mode)))
+
+;; Disable completion keybindings, as we use xref-js2 instead
+;; js-mode (which js2 is based on) binds "M-." which conflicts with xref, so
+;; unbind it.
+(define-key js-mode-map (kbd "M-.") nil)
+;; (define-key tern-mode-keymap (kbd "M-.") nil)
+;; (define-key tern-mode-keymap (kbd "M-,") nil)
+
+;; Hook pour passer le linter a chaque save
+(eval-after-load 'js2-mode
+	   '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
 
 ;; Markdown mode
 ;; ------------------------------------------------------------
@@ -457,6 +515,8 @@
 (helm-autoresize-mode 1)
 (helm-mode 1)
 
+(require 'helm-xref)
+(setq xref-show-xrefs-function 'helm-xref-show-xrefs)
 
 ;; Helm-ag
 ;; ------------------------------------------------------------
@@ -487,7 +547,7 @@
 
 ;; AC-mode
 ;; ------------------------------------------------------------
-(ac-config-default)
+;;(ac-config-default)
 ;;(ac-set-trigger-key "TAB")
 
 
@@ -533,22 +593,19 @@
 (pyvenv-activate "/home/tlu/working/sief/sief-back/venv/")
 
 ;; [TEST] Devrait choisir entre company et yasnipiet
-(defun company-yasnippet-or-completion ()
-  "Solve company yasnippet conflicts."
-  (interactive)
-  (let ((yas-fallback-behavior
-         (apply 'company-complete-common nil)))
-    (yas-expand)))
+;; (defun company-yasnippet-or-completion ()
+;;   "Solve company yasnippet conflicts."
+;;   (interactive)
+;;   (let ((yas-fallback-behavior
+;;          (apply 'company-complete-common nil)))
+;;     (yas-expand)))
 
-(add-hook 'company-mode-hook
-          (lambda ()
-            (substitute-key-definition
-             'company-complete-common
-             'company-yasnippet-or-completion
-             company-active-map)))
-
-;; sert a rien
-(setq ansi-color-for-comint-mode t)
+;; (add-hook 'company-mode-hook
+;;           (lambda ()
+;;             (substitute-key-definition
+;;              'company-complete-common
+;;              'company-yasnippet-or-completion
+;;              company-active-map)))
 
 
 ;; [TEST] terminal interpreter
@@ -560,7 +617,7 @@
 ;; [TEST] Compilation (et test avec elpy) dans une frame en bas
 ;; ------------------------------------------------------------
 (defun down-compilation-frame-hook ()
-  "Permet d'avoir la fenetre de compilation ou de test vers le bas de l'écran"
+  "Permet d'avoir la fenetre de compilation ou de test vers le bas de l'écran."
   (when (not (get-buffer-window "*compilation*"))
     (save-selected-window
       (save-excursion
@@ -591,7 +648,7 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    (quote
-    (add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
+    (helm-xref tern-context-coloring company-tern xref-js2 js2-refactor add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
  '(pyvenv-mode t))
 
 
