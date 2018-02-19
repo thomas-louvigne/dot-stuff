@@ -22,8 +22,6 @@
 (setq url-http-attempt-keepalives nil)
 (setq use-package-always-ensure t)
 
-(require 'org)
-(require 'ox)
 
 ;; Tricks divers
 ;; ---------------------------------------------------
@@ -32,7 +30,7 @@
 ;; Indentation d'une région
 (global-set-key (kbd "C-x C-a") 'indent-region)
 
-;; Pour avoir les parenthese coloré automatiquement
+;; Pour avoir les parentheses qui s'allument des deux cotés
 (show-paren-mode 1)
 
 ;; Pour avoir le numéro de la ligne à gauche
@@ -46,49 +44,69 @@
 (when (fboundp 'scroll-bar-mode) ;; Enlever la scrollbar
   (scroll-bar-mode -1))
 
-;; Permet de changer le répertoire de sauvegarde automatique (évite d'avoir des fichiers ~  qui trennent partout)
-(require 'saveplace)
-(setq-default save-place t)
+;; Permet de changer le répertoire de sauvegarde automatique
+;; (évite nottament d'avoir des fichiers ~ qui trennent partout)
+;; Mais ca marche pas :/
+(use-package saveplace
+  :config
+  (setq-default save-place t)
+  (setq backup-by-copying t)
+  (setq backup-directory-alist '(("." . "~/.emacs.d/saved_places"))) ;; Mais c'est pas certain que ca merche
+  (setq kept-new-versions 6)
+  (setq kept-old-versions 2)
+  )
 
-;; Permet de configurer le dossier de backup des fichiers
-(setq
- backup-by-copying t      ; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.emacs.d/saved_places"))    ; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
- version-control t)       ; use versioned backups
-
-
-;; Expend
+;; Commande de Completion
 (global-set-key (kbd "M-/") 'hippie-expand)
 
-;; Buffer list
-(global-set-key (kbd "C-x C-b") 'ibuffer)
 
-;; Search
+;; Search dans le fichier
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-M-s") 'isearch-forward)
 (global-set-key (kbd "C-M-r") 'isearch-backward)
 
-;; Navigate
+;;;; Navigate in file
+;;------------------
 ;; changed beacause ELPY bind M-> & M-<
 (global-set-key (kbd "<S-up>") 'beginning-of-buffer)
 (global-set-key (kbd "<S-down>") 'end-of-buffer)
-(global-set-key (kbd "C-d") 'kill-whole-line) ;; remplacement du kill-char totalement uselss
 
+(global-set-key (kbd "C-d") 'kill-whole-line) ;; fait un couper de toute la ligne, remplace du kill-char totalement uselss
+
+;; Move text
+;; ------------------------------------------------------------
+;; Permet de bouger des lignes sélectionné (regions) avec  M-S ^ /
+;; Alt + Maj + fleche haut ou bas
+(move-text-default-bindings)
 
 ;; Multiple cursor
 ;; ------------------------------------------------------------
 ;; Emacs porn : http://emacsrocks.com/e13.html
+(use-package multiple-cursors
+  :bind
+  (:map global-map
+        ;;(["M-SPC"] . set-rectangular-region-anchor) Marche plus :-(
+        ([f9] . mc/mark-previous-like-this)
+        ([f10] . mc/mark-next-like-this)
+        ([f11] . mc/mark-all-like-this)
+        ))
 
-(require 'multiple-cursors)
-(global-set-key (kbd "M-SPC") 'set-rectangular-region-anchor)
-(global-set-key (kbd "<f10>") 'mc/mark-next-like-this)
-(global-set-key (kbd "<f9>") 'mc/mark-previous-like-this)
-(global-set-key (kbd "<f11>") 'mc/mark-all-like-this)
+;; Navigate in fileS
+;;-------------------
+
+;; Changer de buffer facilement <F5> / <f6 , <f7>>
+;; ------------------------------------------------------------
+(defun other-window-or-switch-buffer ()
+  "Call `other-window' if more than one window is visible, switch to next buffer otherwise."
+  (interactive)
+  (if (one-window-p)
+      (switch-to-buffer nil)
+    (other-window 1)))
+
+(global-set-key (kbd "<f5>") #'split-window-right)
+(global-set-key (kbd "<f6>") #'other-window-or-switch-buffer)
+(global-set-key (kbd "<f7>") #'delete-window)
 
 ;; [TEST] Désactive l'indentation avec des tabs
 ;; -------------------------------------------------------
@@ -96,29 +114,82 @@
 
 ;; COMPANY
 ;; -------------------------------------------------------
-;;(require 'popup)
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode) ;; Là on dit que c'est pour tout
+;; Peremet de suggérer des réponses lorsqu'on écrit des trucs
 
-;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
-(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode python-mode))
+;; Vielle config :
+;; (require 'company)
+;; (add-hook 'after-init-hook 'global-company-mode) ;; Là on dit que c'est pour tout
+;; ;; Don't enable company-mode in below major modes : pas dans le shell, ni erc ...
+;; (setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode python-mode))
+
+;;;; company
+;; Modular text completion framework
+(use-package company
+  :diminish
+
+  :init
+  (setq company-idle-delay nil)
+  (setq company-tooltip-limit 20)
+  (setq company-minimum-prefix-length 2)
+
+  :config
+  (global-company-mode 1)
+  (add-to-list 'company-backends 'company-ispell t)
+  (add-to-list 'company-backends 'company-files t)
+  (add-to-list 'company-begin-commands 'outshine-self-insert-command)
+  (setq company-backends (remove 'company-ropemacs company-backends))
+
+
+  (defun my-company-elisp-setup ()
+    (set (make-local-variable 'company-backends)
+         '((company-capf :with company-dabbrev-code))))
+
+;;  Usage based completion sorting
+  (use-package company-statistics
+    :hook ((emacs-lisp-mode lisp-interaction-mode) . my-company-elisp-setup)
+    :config (company-statistics-mode)))
+
+
+;;;; company-quickhelp
+;; Popup documentation for completion candidates
+(use-package company-quickhelp
+  :init
+  (setq company-quickhelp-use-propertized-text t)
+  (setq company-quickhelp-delay 1)
+  :config (company-quickhelp-mode 1))
+
+;;;; company-web
+;; Company version of ac-html, complete for web,html,emmet,jade,slim modes
+(use-package company-web
+  :config
+  (defun my-company-web ()
+    (set (make-local-variable 'company-backends) '(company-web-html))
+    (company-mode t))
+  :hook (web-mode . my-company-web))
+
+
 
 ;; Org Mode
 ;; ---------------------------------------------------
-(require 'org)
-(setq org-log-done t) ;; Sait pas à quoi ca sert
-(setq org-startup-truncated nil) ;; Permet de faire de retours à la ligne
-(setq org-export-with-sub-superscripts nil) ;; Évites les erreures qd on export les caractères __
-(setq org-todo-keywords
-      '((sequence "TODO" "DOING" "DONE")))
+(use-package org
+  :custom
+  (org-log-done t)
+  (org-startup-truncated nil) ;; Permet de faire de retours à la ligne
+  (org-export-with-sub-superscripts nil) ;; Évites les erreures d'export quand on export les caractères __
+  (org-todo-keywords
+       '((sequence "TODO" "DOING" "DONE")))
 
+  )
 
-;; [TEST] Correcteur orthographique / dictinnaire
+;; Correcteur orthographique / dictinnaire
 ;; ---------------------------------------------------
-;; EST EN TRAIN DE PASSER à Grammacollect
-;;(require 'flyspell)
-(add-hook 'org-mode-hook 'turn-on-flyspell) ;; Ajoute automatiquement le flysper aux fichier org
-(setq ispell-dictionary "french")
+;; avec flyspell , On-the-fly spell checker
+(use-package flyspell
+  :diminish
+  :init (setq ispell-dictionary "french")
+  :hook (org-mode . turn-on-flyspell))
+
+;; Devrait passer à Grammacollect
 
 ;; [TEST] Test grammalecte
 ;; ------------------------------------------------------------
@@ -135,26 +206,28 @@
 
 ;; Permet de voir les lignes et les columns du curseur
 (column-number-mode t)
-(line-number-mode t)
+(line-number-mode t) ;; Affiche ta ligne et ta colonne
 
 ;; Nyan-mode : Permet de savoir ou tu es dans ta page (Assez utile finalement)
-;;(require 'nyan-mode)
+(use-package nyan-mode)
 (nyan-mode t)
 
 ;; Affiche l'heure dans la barre du bas
 ;; Set le buffer du de la date et du temps
 (display-time-mode t) ;; affiche le temps
 
-;; Utilise diminish.el <3
-;; Permet de retirer les minor-mod inutile de la botom line
+;; Permet Pas écrire dans le prompt du mini buffer
+(setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
+
+;; Diminish
+;; ----------------------------------
+;; Permet de retirer les mods de la botom line (qui prennent de la place pour rien)
 ;;(diminished-modes t)
 (diminish 'anaconda-eldoc-mode)
 (diminish 'edebug-mode)
 (diminish 'flycheck-mode)
 (diminish 'helm-mode)
 (diminish 'rainbow-delimiters-mode)
-(diminish 'yas-mode)
-(diminish 'yas-minor-mode)
 (diminish 'python-mode)
 (diminish 'eldoc-mode)
 (diminish 'company-mode)
@@ -164,11 +237,9 @@
 (diminish 'projectile-mode)
 (diminish 'git-gutter-mode)
 (diminish 'flymake-mode)
-;;(diminish 'server-clients-mode)
+(diminish 'ispell-minor-mode)
+(diminish 'server-buffer-clients)
 
-
-;; Permet Pas écrire dans le prompt du mini buffer
-(setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
 
 ;; Clean White Space (Trailing whitespace)
 ;; ----------------------------------
@@ -178,7 +249,7 @@
 (setq-default show-leading-whitespace t) ;; espace en fin de ligne
 (setq-default indicate-empty-lines t)
 
-;; Efface automatiquement les espaces de fin de ligne a chaque sauve
+;; Efface automatiquement les espaces de fin de ligne à chaque sauve
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; org-export stysheet
@@ -190,9 +261,11 @@
 
 ;; THEME
 ;; ----------------------------------
-;; (setq sml/no-confirm-load-theme t)
 (load-theme 'zenburn t)
 
+;; configuration Font et Police 10
+;; -----------------------------------------------------------------
+(set-frame-font "DejaVu Sans Mono-10")
 
 ;; UTF8 Partout : Parce que c'est le turfu
 ;; -----------------------------------------------------------------
@@ -200,57 +273,32 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;; [TEST] force la font a 10
+
+;; Terminal
 ;; -----------------------------------------------------------------
-
-(set-frame-font "DejaVu Sans Mono-10")
-
-;; Terminal (alt x -> ansi-term)
-;; -----------------------------------------------------------------
-;; Config pour avoir un terminal (ansi-term) qui soit bien
-;; http://rawsyntax.com/blog/learn-emacs-zsh-and-multi-term/
-
-(setq multi-term-program "/bin/zsh") ;; Force l'utilisation de zsh dans le terme
-
-(defun visit-term-buffer ()
-  "Create or visit a terminal buffer."
-  (interactive)
-  (if (not (get-buffer "*ansi-term*"))
-      (progn
-	(split-window-sensibly (selected-window))
-	(other-window 1)
-	(ansi-term (getenv "SHELL")))
-    (switch-to-buffer-other-window "*ansi-term*")))
-(global-set-key (kbd "C-c t") 'visit-term-buffer)
-
-;; Couleur pour le terminal lors d'une compile (ou d'un test)
-(require 'ansi-color)
-(defun endless/colorize-compilation ()
-  "Colorize from `compilation-filter-start' to `point'."
-  (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region
-     compilation-filter-start (point))))
-
-(add-hook 'compilation-filter-hook
-          #'endless/colorize-compilation)
+;; Je ne m'en sert jamais donc j'ai effacé la config
 
 
 ;; Permet de ne pas voir les white space dans le term
 (add-hook 'term-mode-hook
           (lambda ()
             (setq show-trailing-whitespace nil)
-))
+            ))
 
-;; Imenu-list
-;; ------------------------------------------------------------
-;; Permet d'avoir un menu avec les class / methodes du buffer
-;; Merde un peu qd on lance emacs en deamon
-;; (imenu-list-minor-mode t)
-;; (global-set-key (kbd "<f8>") #'imenu-list-smart-toggle)
+;; [TEST] fancy-narrow
+;; -----------------------------------------------------------------
+;; narrow-to-region with more eye candy.
+(use-package fancy-narrow
+  :diminish
+  :config (fancy-narrow-mode))
 
-;; [TEST] Treemacs
+
+
+;; Treemacs
 ;; ------------------------------------------------------------
 ;; permet d'avoir un menu en arbre
+;; TODO : avoir un truc qui met a jour des que je change de buffer
+;; Une ouverture automatique au launch de emacs
 (use-package treemacs
   :ensure t
   :defer t
@@ -273,7 +321,8 @@
           treemacs-silent-refresh             nil
           treemacs-sorting                    'alphabetic-desc
           treemacs-tag-follow-cleanup         t
-          treemacs-tag-follow-delay           1.5
+          treemacs-tag-follow-delay           1
+          treemacs-recenter-after-file-follow t
           treemacs-width                      45)
 
     (treemacs-follow-mode t)
@@ -296,10 +345,6 @@
   :config
   (setq treemacs-header-function #'treemacs-projectile-create-header))
 
-
-
-
-
 ;; Open URL dans emacs
 ;; ------------------------------------------------------------
 ;; Use firefox to open urls
@@ -310,8 +355,9 @@
 ;; ------------------------------------------------------------
 ;; Met les parenthèses en "rainbows", très utile pour ne plus se perdre dans les parenthès
 
-;;(require 'rainbow-delimiters)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -332,13 +378,12 @@
 ;; Counter Strike :Global Offensive
 ;; ------------------------------------------------------------
 ;; Parce que emacs à un mode pour le fichier autoexe de counf de CS:GO
-(require 'csgo-conf-mode)
+(use-package csgo-conf-mode)
 
 ;; Web-mode
 ;; ------------------------------------------------------------
-(require 'web-mode)
-;; use web-mode for .jsx files
-(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+;; Pour tout ce qui est fichier HTML, (Attention, pas JS !)
+(use-package web-mode)
 ;; use web-mode for html
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -348,28 +393,25 @@
 (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
 
-
-;; http://www.flycheck.org/manual/latest/index.html
-(require 'flycheck)
-
 ;; turn on flychecking globally
-(add-hook 'after-init-hook #'global-flycheck-mode)
+;; d-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; disable jshint since we prefer eslint checking
-(setq-default flycheck-disabled-checkers
-  (append flycheck-disabled-checkers
-    '(javascript-jshint)))
+
+;; (setq-default flycheck-disabled-checkers
+;;   (append flycheck-disabled-checkers
+;;     '(javascript-jshint)))
 
 ;; use eslint with web-mode for jsx files
-(flycheck-add-mode 'javascript-eslint 'web-mode)
+;;(flycheck-add-mode 'javascript-eslint 'web-mode)
 
 ;; customize flycheck temp file prefix
 (setq-default flycheck-temp-prefix ".flycheck")
 
 ;; disable json-jsonlist checking for json files
-(setq-default flycheck-disabled-checkers
-  (append flycheck-disabled-checkers
-    '(json-jsonlist)))
+;; (setq-default flycheck-disabled-checkers
+;;   (append flycheck-disabled-checkers
+;;     '(json-jsonlist)))
 
 ;; https://github.com/purcell/exec-path-from-shell
 ;; only need exec-path-from-shell on OSX
@@ -389,6 +431,40 @@
 
 
 
+;; [TEST] JS2-mode
+;; ------------------------------------------------------------
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+;; Better imenu
+(add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+
+(require 'js2-refactor)
+(require 'xref-js2)
+
+(add-hook 'js2-mode-hook #'js2-refactor-mode)
+(js2r-add-keybindings-with-prefix "C-c C-r")
+;; Vérifier ce que cela fait
+(define-key js2-mode-map (kbd "C-k") #'js2r-kill)
+
+(add-hook 'js2-mode-hook (lambda ()
+  (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
+
+
+(add-hook 'js2-mode-hook (lambda ()
+                           (company-mode)))
+
+;; Disable completion keybindings, as we use xref-js2 instead
+;; js-mode (which js2 is based on) binds "M-." which conflicts with xref, so
+;; unbind it.
+(define-key js-mode-map (kbd "M-.") nil)
+
+;; Permet de ne pas faire n'importe quoi sur l'indentation
+(add-hook 'js2-mode-hook (lambda () (electric-indent-local-mode -1)))
+;;(add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 1)))
+
+;; Hook pour passer le linter a chaque save
+(eval-after-load 'js2-mode
+	   '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
 
 ;; ESLINT
 ;; ------------------------------------------------------------
@@ -405,6 +481,7 @@
                                         root))))
     (when (and eslint (file-executable-p eslint))
       (setq-local flycheck-javascript-eslint-executable eslint))))
+
 (add-hook 'flycheck-mode-hook #'my/use-eslint-from-node-modules)
 
 ;; Le package n'étant pas terrible j'ai pris ca ici :
@@ -422,48 +499,6 @@
            (revert-buffer t t t))
     ))
 
-;; [TEST] JS2-mode
-;; ------------------------------------------------------------
-(require 'js2-mode)
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-;; Better imenu
-(add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
-
-(require 'js2-refactor)
-(require 'xref-js2)
-
-(add-hook 'js2-mode-hook #'js2-refactor-mode)
-(js2r-add-keybindings-with-prefix "C-c C-r")
-;; a vérifier
-(define-key js2-mode-map (kbd "C-k") #'js2r-kill)
-
-(add-hook 'js2-mode-hook (lambda ()
-  (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)))
-
-
-;;(add-to-list 'load-path "~/.emacs.d/elpa/tern-20170925.1333/")
-;;(autoload 'tern-mode "tern.el" nil t)
-
-;; [Marche pas] Company term (better completion)
-;; (add-to-list 'company-backends 'company-tern)
-;; (add-hook 'js2-mode-hook (lambda ()
-;;                            (tern-mode)
-;;                            (company-mode)))
-
-(add-hook 'js2-mode-hook (lambda ()
-                           (company-mode)))
-
-;; Disable completion keybindings, as we use xref-js2 instead
-;; js-mode (which js2 is based on) binds "M-." which conflicts with xref, so
-;; unbind it.
-(define-key js-mode-map (kbd "M-.") nil)
-;; (define-key tern-mode-keymap (kbd "M-.") nil)
-;; (define-key tern-mode-keymap (kbd "M-,") nil)
-
-;; Hook pour passer le linter a chaque save
-(eval-after-load 'js2-mode
-	   '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
-
 ;; Markdown mode
 ;; ------------------------------------------------------------
 (autoload 'markdown-mode "markdown-mode"
@@ -475,80 +510,83 @@
 ;; ------------------------------------------------------------
 ;; Permet de faire de beau powerpoint à partir des .org
 ;; Attention, dans le .org, il faut checker le PATH du js
-(require 'ox-reveal)
+;;(require 'ox-reveal)
+;(use-package ox)
+(use-package ox-reveal)
 
 
-
-;; [Test] Move text
+;; HELM
 ;; ------------------------------------------------------------
-;; Permet de bouger des lignes sélectionné (regions) avec  M-S ^ /
-;; Alt + Maj + fleche haut ou bas
-(move-text-default-bindings)
+;; Permet d'améliorer le M-x et pas mal d'autre choses
+;; fancy candidate selection framework
 
-;; Changer de buffer facilement <F5> / <f6 , <f7>>
-;; ------------------------------------------------------------
-(defun other-window-or-switch-buffer ()
-  "Call `other-window' if more than one window is visible, switch to next buffer otherwise."
-  (interactive)
-  (if (one-window-p)
-      (switch-to-buffer nil)
-    (other-window 1)))
+(use-package helm
+  :diminish
+  :commands helm-mini
 
-(global-set-key (kbd "<f5>") #'split-window-right)
-(global-set-key (kbd "<f6>") #'other-window-or-switch-buffer)
-(global-set-key (kbd "<f7>") #'delete-window)
+  :init
+  (setq helm-idle-delay 0.1)
+  (setq helm-input-idle-delay 0.1)
+  (setq helm-autoresize-max-height 30)
+  (setq helm-autoresize-min-height 20) ;; TODO : semble pas marcher
+  (setq helm-M-x-always-save-history t)
+  (setq helm-buffer-details-flag nil)
+  (setq helm-mode-handle-completion-in-region nil) ;don't use helm for `completion-at-point'
+  ;;(setq helm-grep-ag-command "rg --color=always --smart-case --no-heading --line-number %s %s %s")
+  (setq helm-boring-buffer-regexp-list (list (rx "*magit-") (rx "*helm") (rx "*scratch")  (rx "*log") (rx "*Ibuffer") (rx "*vc") (rx "*Help")  (rx "*Minibuf") (rx "*Messages*") (rx "*Annotate")  (rx "*temp")  (rx "*server") ))
+  (setq helm-autoresize-mode t)
 
+  :bind
+  ("M-x" . helm-M-x)
+  ("C-x C-f" . #'helm-find-files)
+  ("C-s" . #'helm-occur)
+  ("C-x C-b" . helm-mini)
 
-;; Helm
-;; ------------------------------------------------------------
-;; Permet d'améliorer le M-x et pas mal d'autre chose
-(require 'helm-mode)
-(require 'helm-config)
-(global-set-key (kbd "M-x") #'helm-M-x)
-(global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
-(global-set-key (kbd "C-x C-f") #'helm-find-files)
-(global-set-key (kbd "C-s") #'helm-occur)
+  :config
+  (require 'helm-config)
+  (helm-mode 1)
+  (add-to-list 'helm-completing-read-handlers-alist '(dired-create-directory))
+  (add-to-list 'helm-boring-buffer-regexp-list ":.*")
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(setq helm-autoresize-max-height 0)
-(setq helm-autoresize-min-height 20)
-(helm-autoresize-mode 1)
-(helm-mode 1)
+  ;; permet des fake "go to definition" nottament pour le mode JS
+  (use-package helm-xref)
+  ;; cette option à été enlevé : (setq xref-show-xrefs-function helm-xref-show-xrefs)
 
-(require 'helm-xref)
-(setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+  (use-package helm-ag) ;; Permet de faire des recherches dans le code. Couplé avec projectile, c'est juste Excelent !
 
-;; Helm-ag
-;; ------------------------------------------------------------
-;; AG => Sorte de grep
-;; Avec projectile, permet de trouver l'occurence d'un mot dans un projet
+  ;; Yet Another `describe-bindings' with `helm'.
+  (use-package helm-descbinds
+    :config (helm-descbinds-mode))
+
+  ;; Helm integration for Projectile
+  (use-package helm-projectile)
+
+  ;; Helm UI wrapper for system package managers.
+  (use-package helm-system-packages)
+)
+
 
 
 ;; Projectile
 ;; ------------------------------------------------------------
-;;
+;; Permet de naviguer au sein d'un projet
 (projectile-mode)
 (helm-projectile-on)
 
 (use-package projectile
   :init (progn
-          (projectile-global-mode)
+          (projectile-mode)
           (setq projectile-enable-caching t)
-          (setq projectile-ignored-directories  '("node" "_output"))
+          (setq projectile-ignored-directories  '("node" "_output" "node_module"))
           (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "pkg" "bin") )
           )
   :bind (
          ("<f1>" . helm-projectile-switch-project) ;; Change le projet de travail
 	 ("<f2>" . helm-projectile)  ;; Cherche un fichier
          ("<f3>" . helm-projectile-ag) ;; Sorte de grep
-	 ("<f4>" . helm-projectile-switch-to-buffer) ;; Switch entre les buffer
+	 ("<f4>" . helm-projectile-switch-to-buffer) ;; Switch entre les buffer , un peu innutile
          )
 :ensure t)
-
-;; AC-mode
-;; ------------------------------------------------------------
-;;(ac-config-default)
-;;(ac-set-trigger-key "TAB")
 
 
 ;; Playerctl
@@ -556,17 +594,15 @@
 ;; Permet de changer de musique, notament spotify, depuis emacs
 ;; Nécessiste playerctl
 ;; Développé par moi :-)
-(require 'playerctl)
-(define-key global-map (kbd "C-c C-SPC") 'playerctl-play-pause-song)
-(define-key global-map (kbd "C-c C-n") 'playerctl-next-song)
-(define-key global-map (kbd "C-c C-p") 'playerctl-previous-song)
 
-;; [Test] Yasnippet
-;; ------------------------------------------------------------
-;; Permet de générer automatiquement du code
-;; (add-to-list 'load-path "~/.emacs.d/plugins/yasnippet")
-;; (require 'yasnippet)
-(yas-global-mode 1)
+(use-package playerctl
+  :bind(
+        ("C-c C-SPC" . playerctl-play-pause-song)
+        ("C-c C-n" . playerctl-next-song)
+        ("C-c C-p" . playerctl-previous-song)
+        )
+)
+
 
 ;; Git Gutter
 ;; ------------------------------------------------------------
@@ -575,7 +611,10 @@
 
 ;; Flycheck
 ;; ------------------------------------------------------------
-(add-hook 'after-init-hook #'global-flycheck-mode)
+(use-package flycheck
+  :diminish
+  :hook (after-init-hook . #'global-flycheck-mode))
+
 
 ;; Pomodori
 ;; ------------------------------------------------------------
@@ -586,27 +625,13 @@
 
 ;; [TEST] Elpy
 ;; ------------------------------------------------------------
+(use-package elpy)
+
 (package-initialize)
 (elpy-enable)
 
 (setq elpy-rpc-backend "jedi")
 (pyvenv-activate "/home/tlu/working/sief/sief-back/venv/")
-
-;; [TEST] Devrait choisir entre company et yasnipiet
-;; (defun company-yasnippet-or-completion ()
-;;   "Solve company yasnippet conflicts."
-;;   (interactive)
-;;   (let ((yas-fallback-behavior
-;;          (apply 'company-complete-common nil)))
-;;     (yas-expand)))
-
-;; (add-hook 'company-mode-hook
-;;           (lambda ()
-;;             (substitute-key-definition
-;;              'company-complete-common
-;;              'company-yasnippet-or-completion
-;;              company-active-map)))
-
 
 ;; [TEST] terminal interpreter
 (setq
@@ -614,7 +639,7 @@
  python-shell-interpreter-args "--simple-prompt --pprint")
 
 
-;; [TEST] Compilation (et test avec elpy) dans une frame en bas
+;; Compilation (et test avec elpy) dans une frame en bas
 ;; ------------------------------------------------------------
 (defun down-compilation-frame-hook ()
   "Permet d'avoir la fenetre de compilation ou de test vers le bas de l'écran."
@@ -631,13 +656,13 @@
 
 
 
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(elpy-test-pytest-runner-command (quote ("pytest" "-p no:sugar
+ '(compilation-window-height 20)
+ '(elpy-test-pytest-runner-command (quote ("pytest" "-p no:sugar -vvv
 ")))
  '(elpy-test-runner (quote elpy-test-pytest-runner))
  '(font-use-system-font t)
@@ -645,10 +670,18 @@
  '(helm-ag-ignore-buffer-patterns (quote ("\\.html\\'" "\\.htm\\'")))
  '(helm-ag-ignore-directory (quote ("html_cov" "node_module" ".tmp" "dist")))
  '(helm-ag-insert-at-point (quote symbol))
+ '(helm-autoresize-max-height 0)
+ '(helm-autoresize-min-height 20)
+ '(helm-buffer-max-length 20)
  '(inhibit-startup-screen t)
+ '(js-indent-level 1)
+ '(org-export-with-sub-superscripts nil)
+ '(org-log-done t)
+ '(org-startup-truncated nil)
+ '(org-todo-keywords (quote ((sequence "TODO" "DOING" "DONE"))))
  '(package-selected-packages
    (quote
-    (helm-xref tern-context-coloring company-tern xref-js2 js2-refactor add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
+    (helm-system-packages helm-descbinds fancy-narrow helm-xref tern-context-coloring company-tern xref-js2 js2-refactor add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
  '(pyvenv-mode t))
 
 
