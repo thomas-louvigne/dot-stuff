@@ -86,11 +86,20 @@
 (use-package multiple-cursors
   :bind
   (:map global-map
-        ;;(["M-SPC"] . set-rectangular-region-anchor) Marche plus :-(
+        ("M-SPC" . set-rectangular-region-anchor);; Marche plus :-(
         ([f9] . mc/mark-previous-like-this)
         ([f10] . mc/mark-next-like-this)
         ([f11] . mc/mark-all-like-this)
         ))
+
+;; Exand region
+;; ------------------------------------------------------------
+(use-package expand-region
+  :bind (
+         ("M-w" . er/expand-region)
+         )
+  )
+
 
 ;; Navigate in fileS
 ;;-------------------
@@ -626,7 +635,6 @@
 ;; [TEST] Elpy
 ;; ------------------------------------------------------------
 (use-package elpy)
-
 (package-initialize)
 (elpy-enable)
 
@@ -656,6 +664,8 @@
 
 
 
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -681,7 +691,7 @@
  '(org-todo-keywords (quote ((sequence "TODO" "DOING" "DONE"))))
  '(package-selected-packages
    (quote
-    (helm-system-packages helm-descbinds fancy-narrow helm-xref tern-context-coloring company-tern xref-js2 js2-refactor add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
+    (expand-region company-quickhelp helm-system-packages helm-descbinds fancy-narrow helm-xref tern-context-coloring company-tern xref-js2 js2-refactor add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
  '(pyvenv-mode t))
 
 
