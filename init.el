@@ -282,26 +282,11 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-
-;; Terminal
-;; -----------------------------------------------------------------
-;; Je ne m'en sert jamais donc j'ai effacé la config
-
-
 ;; Permet de ne pas voir les white space dans le term
 (add-hook 'term-mode-hook
           (lambda ()
             (setq show-trailing-whitespace nil)
             ))
-
-;; [TEST] fancy-narrow
-;; -----------------------------------------------------------------
-;; narrow-to-region with more eye candy.
-(use-package fancy-narrow
-  :diminish
-  :config (fancy-narrow-mode))
-
-
 
 ;; Treemacs
 ;; ------------------------------------------------------------
@@ -384,7 +369,7 @@
  '(rainbow-delimiters-unmatched-face ((t (:background "cyan")))))
 
 
-;; Counter Strike :Global Offensive
+;; Counter Strike : Global Offensive
 ;; ------------------------------------------------------------
 ;; Parce que emacs à un mode pour le fichier autoexe de counf de CS:GO
 (use-package csgo-conf-mode)
@@ -517,17 +502,14 @@
 
 ;; ox-reveal
 ;; ------------------------------------------------------------
-;; Permet de faire de beau powerpoint à partir des .org
-;; Attention, dans le .org, il faut checker le PATH du js
-;;(require 'ox-reveal)
-;(use-package ox)
+;; Permet de faire de beau powerpoint à partir de .org et de la lib reavea.js
+;; Attention, dans l'entete du .org, il faut checker le PATH du js
 (use-package ox-reveal)
 
 
 ;; HELM
 ;; ------------------------------------------------------------
 ;; Permet d'améliorer le M-x et pas mal d'autre choses
-;; fancy candidate selection framework
 
 (use-package helm
   :diminish
@@ -575,7 +557,6 @@
 )
 
 
-
 ;; Projectile
 ;; ------------------------------------------------------------
 ;; Permet de naviguer au sein d'un projet
@@ -586,8 +567,8 @@
   :init (progn
           (projectile-mode)
           (setq projectile-enable-caching t)
-          (setq projectile-ignored-directories  '("node" "_output" "node_module"))
-          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "pkg" "bin") )
+          (setq projectile-ignored-directories  '("node" "_output" "node_module" "pkg" "bin"))
+          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore") )
           )
   :bind (
          ("<f1>" . helm-projectile-switch-project) ;; Change le projet de travail
@@ -616,6 +597,7 @@
 ;; Git Gutter
 ;; ------------------------------------------------------------
 ;; Permet de montrer ce qui a changé dans git dans le linum (la bar de gauche)
+(use-package git-gutter)
 (global-git-gutter-mode t)
 
 ;; Flycheck
@@ -680,9 +662,6 @@
  '(helm-ag-ignore-buffer-patterns (quote ("\\.html\\'" "\\.htm\\'")))
  '(helm-ag-ignore-directory (quote ("html_cov" "node_module" ".tmp" "dist")))
  '(helm-ag-insert-at-point (quote symbol))
- '(helm-autoresize-max-height 0)
- '(helm-autoresize-min-height 20)
- '(helm-buffer-max-length 20)
  '(inhibit-startup-screen t)
  '(js-indent-level 1)
  '(org-export-with-sub-superscripts nil)
