@@ -1,4 +1,3 @@
-
 --[[
 
      Awesome WM configuration template
@@ -111,57 +110,7 @@ awful.layout.layouts = {
     --lain.layout.termfair,
     --lain.layout.termfair.center,
 }
--- awful.util.taglist_buttons = awful.util.table.join(
---                     awful.button({ }, 1, function(t) t:view_only() end),
---                     awful.button({ modkey }, 1, function(t)
---                                               if client.focus then
---                                                   client.focus:move_to_tag(t)
---                                               end
---                                           end),
---                     awful.button({ }, 3, awful.tag.viewtoggle),
---                     awful.button({ modkey }, 3, function(t)
---                                               if client.focus then
---                                                   client.focus:toggle_tag(t)
---                                               end
---                                           end),
---                     awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
---                     awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
---                 )
--- awful.util.tasklist_buttons = awful.util.table.join(
---                      awful.button({ }, 1, function (c)
---                                               if c == client.focus then
---                                                   c.minimized = true
---                                               else
---                                                   -- Without this, the following
---                                                   -- :isvisible() makes no sense
---                                                   c.minimized = false
---                                                   if not c:isvisible() and c.first_tag then
---                                                       c.first_tag:view_only()
---                                                   end
---                                                   -- This will also un-minimize
---                                                   -- the client, if needed
---                                                   client.focus = c
---                                                   c:raise()
---                                               end
---                                           end),
---                      awful.button({ }, 3, function()
---                          local instance = nil
 
---                          return function ()
---                              if instance and instance.wibox.visible then
---                                  instance:hide()
---                                  instance = nil
---                              else
---                                  instance = awful.menu.clients({ theme = { width = 250 } })
---                              end
---                         end
---                      end),
---                      awful.button({ }, 4, function ()
---                                               awful.client.focus.byidx(1)
---                                           end),
---                      awful.button({ }, 5, function ()
---                                               awful.client.focus.byidx(-1)
---                                           end))
 awful.util.taglist_buttons = my_table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
                     awful.button({ modkey }, 1, function(t)
@@ -558,39 +507,6 @@ globalkeys = awful.util.table.join(
     --]]
 )
 
--- clientkeys = awful.util.table.join(
---    awful.key({ altkey, "Shift"   }, "m",      lain.util.magnify_client                         ),
---    awful.key({ modkey,           }, "f",
---       function (c)
---          c.fullscreen = not c.fullscreen
---          c:raise()
---       end,
---       {description = "toggle fullscreen", group = "client"}),
---    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end,
---       {description = "close", group = "client"}),
---    awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
---       {description = "toggle floating", group = "client"}),
---    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
---       {description = "move to master", group = "client"}),
---    awful.key({ modkey,           }, "o",      function (c) c:move_to_screen()               end,
---       {description = "move to screen", group = "client"}),
---    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
---       {description = "toggle keep on top", group = "client"}),
---    awful.key({ modkey,           }, "n",
---       function (c)
---          -- The client currently has the input focus, so it cannot be
---          -- minimized, since minimized clients can't have the focus.
---          c.minimized = true
---       end ,
---       {description = "minimize", group = "client"}),
---    awful.key({ modkey,           }, "m",
---       function (c)
---          c.maximized = not c.maximized
---          c:raise()
---       end ,
---       {description = "maximize", group = "client"})
--- )
-
 clientkeys = my_table.join(
     awful.key({ altkey, "Shift"   }, "m",      lain.util.magnify_client,
               {description = "magnify client", group = "client"}),
@@ -626,55 +542,7 @@ clientkeys = my_table.join(
 )
 
 
--- -- Bind all key numbers to tags.
--- -- Be careful: we use keycodes to make it works on any keyboard layout.
--- -- This should map on the top row of your keyboard, usually 1 to 9.
--- for i = 1, 9 do
---     globalkeys = awful.util.table.join(globalkeys,
---         -- View tag only.
---         awful.key({ modkey }, "#" .. i + 9,
---                   function ()
---                         local screen = awful.screen.focused()
---                         local tag = screen.tags[i]
---                         if tag then
---                            tag:view_only()
---                         end
---                   end,
---                   {description = "view tag #"..i, group = "tag"}),
---         -- Toggle tag display.
---         awful.key({ modkey, "Control" }, "#" .. i + 9,
---                   function ()
---                       local screen = awful.screen.focused()
---                       local tag = screen.tags[i]
---                       if tag then
---                          awful.tag.viewtoggle(tag)
---                       end
---                   end,
---                   {description = "toggle tag #" .. i, group = "tag"}),
---         -- Move client to tag.
---         awful.key({ modkey, "Shift" }, "#" .. i + 9,
---                   function ()
---                       if client.focus then
---                           local tag = client.focus.screen.tags[i]
---                           if tag then
---                               client.focus:move_to_tag(tag)
---                           end
---                      end
---                   end,
---                   {description = "move focused client to tag #"..i, group = "tag"}),
---         -- Toggle tag on focused client.
---         awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
---                   function ()
---                       if client.focus then
---                           local tag = client.focus.screen.tags[i]
---                           if tag then
---                               client.focus:toggle_tag(tag)
---                           end
---                       end
---                   end,
---                   {description = "toggle focused client on tag #" .. i, group = "tag"})
---     )
--- end
+
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
@@ -846,19 +714,6 @@ client.connect_signal("mouse::enter", function(c)
         client.focus = c
     end
 end)
-
--- -- No border for maximized clients
--- client.connect_signal("focus",
---     function(c)
---         if c.maximized then -- no borders if only 1 client visible
---             c.border_width = 0
---         elseif #awful.screen.focused().clients > 1 then
---             c.border_width = beautiful.border_width
---             c.border_color = beautiful.border_focus
---         end
---     end)
--- client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
--- -- }}}
 
 -- No border for maximized clients
 function border_adjust(c)

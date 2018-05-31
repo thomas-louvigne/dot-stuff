@@ -18,6 +18,10 @@
 			 )
       )
 
+
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+
+
 (package-initialize)
 (setq url-http-attempt-keepalives nil)
 (setq use-package-always-ensure t)
@@ -38,7 +42,7 @@
 ;; (setq linum-format "%2d| ") ;; 2> cole à gauche puis | puis space
 
 ;; Pas de menubar en haut ni de scroll bar
-(menu-bar-mode -1) ;; Enleve la bar du haut qui est useless
+(menu-bar-mode 0) ;; Enleve la bar du haut qui est useless
 (when (fboundp 'tool-bar-mode)
   (tool-bar-mode -1))
 (when (fboundp 'scroll-bar-mode) ;; Enlever la scrollbar
@@ -56,23 +60,36 @@
   (setq kept-old-versions 2)
   )
 
+(setq backup-directory-alist `(("." . "~/.emacs.d/saved_places")))
+
+
 ;; Commande de Completion
 (global-set-key (kbd "M-/") 'hippie-expand)
 
 
-;; Search dans le fichier
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
+;; Search dans le fichier - Remplacé par swiper-helm
+;; (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+;; (global-set-key (kbd "C-r") 'isearch-backward-regexp)
+;; (global-set-key (kbd "C-M-s") 'isearch-forward)
+;; (global-set-key (kbd "C-M-r") 'isearch-backward)
+
+
 
 ;;;; Navigate in file
-;;------------------
+;;--------------------
 ;; changed beacause ELPY bind M-> & M-<
 (global-set-key (kbd "<S-up>") 'beginning-of-buffer)
 (global-set-key (kbd "<S-down>") 'end-of-buffer)
-
 (global-set-key (kbd "C-d") 'kill-whole-line) ;; fait un couper de toute la ligne, remplace du kill-char totalement uselss
+
+;; Mouse tricks
+;;--------------------
+;; Permet de faire des copiers/coller dans et en dehors d'emacs
+(setq select-active-regions nil)
+(setq mouse-drag-copy-region t)
+(global-set-key [mouse-2] 'x-clipboard-yank)
+(setq x-select-enable-clipboard t)
+
 
 ;; Move text
 ;; ------------------------------------------------------------
@@ -86,11 +103,14 @@
 (use-package multiple-cursors
   :bind
   (:map global-map
-        ("M-SPC" . set-rectangular-region-anchor);; Marche plus :-(
-        ([f9] . mc/mark-previous-like-this)
-        ([f10] . mc/mark-next-like-this)
-        ([f11] . mc/mark-all-like-this)
+        ("M-SPC" . set-rectangular-region-anchor)
+        ([f9] . mc/mark-previous-word-like-this)
+        ([f10] . mc/mark-next-word-like-this)
+        ([f11] . mc/mark-all-word-like-this)
         ))
+
+(global-unset-key (kbd "M-<down-mouse-1>"))
+(global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click) ;; marche pas dans emacs -nw termin
 
 ;; Exand region
 ;; ------------------------------------------------------------
@@ -134,8 +154,6 @@
 ;;;; company
 ;; Modular text completion framework
 (use-package company
-  :diminish
-
   :init
   (setq company-idle-delay nil)
   (setq company-tooltip-limit 20)
@@ -196,7 +214,13 @@
 (use-package flyspell
   :diminish
   :init (setq ispell-dictionary "french")
-  :hook (org-mode . turn-on-flyspell))
+  :hook (org-mode . turn-on-flyspell)
+  :bind
+  (
+        ("M-3" . ispell-word)
+        )
+  )
+
 
 ;; Devrait passer à Grammacollect
 
@@ -228,26 +252,6 @@
 ;; Permet Pas écrire dans le prompt du mini buffer
 (setq minibuffer-prompt-properties (quote (read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt)))
 
-;; Diminish
-;; ----------------------------------
-;; Permet de retirer les mods de la botom line (qui prennent de la place pour rien)
-;;(diminished-modes t)
-(diminish 'anaconda-eldoc-mode)
-(diminish 'edebug-mode)
-(diminish 'flycheck-mode)
-(diminish 'helm-mode)
-(diminish 'rainbow-delimiters-mode)
-(diminish 'python-mode)
-(diminish 'eldoc-mode)
-(diminish 'company-mode)
-(diminish 'git-gutter)
-(diminish 'python)
-(diminish 'elpy-mode)
-(diminish 'projectile-mode)
-(diminish 'git-gutter-mode)
-(diminish 'flymake-mode)
-(diminish 'ispell-minor-mode)
-(diminish 'server-buffer-clients)
 
 
 ;; Clean White Space (Trailing whitespace)
@@ -274,7 +278,7 @@
 
 ;; configuration Font et Police 10
 ;; -----------------------------------------------------------------
-(set-frame-font "DejaVu Sans Mono-10")
+(set-frame-font "DejaVu Sans Mono-12")
 
 ;; UTF8 Partout : Parce que c'est le turfu
 ;; -----------------------------------------------------------------
@@ -288,56 +292,58 @@
             (setq show-trailing-whitespace nil)
             ))
 
-;; Treemacs
-;; ------------------------------------------------------------
-;; permet d'avoir un menu en arbre
-;; TODO : avoir un truc qui met a jour des que je change de buffer
-;; Une ouverture automatique au launch de emacs
-(use-package treemacs
-  :ensure t
-  :defer t
-  :config
-  (progn
-    (setq treemacs-change-root-without-asking nil
-          treemacs-collapse-dirs              (if (executable-find "python") 3 0)
-          treemacs-file-event-delay           5000
-          treemacs-follow-after-init          t
-          treemacs-goto-tag-strategy          'refetch-index
-          treemacs-indentation                2
-          treemacs-indentation-string         " "
-          treemacs-is-never-other-window      nil
-          treemacs-never-persist              nil
-          treemacs-no-png-images              nil
-          treemacs-recenter-after-file-follow nil
-          treemacs-recenter-after-tag-follow  nil
-          treemacs-show-hidden-files          t
-          treemacs-silent-filewatch           nil
-          treemacs-silent-refresh             nil
-          treemacs-sorting                    'alphabetic-desc
-          treemacs-tag-follow-cleanup         t
-          treemacs-tag-follow-delay           1
-          treemacs-recenter-after-file-follow t
-          treemacs-width                      45)
 
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null (executable-find "python3"))))
-      (`(t . t)
-       (treemacs-git-mode 'extended))
-      (`(t . _)
-       (treemacs-git-mode 'simple))))
-  :bind
-  (:map global-map
-        ([f8]         . treemacs-toggle)
-        ("M-0"        . treemacs-select-window)
-        ("C-c 1"      . treemacs-delete-other-windows)
-        ))
-(use-package treemacs-projectile
-  :defer t
-  :ensure t
-  :config
-  (setq treemacs-header-function #'treemacs-projectile-create-header))
+;; ;; Treemacs
+;; ;; ------------------------------------------------------------
+;; ;; permet d'avoir un menu en arbre
+;; ;; TODO : avoir un truc qui met a jour des que je change de buffer
+;; ;; Une ouverture automatique au launch de emacs
+;; (use-package treemacs
+;;   :ensure t
+;;   :defer t
+;;   :config
+;;   (progn
+;;     (setq treemacs-change-root-without-asking nil
+;;           treemacs-collapse-dirs              (if (executable-find "python") 3 0)
+;;           treemacs-file-event-delay           5000
+;;           treemacs-follow-after-init          t
+;;           treemacs-goto-tag-strategy          'refetch-index
+;;           treemacs-indentation                2
+;;           treemacs-indentation-string         " "
+;;           treemacs-is-never-other-window      nil
+;;           treemacs-never-persist              nil
+;;           treemacs-no-png-images              nil
+;;           treemacs-recenter-after-file-follow nil
+;;           treemacs-recenter-after-tag-follow  nil
+;;           treemacs-show-hidden-files          t
+;;           treemacs-silent-filewatch           nil
+;;           treemacs-silent-refresh             nil
+;;           treemacs-sorting                    'alphabetic-desc
+;;           treemacs-tag-follow-cleanup         t
+;;           treemacs-tag-follow-delay           1
+;;           treemacs-recenter-after-file-follow t
+;;           treemacs-width                      45)
+
+;;     (treemacs-follow-mode t)
+;;     (treemacs-filewatch-mode t)
+;;     (pcase (cons (not (null (executable-find "git")))
+;;                  (not (null (executable-find "python3"))))
+;;       (`(t . t)
+;;        (treemacs-git-mode 'extended))
+;;       (`(t . _)
+;;        (treemacs-git-mode 'simple))))
+;;   :bind
+;;   (:map global-map
+;;         ([f8]         . treemacs-toggle)
+;;         ("M-0"        . treemacs-select-window)
+;;         ("C-c 1"      . treemacs-delete-other-windows)
+;;         )
+;;   )
+;; (use-package treemacs-projectile
+;;   :defer t
+;;   :ensure t
+;;   :config
+;;   (setq treemacs-header-function #'treemacs-projectile-create-header))
 
 ;; Open URL dans emacs
 ;; ------------------------------------------------------------
@@ -413,13 +419,13 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
-;; adjust indents for web-mode to 1 spaces
+;; adjust indents for web-mode to 2 spaces
 (defun my-web-mode-hook ()
   "Hooks for Web mode,  adjust indentation."
   ;;; http://web-mode.org/
   (setq web-mode-markup-indent-offset 1)
   (setq web-mode-css-indent-offset 2)
-  (setq web-mode-indent-style 1)
+  (setq web-mode-indent-style 2)
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
@@ -431,6 +437,7 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; Better imenu
 (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+
 
 (require 'js2-refactor)
 (require 'xref-js2)
@@ -452,13 +459,16 @@
 ;; unbind it.
 (define-key js-mode-map (kbd "M-.") nil)
 
-;; Permet de ne pas faire n'importe quoi sur l'indentation
-(add-hook 'js2-mode-hook (lambda () (electric-indent-local-mode -1)))
-;;(add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 1)))
+(add-hook 'js2-mode-hook (lambda () (electric-indent-local-mode -1))) ;; ?
 
 ;; Hook pour passer le linter a chaque save
 (eval-after-load 'js2-mode
 	   '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
+
+;; [TEST] refactor JS
+;; ------------------------------------------------------------
+;; permet une suite de binding pour refacor du code js
+(js2r-add-keybindings-with-prefix "C-c C-m")
 
 ;; ESLINT
 ;; ------------------------------------------------------------
@@ -512,14 +522,11 @@
 ;; Permet d'améliorer le M-x et pas mal d'autre choses
 
 (use-package helm
-  :diminish
   :commands helm-mini
 
   :init
   (setq helm-idle-delay 0.1)
   (setq helm-input-idle-delay 0.1)
-  (setq helm-autoresize-max-height 30)
-  (setq helm-autoresize-min-height 20) ;; TODO : semble pas marcher
   (setq helm-M-x-always-save-history t)
   (setq helm-buffer-details-flag nil)
   (setq helm-mode-handle-completion-in-region nil) ;don't use helm for `completion-at-point'
@@ -530,8 +537,8 @@
   :bind
   ("M-x" . helm-M-x)
   ("C-x C-f" . #'helm-find-files)
-  ("C-s" . #'helm-occur)
-  ("C-x C-b" . helm-mini)
+  ("C-s" . #'swiper)
+;;  ("C-x C-b" . helm-mini)
 
   :config
   (require 'helm-config)
@@ -540,7 +547,10 @@
   (add-to-list 'helm-boring-buffer-regexp-list ":.*")
 
   ;; permet des fake "go to definition" nottament pour le mode JS
-  (use-package helm-xref)
+
+  (require 'helm-xref)
+  (setq xref-show-xrefs-function 'helm-xref-show-xrefs)
+
   ;; cette option à été enlevé : (setq xref-show-xrefs-function helm-xref-show-xrefs)
 
   (use-package helm-ag) ;; Permet de faire des recherches dans le code. Couplé avec projectile, c'est juste Excelent !
@@ -555,7 +565,6 @@
   ;; Helm UI wrapper for system package managers.
   (use-package helm-system-packages)
 )
-
 
 ;; Projectile
 ;; ------------------------------------------------------------
@@ -574,7 +583,6 @@
          ("<f1>" . helm-projectile-switch-project) ;; Change le projet de travail
 	 ("<f2>" . helm-projectile)  ;; Cherche un fichier
          ("<f3>" . helm-projectile-ag) ;; Sorte de grep
-	 ("<f4>" . helm-projectile-switch-to-buffer) ;; Switch entre les buffer , un peu innutile
          )
 :ensure t)
 
@@ -593,11 +601,15 @@
         )
 )
 
-
 ;; Git Gutter
 ;; ------------------------------------------------------------
 ;; Permet de montrer ce qui a changé dans git dans le linum (la bar de gauche)
-(use-package git-gutter)
+(use-package git-gutter
+    :bind(
+        ("C-n" . git-gutter:next-diff)
+        ("C-p" . git-gutter:previous-diff)
+        )
+    )
 (global-git-gutter-mode t)
 
 ;; Flycheck
@@ -616,6 +628,7 @@
 
 ;; [TEST] Elpy
 ;; ------------------------------------------------------------
+;; Toujours pas satisfait...
 (use-package elpy)
 (package-initialize)
 (elpy-enable)
@@ -631,6 +644,7 @@
 
 ;; Compilation (et test avec elpy) dans une frame en bas
 ;; ------------------------------------------------------------
+
 (defun down-compilation-frame-hook ()
   "Permet d'avoir la fenetre de compilation ou de test vers le bas de l'écran."
   (when (not (get-buffer-window "*compilation*"))
@@ -643,7 +657,49 @@
           (shrink-window (- h compilation-window-height)))))))
 (add-hook 'compilation-mode-hook 'down-compilation-frame-hook)
 
+;; Pour avoir de la couleur dans le shell quand on compille
+;; ------------------------------------------------------------
+(define-derived-mode ansi-compilation-mode compilation-mode "ansi compilation"
+  "Compilation mode that understands ansi colors."
+  (require 'ansi-color)
+  (toggle-read-only 0)
+  (ansi-color-apply-on-region (point-min) (point-max)))
 
+(defun colorize-compilation (one two)
+  "ansi colorize the compilation buffer."
+  (ansi-compilation-mode)
+ )
+(setq compilation-finish-function 'colorize-compilation)
+
+;; [TEST] yapf
+;; ------------------------------------------------------------
+(add-hook 'python-mode-hook 'yapf-mode)
+
+
+;; Diminish
+;; ----------------------------------
+;; Permet de retirer les mods de la botom line (qui prennent de la place pour rien)
+;;(diminished-modes t)
+(diminish 'anaconda-eldoc-mode)
+(diminish 'edebug-mode)
+(diminish 'flycheck-mode)
+(diminish 'helm-mode)
+(diminish 'rainbow-delimiters-mode)
+(diminish 'python-mode)
+(diminish 'eldoc-mode)
+(diminish 'company-mode)
+(diminish 'git-gutter)
+(diminish 'python)
+(diminish 'elpy-mode)
+(diminish 'projectile-mode)
+(diminish 'git-gutter-mode)
+(diminish 'flymake-mode)
+(diminish 'ispell-minor-mode)
+(diminish 'server-buffer-clients)
+(diminish 'js2-mode)
+(diminish 'company-mode)
+(diminish 'venv-mode)
+(diminish 'yapf-mode)
 
 
 
@@ -653,25 +709,72 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
+ '(calendar-date-display-form
+   (quote
+    ((if dayname
+         (concat dayname ", "))
+     day "-" monthname "-" year)))
+ '(company-quickhelp-color-background "#4F4F4F")
+ '(company-quickhelp-color-foreground "#DCDCCC")
  '(compilation-window-height 20)
+ '(custom-safe-themes
+   (quote
+    ("e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" default)))
+ '(display-time-24hr-format t)
+ '(display-time-mode t)
  '(elpy-test-pytest-runner-command (quote ("pytest" "-p no:sugar -vvv
 ")))
  '(elpy-test-runner (quote elpy-test-pytest-runner))
+ '(fci-rule-color "#383838")
  '(font-use-system-font t)
  '(helm-ag-base-command "ag --nocolor --nogroup --ignore-case")
  '(helm-ag-ignore-buffer-patterns (quote ("\\.html\\'" "\\.htm\\'")))
  '(helm-ag-ignore-directory (quote ("html_cov" "node_module" ".tmp" "dist")))
  '(helm-ag-insert-at-point (quote symbol))
  '(inhibit-startup-screen t)
- '(js-indent-level 1)
+ '(js-indent-level 2)
+ '(nrepl-message-colors
+   (quote
+    ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(org-export-with-sub-superscripts nil)
  '(org-log-done t)
  '(org-startup-truncated nil)
  '(org-todo-keywords (quote ((sequence "TODO" "DOING" "DONE"))))
  '(package-selected-packages
    (quote
-    (expand-region company-quickhelp helm-system-packages helm-descbinds fancy-narrow helm-xref tern-context-coloring company-tern xref-js2 js2-refactor add-node-modules-path pyvenv python treemacs-projectile treemacs elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter playerctl package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
- '(pyvenv-mode t))
+    (dockerfile-mode swagger-to-org adoc-mode typescript-mode docker-compose-mode docker company-statistics flame swiper-helm yapfify playerctl angular-snippets expand-region company-quickhelp helm-system-packages helm-descbinds fancy-narrow helm-xref tern-context-coloring company-tern xref-js2 js2-refactor add-node-modules-path pyvenv python elpy exec-path-from-shell htmlize diminish helm diff-hl magithub pomidor imenu-list markdown-mode+ flymake-json flycheck flymake-cursor git-gutter package-lint ox-minutes projectile lua-mode pyenv-mode move-text web-mode use-package rainbow-delimiters ox-reveal nyan-mode multiple-cursors ac-html-angular+ markdown-preview-mode markdown-preview-eww magit json-mode flyspell-popup flyspell-correct-popup dired-rainbow csgo-conf-mode zenburn-theme helm-ag pomodoro helm-projectile)))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
+ '(pyvenv-mode t)
+ '(select-enable-clipboard t)
+ '(vc-annotate-background "#2B2B2B")
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#BC8383")
+     (40 . "#CC9393")
+     (60 . "#DFAF8F")
+     (80 . "#D0BF8F")
+     (100 . "#E0CF9F")
+     (120 . "#F0DFAF")
+     (140 . "#5F7F5F")
+     (160 . "#7F9F7F")
+     (180 . "#8FB28F")
+     (200 . "#9FC59F")
+     (220 . "#AFD8AF")
+     (240 . "#BFEBBF")
+     (260 . "#93E0E3")
+     (280 . "#6CA0A3")
+     (300 . "#7CB8BB")
+     (320 . "#8CD0D3")
+     (340 . "#94BFF3")
+     (360 . "#DC8CC3"))))
+ '(vc-annotate-very-old-color "#DC8CC3")
+ '(x-select-enable-clipboard-manager t)
+ '(x-select-request-type (quote UTF8_STRING))
+ '(xterm-mouse-mode t))
 
 
 
