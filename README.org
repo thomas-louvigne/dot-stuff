@@ -1,22 +1,18 @@
 #+TITLE:        Dot-Stuff
 #+AUTHOR:       Thomas L.
 
-** My dot stuff :
+* My dot stuff :
  - init.el (EMACS)
  - zshrc (oh my Zsh)
  - rc.lua (awesomeWM)
- - xinitrc (x configuration)
- - hwinfo_short.txt (Hardware Information )
  - autoexec.cfg (CS:GO)
  - software_list.txt ( Use with ~# pacman software_list.txt -S~ )
  - gitignore (globale, conf from : https://www.gitignore.io/)
- - Xresources (Xterm conf file)
 
-** Need to update :
+
+* Need to update :
  - init.el : How to install all emacs package in one command line ?
  - can't cut / past from linux to emacs
 
-** After Install
+* After install
   - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh
-  - ~$ git config --global user.email "thomas@luquet.net"~
-  - ~$ git config --global user.name "Thomas Luquet"~
