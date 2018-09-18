@@ -2,17 +2,13 @@
 #+AUTHOR:       Thomas L.
 
 * My dot stuff :
- - init.el (EMACS)
- - zshrc (oh my Zsh)
- - rc.lua (awesomeWM)
- - autoexec.cfg (CS:GO)
+ - autoexec.cfg (*CS:GO*)
+ - gitignore (Globale, conf from : https://www.gitignore.io/)
+ - init.el (EMACS configuration file, ~$mv init.el ~/.emacs.d/~)
+ - rc.lua ([[https://awesomewm.org/][Awesome WindowManager]] with [[https://github.com/lcpz/awesome-copycats][copycat]] ,  ~$mv rc.lua ~/.config/awesome/~ )
  - software_list.txt ( Use with ~# pacman software_list.txt -S~ )
- - gitignore (globale, conf from : https://www.gitignore.io/)
-
-
-* Need to update :
- - init.el : How to install all emacs package in one command line ?
- - can't cut / past from linux to emacs
+ - termite config file ( ~$mv termite_config ~/.config/termite/congig~
+ - zshrc ([[https://github.com/robbyrussell/oh-my-zsh][oh my Zsh]] config file)
 
 * After install
   - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh
