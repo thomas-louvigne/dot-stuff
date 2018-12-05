@@ -446,4 +446,17 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "C-x v SPC") #'git-gutter:mark-hunk)
 
 
+(defun quotes-on-symbol-at-point ()
+  (interactive)
+  (save-excursion
+    (let
+        ((bounds (bounds-of-thing-at-point 'symbol)))
+      (goto-char (car bounds))
+      (insert "\"")
+      (goto-char (+ 1 (cdr bounds)))
+      (insert "\""))))
+
+
+
+
 ;;; Init.el ends here
