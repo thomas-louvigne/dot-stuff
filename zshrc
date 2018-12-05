@@ -56,7 +56,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 
-plugins=(git archlinux sudo git battery extract systemadmin node emacs python pyenv virtualenv pip common-aliases git-extras autojump vagrant)
+plugins=(git archlinux git extract common-aliases git-extras autojump zsh-nvm docker)
 
 # c'est bizare de faire ca...
 source $ZSH/oh-my-zsh.sh
@@ -66,13 +66,13 @@ export MANPATH="/usr/local/man:$MANPATH"
 
 # Preferred editor for local and remote sessions
  if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='emacs -nw'
+   export EDITOR='leafpad'
  else
-   export EDITOR='emacs -nw'
+   export EDITOR='nano'
  fi
 
 # Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+export ARCHFLAGS="-arch x86_64"
 
 # ssh
 export SSH_KEY_PATH="~/.ssh/dsa_id"
@@ -105,14 +105,18 @@ alias eog="gpicview"
 alias dasize="du -a * | sort -nr | head -10"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
-alias lycos="grep -nr --exclude-dir={downloads,venv,bower_components,.idea,.git,.cache,__pycache__,.tmp,libs,dist,node_modules,.vagrant,htmlcov,cov_html} --exclude=\*.{pyc,~,#,log,coverage}"
+alias lycos="grep -nr --exclude-dir={downloads,venv,bower_components,misc,.vendors,.idea,.git,.cache,__pycache__,.tmp,libs,dist,node_modules,.vagrant,htmlcov,cov_html} --exclude=\*.{pyc,~,#,log,coverage}"
 alias z="xlock;"
 alias dodo="systemctl suspend"
 alias yasu="yaourt -Syu"
 alias agenda="emacsclient -t /home/tlu/Dropbox/agenda/agenda.org"
+alias todo="emacsclient -t /home/tlu/Dropbox/agenda/today.org"
 alias today="python2 /usr/bin/gcalcli agenda 7am 11:55pm"
 alias addcal="python2 /usr/bin/gcalcli add --calendar 'Thomas L.'"
 alias week="python2 /usr/bin/gcalcli agenda"
+
+alias forcepull="git fetch --all && git reset --hard origin/master"
+
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
