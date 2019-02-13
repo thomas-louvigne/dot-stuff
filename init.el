@@ -44,6 +44,9 @@
   :bind ("M-d" . er/expand-region)
   )
 
+;; [test] Remove fucking warning
+(setq ad-redefinition-action 'accept)
+
 ;; Mouse trick to change windows focus or resizing with click
 (xterm-mouse-mode t)
 
@@ -76,25 +79,22 @@
 
 ;; Manage projects with a keystroke
 
-(setq projectile-enable-caching t)
-(setq projectile-indexing-method 'native)
-(setq projectile-ignored-directories '("_output" "node_module" "pkg"))
-
 (use-package projectile
   :init (progn
           (setq projectile-enable-caching t)
           (setq projectile-indexing-method 'native)
-          (setq projectile-globally-ignored-directories '("node_module"))
-          (setq projectile-ignored-directories '("_output" "node_module" "pkg"))
-          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "package-lock.json") )
+          (setq projectile-globally-ignored-directories '("node_modules"))
+          (setq projectile-ignored-directories '("_output" "node_modules" "pkg"))
+          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "package-lock.json"))
+          (setq helm-ag-use-agignore t)
+          (setq helm-ag-command-option " -U" )
           )
   :bind (
          ("<f1>" . helm-projectile-switch-project) ;; Change le projet de travail
          ("<f2>" . helm-projectile-find-file)  ;; Cherche un fichier
-         ("<f3>" . helm-projectile-ag) ;; Sorte de grep, en mieux
+         ("<f3>" . helm-projectile-ag) ;; AG => Sorte de grep, en mieux
          )
   :config (projectile-mode 1))
-
 
 
 ;; Let helm-ag searching at point
@@ -106,7 +106,11 @@
 
 ;; Autocomplete Popups
 (use-package company
-  :config (global-company-mode 1))
+  :config (global-company-mode 1)
+  :init (progn
+          (setq company-idle-delay nil)
+          (setq company-dabbrev-downcase nil) ;; Keep Case sensitive
+          ))
 
 ;; Yaml editing support
 (use-package yaml-mode
@@ -140,6 +144,8 @@
 (eval-after-load 'js2-mode
 	   '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
 
+;; js2 imenu
+(add-hook 'js2-mode-hook 'js2-imenu-extras-mode)
 
 (use-package lsp-mode
   :config (setq lsp-print-io t))
@@ -209,16 +215,12 @@
   :ensure t
   :config (load-theme 'zenburn t))
 
-(use-package yasnippet
-  :config (setq yas-snippet-dirs
-                '("~/.emacs.d/snippets")))
-
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 (add-hook 'prog-mode-hook 'show-paren-mode)
 
 
-;; Try other stuff
+;; Line number
 (global-display-line-numbers-mode)
 
 (setq-default cursor-type 'box)
@@ -226,6 +228,7 @@
 
 ;; Disable backup files (# and ~ files)
 ;; http://ergoemacs.org/emacs/emacs_set_backup_into_a_directory.html
+;; but don't work
 (setq make-backup-files nil
       auto-save-default nil)
 
@@ -298,7 +301,7 @@ If point was already at that position, move point to beginning of line."
 (diminish 'rainbow-delimiters-mode)
 (diminish 'python-mode)
 (diminish 'eldoc-mode)
-(diminish 'git-gutter)
+(diminish 'git-gutter-mode)
 (diminish 'git-gutter+-mode)
 (diminish 'git-rebase-mode)
 (diminish 'git-gutter-mode-major-mode)
@@ -320,6 +323,8 @@ If point was already at that position, move point to beginning of line."
 (diminish 'helm-modes-using-escaped-strings)
 (diminish 'compilation-mode)
 (diminish 'emacs-lisp-mode)
+(diminish 'makefile-mode)
+
 
 ;; [TEST] Editor Config
 (use-package editorconfig
@@ -343,7 +348,6 @@ If point was already at that position, move point to beginning of line."
 ;; Dumb-jump
 (use-package dumb-jump
   :bind (("M-g o" . dumb-jump-go-other-window)
-         ("M-g j" . dumb-jump-go)
          ("M-RET" . dumb-jump-go)
          ("M-g i" . dumb-jump-go-prompt)
          ("M-g x" . dumb-jump-go-prefer-external)
@@ -385,9 +389,9 @@ If point was already at that position, move point to beginning of line."
 
 ;; Open the file name being pointed in an other window or dired
 ;; reference: http://kouzuka.blogspot.com/2011/02/emacsurlfinder.html
-(defun my-directory-or-file-p (path)
-  "Return t if PATH is a directory, return nil if PATH is a file."
-  (car (file-attributes path)))
+;; (defun my-directory-or-file-p (path)
+;;   "Return t if PATH is a directory, return nil if PATH is a file."
+;;   (car (file-attributes path)))
 
 ;; (defun my-open-emacs-at-point ()
 ;;   "Open the file with opening EMACS."
@@ -424,13 +428,16 @@ If point was already at that position, move point to beginning of line."
 ;;       (js2-jump-to-definition))))
 
 ;; Switch to camelCase
+;; (use-package string-inflection
+;;   : bind ( "C-c c" . string-inflection-lower-camelcase )
+;;   )
+
 (require 'string-inflection)
 (global-set-key (kbd "C-c c") 'string-inflection-lower-camelcase)
 
 
 ;; Le you know what you have modified during this commit
-(require 'git-gutter)
-
+(use-package git-gutter)
 ;; If you enable global minor mode
 (global-git-gutter-mode t)
 (global-set-key (kbd "C-x C-g") 'git-gutter)
@@ -445,7 +452,7 @@ If point was already at that position, move point to beginning of line."
 ;; Mark current hunk
 (global-set-key (kbd "C-x v SPC") #'git-gutter:mark-hunk)
 
-
+;; Quote symbol at point
 (defun quotes-on-symbol-at-point ()
   (interactive)
   (save-excursion
@@ -455,8 +462,92 @@ If point was already at that position, move point to beginning of line."
       (insert "\"")
       (goto-char (+ 1 (cdr bounds)))
       (insert "\""))))
+(global-set-key (kbd "C-c q") 'quotes-on-symbol-at-point)
 
 
+;; Copy / past with linux
+(defun copy-to-clipboard ()
+  (interactive)
+  (if (display-graphic-p)
+      (progn
+        (message "Yanked region to x-clipboard!")
+        (call-interactively 'clipboard-kill-ring-save)
+        )
+    (if (region-active-p)
+        (progn
+          (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
+          (message "Yanked region to clipboard!")
+          (deactivate-mark))
+      (message "No region active; can't yank to clipboard!")))
+  )
 
+(defun paste-from-clipboard ()
+  (interactive)
+  (if (display-graphic-p)
+      (progn
+        (clipboard-yank)
+        (message "graphics active")
+        )
+    (insert (shell-command-to-string "xsel -o -b"))
+    )
+  )
+
+;; (global-set-key [f8] 'copy-to-clipboard)
+;; (global-set-key [f9] 'paste-from-clipboard)
+
+;; Cider
+(use-package cider
+  :ensure t
+  :pin melpa-stable)
+
+;; Aggressive-indent-mode
+;;(add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+(global-aggressive-indent-mode 1)
+
+;; [TEST] all the icons
+(use-package all-the-icons)
+
+;; doom mode line
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode))
+;; ;; How tall the mode-line should be (only respected in GUI Emacs).
+;; (setq doom-modeline-height 25)
+;; ;; How wide the mode-line bar should be (only respected in GUI Emacs).
+;; (setq doom-modeline-bar-width 3)
+(setq doom-modeline-icon t)
+
+;; Determines the style used by `doom-modeline-buffer-file-name'.
+(setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
+
+;; What executable of Python will be used (if nil nothing will be showed).
+(setq doom-modeline-python-executable "python")
+
+;; Whether show `all-the-icons' or not (if nil nothing will be showed).
+(setq doom-modeline-icon t)
+
+;; Whether show the icon for major mode. It respects `doom-modeline-icon'.
+(setq doom-modeline-major-mode-icon t)
+
+;; Display color icons for `major-mode'. It respects `all-the-icons-color-icons'.
+(setq doom-modeline-major-mode-color-icon nil)
+
+;; Whether display minor modes or not. Non-nil to display in mode-line.
+(setq doom-modeline-minor-modes nil)
+
+;; Whether display perspective name or not. Non-nil to display in mode-line.
+(setq doom-modeline-persp-name t)
+
+;; Whether display `lsp' state or not. Non-nil to display in mode-line.
+(setq doom-modeline-lsp t)
+
+;; ;; Whether display github notifications or not. Requires `ghub` package.
+;; (setq doom-modeline-github nil)
+
+;; ;; The interval of checking github.
+;; (setq doom-modeline-github-interval (* 30 60))
+
+;; ;; Whether display environment version or not.
+;; (setq doom-modeline-version t)
 
 ;;; Init.el ends here
