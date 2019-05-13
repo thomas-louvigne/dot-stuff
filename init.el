@@ -55,7 +55,7 @@
 
 ;; Git integration
 (use-package magit
-  :bind ("C-x C-g" . magit-status))
+  :bind ("C-x g" . magit-status))
 (use-package github-browse-file)
 (use-package gist)
 
@@ -83,10 +83,9 @@
   :init (progn
           (setq projectile-enable-caching t)
           (setq projectile-indexing-method 'native)
-          (setq projectile-globally-ignored-directories '("node_modules"))
-          (setq projectile-ignored-directories '("_output" "node_modules" "pkg"))
+          (setq projectile-globally-ignored-directories '("node_modules" "node_modules/"))
+          (setq projectile-ignored-directories '("_output" "node_modules" "node_modules/" "pkg"))
           (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "package-lock.json"))
-          (setq helm-ag-use-agignore t)
           (setq helm-ag-command-option " -U" )
           )
   :bind (
@@ -105,12 +104,31 @@
   :config (whole-line-or-region-global-mode 1))
 
 ;; Autocomplete Popups
+;; (use-package company
+;;   :config (global-company-mode 1)
+;;   :init (progn
+;;           (setq company-idle-delay nil)
+;;           (setq company-dabbrev-downcase nil) ;; Keep Case sensitive
+;;           ))
+;; (add-hook 'after-init-hook 'global-company-mode)
+
+
 (use-package company
-  :config (global-company-mode 1)
-  :init (progn
-          (setq company-idle-delay nil)
-          (setq company-dabbrev-downcase nil) ;; Keep Case sensitive
-          ))
+  :ensure t
+  :config
+  ;; Global
+  (setq company-idle-delay 1
+        company-minimum-prefix-length 1
+        company-show-numbers t
+        company-tooltip-limit 20)
+
+  ;; Default backends
+  (setq company-backends '((company-files)))
+
+  ;; Activating globally
+  (global-company-mode t))
+
+
 
 ;; Yaml editing support
 (use-package yaml-mode
@@ -126,10 +144,6 @@
 	   web-mode-markup-indent-offset 2
 	   web-mode-code-indent-offset 2))
 
-(use-package typescript-mode
-  :mode ("\\.ts\\'" . typescript-mode)
-  :config (setq typescript-indent-level 2))
-
 ;; JavaScript mode
 ;; Better highlighting for JS files (potential support for JSX too)
 (use-package js2-mode
@@ -142,16 +156,32 @@
 
 ;; Hook pour passer le linter a chaque save
 (eval-after-load 'js2-mode
-	   '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
+  '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
 
 ;; js2 imenu
-(add-hook 'js2-mode-hook 'js2-imenu-extras-mode)
+;;(add-hook 'js2-mode-hook 'js2-imenu-extras-mode)
 
+;; LSP-mode
+;;------------------
 (use-package lsp-mode
-  :config (setq lsp-print-io t))
-(use-package lsp-javascript-typescript
-  :hook (typescript-mode . lsp-javascript-typescript-enable))
+  :commands (lsp)
+  :init (setq lsp-enable-snippet nil
+              lsp-auto-guess-root t
+              lsp-auto-configure t
+              lsp-enable-xref t
+              lsp-enable-indentation t
+              lsp-imenu-show-container-name t
+              ))
 
+(use-package lsp-ui
+  :commands (lsp-ui-mode)
+  :init (setq lsp-ui-sideline-enable nil
+              ))
+
+(use-package company-lsp
+  :commands company-lsp)
+
+;; Applique le linter eslint au save sur du js / node
 (defun my/use-eslint-from-node-modules ()
   (let* ((root (locate-dominating-file
                 (or (buffer-file-name) default-directory)
@@ -179,23 +209,13 @@
 
 
 ;; (use-package flycheck
-;;   :hook ((flycheck-mode . my/use-tslint-from-node-modules)
-;;          (flycheck-mode . my/use-eslint-from-node-modules))
 ;;   :config
-;;   (global-flycheck-mode)
 ;;   (setq-default flycheck-disabled-checkers '(javascript-jshint))
 ;;   (flycheck-add-mode 'javascript-eslint 'js2-mode)
 ;;   (flycheck-add-mode 'typescript-tslint 'typescript-mode))
 
-;; (global-flycheck-mode)
-(use-package flycheck
-  :config
+(use-package flycheck)
 
-  (setq-default flycheck-disabled-checkers '(javascript-jshint))
-  (flycheck-add-mode 'javascript-eslint 'js2-mode)
-  (flycheck-add-mode 'typescript-tslint 'typescript-mode))
-
-;; (setq max-lisp-eval-depth 10000)
 
 ;; Maybe I can finally start using it (maybe)
 (use-package ace-jump-mode
@@ -211,9 +231,9 @@
 
 
 ;; 4daLookz
-(use-package zenburn-theme
+(use-package monokai-pro-theme
   :ensure t
-  :config (load-theme 'zenburn t))
+  :config (load-theme 'monokai t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -223,6 +243,7 @@
 ;; Line number
 (global-display-line-numbers-mode)
 
+;; Font
 (setq-default cursor-type 'box)
 (set-frame-font "Roboto Mono 11")
 
@@ -255,8 +276,6 @@ If point was already at that position, move point to beginning of line."
 (global-set-key "\C-a" 'smart-beginning-of-line)
 
 ;; Multiple cursor
-;; ------------------------------------------------------------
-;; Emacs porn : http://emacsrocks.com/e13.html
 (use-package multiple-cursors
   :bind
   (:map global-map
@@ -265,9 +284,10 @@ If point was already at that position, move point to beginning of line."
         ([f10] . mc/mark-next-word-like-this)
         ([f11] . mc/mark-all-word-like-this)
         ))
+;; Emacs porn : http://emacsrocks.com/e13.html
 
 
-;; flyspell Correcteur orthographique / dictinnaire
+;; Flyspell Correcteur orthographique / dictinnaire
 ;; TODO à vérifier si ca marche
 (use-package flyspell
   :diminish
@@ -326,24 +346,12 @@ If point was already at that position, move point to beginning of line."
 (diminish 'makefile-mode)
 
 
-;; [TEST] Editor Config
+;; Editor Config
 (use-package editorconfig
   :ensure t
   :config
   (editorconfig-mode 1))
 
-;; Hugo blog
-(use-package ox-hugo
-  :after ox)
-
-;; [TEST] Go to variable OR function
-(defun bzg-find-variable-or-function-at-point ()
-  (interactive)
-  (or (find-variable-at-point)
-      (find-function-at-point)
-      (message "No variable or function at point.")))
-
-(global-set-key (kbd "C-.") 'bzg-find-variable-or-function-at-point)
 
 ;; Dumb-jump
 (use-package dumb-jump
@@ -379,42 +387,31 @@ If point was already at that position, move point to beginning of line."
   (dired-sidebar-toggle-sidebar)
   (ibuffer-sidebar-toggle-sidebar))
 
-;; Grammalecte - French grammar
-;; (require 'flycheck-grammalecte)
-;; (load-file "~/.emacs.d/flycheck-grammalecte/flycheck-grammalecte.elc")
-;; (setq flycheck-grammalecte-report-apos nil
-;;       flycheck-grammalecte-report-nbsp nil)
-;; (setq flycheck-grammalecte-enabled-modes
-;;       '(org-mode text-mode markdown-mode))
 
 ;; Open the file name being pointed in an other window or dired
 ;; reference: http://kouzuka.blogspot.com/2011/02/emacsurlfinder.html
-;; (defun my-directory-or-file-p (path)
-;;   "Return t if PATH is a directory, return nil if PATH is a file."
-;;   (car (file-attributes path)))
+(defun my-directory-or-file-p (path)
+  "Return t if PATH is a directory, return nil if PATH is a file."
+  (car (file-attributes path)))
 
-;; (defun my-open-emacs-at-point ()
-;;   "Open the file with opening EMACS."
-;;   (interactive)
-;;   (require 'ffap)
-;;   (let ((file (or (ffap-url-at-point)
-;;                   (ffap-file-at-point))))
-;;     (unless (stringp file)
-;;       (error"No file or URL found"))
-;;     (when (file-exists-p (expand-file-name file))
-;;       (setq file (expand-file-name file)))
-;;     (message "Open: %s" file)
+(defun my-open-emacs-at-point ()
+  "Open the file with opening EMACS."
+  (interactive)
+  (require 'ffap)
+  (let ((file (or (ffap-url-at-point)
+                  (ffap-file-at-point))))
+    (unless (stringp file)
+      (error"No file or URL found"))
+    (when (file-exists-p (expand-file-name file))
+      (setq file (expand-file-name file)))
+    (message "Open: %s" file)
 
-;;     (if (my-directory-or-file-p file)
-;;       (dired-other-window file)
-;;       (find-file-other-window file))
-;;     ))
+    (if (my-directory-or-file-p file)
+        (dired-other-window file)
+      (find-file-other-window file))
+    ))
+(global-set-key (kbd "\C-c o") 'my-open-emacs-at-point)
 
-;; (global-set-key (kbd "\C-c o") 'my-open-emacs-at-point)
-
-;; double click
-(global-set-key [double-mouse-1] 'my-open-emacs-at-point)
-(global-set-key [double-down-mouse-1] 'ignore) ; mouse-drag-region
 
 ;; TODO
 ;;--------
@@ -427,30 +424,23 @@ If point was already at that position, move point to beginning of line."
 ;;         (find-file fname)
 ;;       (js2-jump-to-definition))))
 
-;; Switch to camelCase
-;; (use-package string-inflection
-;;   : bind ( "C-c c" . string-inflection-lower-camelcase )
-;;   )
+;;Switch to camelCase
+(use-package string-inflection
+  :bind ( "C-c c" . string-inflection-lower-camelcase )
+  )
 
-(require 'string-inflection)
-(global-set-key (kbd "C-c c") 'string-inflection-lower-camelcase)
 
+;; double click
+(global-set-key [double-mouse-1] 'my-open-emacs-at-point)
+(global-set-key [double-down-mouse-1] 'ignore) ; mouse-drag-region
 
 ;; Le you know what you have modified during this commit
 (use-package git-gutter)
 ;; If you enable global minor mode
 (global-git-gutter-mode t)
-(global-set-key (kbd "C-x C-g") 'git-gutter)
-(global-set-key (kbd "C-x v =") 'git-gutter:popup-hunk)
 ;; Jump to next/previous hunk
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
-;; Stage current hunk
-(global-set-key (kbd "C-x v s") 'git-gutter:stage-hunk)
-;; Revert current hunk
-(global-set-key (kbd "C-x v r") 'git-gutter:revert-hunk)
-;; Mark current hunk
-(global-set-key (kbd "C-x v SPC") #'git-gutter:mark-hunk)
 
 ;; Quote symbol at point
 (defun quotes-on-symbol-at-point ()
@@ -463,7 +453,6 @@ If point was already at that position, move point to beginning of line."
       (goto-char (+ 1 (cdr bounds)))
       (insert "\""))))
 (global-set-key (kbd "C-c q") 'quotes-on-symbol-at-point)
-
 
 ;; Copy / past with linux
 (defun copy-to-clipboard ()
@@ -492,9 +481,6 @@ If point was already at that position, move point to beginning of line."
     )
   )
 
-;; (global-set-key [f8] 'copy-to-clipboard)
-;; (global-set-key [f9] 'paste-from-clipboard)
-
 ;; Cider
 (use-package cider
   :ensure t
@@ -504,50 +490,24 @@ If point was already at that position, move point to beginning of line."
 ;;(add-hook 'clojure-mode-hook #'aggressive-indent-mode)
 (global-aggressive-indent-mode 1)
 
-;; [TEST] all the icons
-(use-package all-the-icons)
 
-;; doom mode line
+;; Doom-0mode line
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
-;; ;; How tall the mode-line should be (only respected in GUI Emacs).
-;; (setq doom-modeline-height 25)
-;; ;; How wide the mode-line bar should be (only respected in GUI Emacs).
-;; (setq doom-modeline-bar-width 3)
 (setq doom-modeline-icon t)
-
-;; Determines the style used by `doom-modeline-buffer-file-name'.
 (setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
-
-;; What executable of Python will be used (if nil nothing will be showed).
 (setq doom-modeline-python-executable "python")
-
-;; Whether show `all-the-icons' or not (if nil nothing will be showed).
 (setq doom-modeline-icon t)
-
-;; Whether show the icon for major mode. It respects `doom-modeline-icon'.
 (setq doom-modeline-major-mode-icon t)
-
-;; Display color icons for `major-mode'. It respects `all-the-icons-color-icons'.
 (setq doom-modeline-major-mode-color-icon nil)
-
-;; Whether display minor modes or not. Non-nil to display in mode-line.
 (setq doom-modeline-minor-modes nil)
-
-;; Whether display perspective name or not. Non-nil to display in mode-line.
 (setq doom-modeline-persp-name t)
-
-;; Whether display `lsp' state or not. Non-nil to display in mode-line.
 (setq doom-modeline-lsp t)
 
-;; ;; Whether display github notifications or not. Requires `ghub` package.
-;; (setq doom-modeline-github nil)
+;; REST Client
+(require 'restclient)
+(add-to-list 'company-backends 'company-restclient)
 
-;; ;; The interval of checking github.
-;; (setq doom-modeline-github-interval (* 30 60))
-
-;; ;; Whether display environment version or not.
-;; (setq doom-modeline-version t)
 
 ;;; Init.el ends here
