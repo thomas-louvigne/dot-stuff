@@ -11,11 +11,24 @@
                          ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ))
 
+(setq user-full-name             "Thomas Luquet"
+      user-mail-address          "thomas@luquet.net"
+      ad-redefinition-action     'accept
+      inhibit-splash-screen      t
+      inhibit-x-resources        t
+      select-enable-clipboard    t
+      default-directory          (expand-file-name "~/")
+      backup-directory-alist     `(("." . ,(expand-file-name "~/.emacs.d/backups")))
+      save-place-file            (expand-file-name "~/.emacs.d/saved-places"))
+
+
+
+
 ;; Remove cluttered toolbar
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(hl-line-mode 1)
+(hl-line-mode t)
 (setq-default visible-bell 0
               indent-tabs-mode nil)
 
@@ -35,8 +48,8 @@
 ;; Save adding :ensure t on every use package
 (setq use-package-always-ensure t)
 
-(use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
+;; (use-package exec-path-from-shell
+;;   :config (exec-path-from-shell-initialize))
 
 ;; Expand region
 (use-package expand-region
@@ -84,8 +97,8 @@
           (setq projectile-enable-caching t)
           (setq projectile-indexing-method 'native)
           (setq projectile-globally-ignored-directories '("node_modules" "node_modules/"))
-          (setq projectile-ignored-directories '("_output" "node_modules" "node_modules/" "pkg"))
-          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" ".gitignore" "package-lock.json"))
+          (setq projectile-ignored-directories '("_output" "node_modules" "node_modules/" "pkg" "dist" "dist/" "dist/js"))
+          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" "package-lock.json" "yarn.lock"))
           (setq helm-ag-command-option " -U" )
           )
   :bind (
@@ -103,39 +116,9 @@
 (use-package whole-line-or-region
   :config (whole-line-or-region-global-mode 1))
 
-;; Autocomplete Popups
-;; (use-package company
-;;   :config (global-company-mode 1)
-;;   :init (progn
-;;           (setq company-idle-delay nil)
-;;           (setq company-dabbrev-downcase nil) ;; Keep Case sensitive
-;;           ))
-;; (add-hook 'after-init-hook 'global-company-mode)
-
-
-(use-package company
-  :ensure t
-  :config
-  ;; Global
-  (setq company-idle-delay 1
-        company-minimum-prefix-length 1
-        company-show-numbers t
-        company-tooltip-limit 20)
-
-  ;; Default backends
-  (setq company-backends '((company-files)))
-
-  ;; Activating globally
-  (global-company-mode t))
-
-
-
 ;; Yaml editing support
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
-
-(use-package org-bullets
-  :hook org-mode)
 
 ;; Web mode
 (use-package web-mode
@@ -143,58 +126,16 @@
   :config (setq
 	   web-mode-markup-indent-offset 2
 	   web-mode-code-indent-offset 2))
-
-;; JavaScript mode
-;; Better highlighting for JS files (potential support for JSX too)
-(use-package js2-mode
-  :interpreter ("node" . js2-mode)
-  :mode ("\\.m?jsx?\\'" . js2-mode)
-  :config (setq js2-basic-offset 2
-                js2-indent-switch-body t
-		js2-strict-missing-semi-warning nil
-                js2-mode-show-strict-warnings nil))
-
-;; Hook pour passer le linter a chaque save
-(eval-after-load 'js2-mode
-  '(add-hook 'js2-mode-hook (lambda () (add-hook 'after-save-hook 'eslint-fix nil t))))
-
-;; js2 imenu
-;;(add-hook 'js2-mode-hook 'js2-imenu-extras-mode)
-
-;; LSP-mode
-;;------------------
-(use-package lsp-mode
-  :commands (lsp)
-  :init (setq lsp-enable-snippet nil
-              lsp-auto-guess-root t
-              lsp-auto-configure t
-              lsp-enable-xref t
-              lsp-enable-indentation t
-              lsp-imenu-show-container-name t
-              ))
-
-(use-package lsp-ui
-  :commands (lsp-ui-mode)
-  :init (setq lsp-ui-sideline-enable nil
-              ))
-
-(use-package company-lsp
-  :commands company-lsp)
-
-;; Applique le linter eslint au save sur du js / node
-(defun my/use-eslint-from-node-modules ()
-  (let* ((root (locate-dominating-file
-                (or (buffer-file-name) default-directory)
-                "node_modules"))
-         (eslint (and root
-                      (expand-file-name "node_modules/.bin/eslint"
-                                        root))))
-    (when (and eslint (file-executable-p eslint))
-      (setq-local flycheck-javascript-eslint-executable eslint))))
+;; SCSS
+(use-package scss-mode
+  :mode ("\\.scss\\'" . scss-mode)
+  :config (setq css-indent-offset 2)
+  )
+(add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
 
 ;; Le package n'étant pas terrible j'ai pris ca ici :
 ;; https://github.com/rustyconover/eslint-fix/blob/483709dbad2100160df770a87c35e00248bb8f68/eslint-fix.el
-(defun eslint-fix ()
+(defun eslint-fix-buffer ()
   "Format the current file with ESLint."
   (interactive)
   (let* ((root (locate-dominating-file
@@ -208,14 +149,65 @@
     ))
 
 
-;; (use-package flycheck
-;;   :config
-;;   (setq-default flycheck-disabled-checkers '(javascript-jshint))
-;;   (flycheck-add-mode 'javascript-eslint 'js2-mode)
-;;   (flycheck-add-mode 'typescript-tslint 'typescript-mode))
+;; JS2-mode
+(use-package js2-mode
+  :ensure t
+  :mode ("\\.m?jsx?\\'" . js2-mode)
+  :config (setq js2-basic-offset 2
+                js2-strict-missing-semi-warning nil
+                js2-missing-semi-one-line-override nil)
+  )
 
-(use-package flycheck)
 
+
+(autoload 'json-mode "json-mode"
+  "Use the json-mode package to provide 'json-mode on-demand."
+  t)
+(autoload 'markdown-mode "markdown-mode"
+  "Use the markdown-mode package to provide 'markdown-mode on-demand."
+  t)
+(autoload 'js2-mode "js2-mode"
+  "Use the js2-mode package to provide 'js2-mode on-demand."
+  t)
+(autoload 'xref-js2-xref-backend "xref-js2"
+  "Use the xref-js2 package to provide 'xref-js2-xref-backend on-demand."
+  t)
+
+;; EGLOT code analysis
+(require 'eglot)
+
+(defun my-javascript-mode-hook ()
+  "Do some things when opening JavaScript files."
+  (interactive)
+
+  ;; turn on camelCase-aware code navigation
+  (subword-mode t)
+  ;; enable code-completion mode
+  (company-mode t)
+  (company-quickhelp-mode t)
+  ;; hook up to LSP server
+  (eglot-ensure)
+  (define-key js2-mode-map (kbd "M-.") nil)
+  (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t)
+  (add-hook 'after-save-hook 'eslint-fix-buffer t t)
+  )
+
+(add-hook 'js2-mode-hook 'my-javascript-mode-hook)
+
+
+(defun my-json-mode-hook ()
+  "Do some things when opening JSON files."
+  (make-local-variable 'js-indent-level)
+  (set 'js-indent-level 2)
+  )
+
+
+(defun my-css-mode-hook ()
+  "Do some things when opening [S]CSS files."
+  (company-mode t)
+  (eldoc-mode t)
+  (flymake-stylelint-enable)
+  (subword-mode t))
 
 ;; Maybe I can finally start using it (maybe)
 (use-package ace-jump-mode
@@ -229,12 +221,12 @@
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
-
 ;; 4daLookz
 (use-package monokai-pro-theme
   :ensure t
   :config (load-theme 'monokai t))
 
+;; color in parens
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 (add-hook 'prog-mode-hook 'show-paren-mode)
@@ -276,6 +268,7 @@ If point was already at that position, move point to beginning of line."
 (global-set-key "\C-a" 'smart-beginning-of-line)
 
 ;; Multiple cursor
+;; Emacs porn : http://emacsrocks.com/e13.html
 (use-package multiple-cursors
   :bind
   (:map global-map
@@ -284,16 +277,8 @@ If point was already at that position, move point to beginning of line."
         ([f10] . mc/mark-next-word-like-this)
         ([f11] . mc/mark-all-word-like-this)
         ))
-;; Emacs porn : http://emacsrocks.com/e13.html
 
 
-;; Flyspell Correcteur orthographique / dictinnaire
-;; TODO à vérifier si ca marche
-(use-package flyspell
-  :diminish
-  :init (setq ispell-dictionary "french")
-  :hook (org-mode . turn-on-flyspell)
-  )
 
 ;; Playerctl
 ;; ------------------------------------------------------------
@@ -311,7 +296,6 @@ If point was already at that position, move point to beginning of line."
 
 ;; Diminish
 ;; Permet de retirer les mods de la botom line (qui prennent de la place pour rien)
-;;(diminished-modes t)
 (use-package diminish)
 (diminish 'anaconda-eldoc-mode)
 (diminish 'edebug-mode)
@@ -352,7 +336,6 @@ If point was already at that position, move point to beginning of line."
   :config
   (editorconfig-mode 1))
 
-
 ;; Dumb-jump
 (use-package dumb-jump
   :bind (("M-g o" . dumb-jump-go-other-window)
@@ -362,6 +345,9 @@ If point was already at that position, move point to beginning of line."
          ("M-g z" . dumb-jump-go-prefer-external-other-window))
   :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'helm)
   :ensure)
+
+;; ibuffer
+(use-package ibuffer)
 
 ;; dired-sidebar
 (use-package dired-sidebar
@@ -387,7 +373,6 @@ If point was already at that position, move point to beginning of line."
   (dired-sidebar-toggle-sidebar)
   (ibuffer-sidebar-toggle-sidebar))
 
-
 ;; Open the file name being pointed in an other window or dired
 ;; reference: http://kouzuka.blogspot.com/2011/02/emacsurlfinder.html
 (defun my-directory-or-file-p (path)
@@ -412,25 +397,12 @@ If point was already at that position, move point to beginning of line."
     ))
 (global-set-key (kbd "\C-c o") 'my-open-emacs-at-point)
 
-
-;; TODO
-;;--------
-;; (defun find-file-or-jump-to-definition ()
-;;   "Find a file or jump to a definition."
-;;   (interactive)
-;;   (let* ((tap (thing-at-point 'filename))
-;;          (fname (when tap (file-relative-name tap default-directory))))
-;;     (if (and (fname (file-exists-p fname)))
-;;         (find-file fname)
-;;       (js2-jump-to-definition))))
-
 ;;Switch to camelCase
 (use-package string-inflection
   :bind ( "C-c c" . string-inflection-lower-camelcase )
   )
 
-
-;; double click
+;; [TEST] double click
 (global-set-key [double-mouse-1] 'my-open-emacs-at-point)
 (global-set-key [double-down-mouse-1] 'ignore) ; mouse-drag-region
 
@@ -487,11 +459,10 @@ If point was already at that position, move point to beginning of line."
   :pin melpa-stable)
 
 ;; Aggressive-indent-mode
-;;(add-hook 'clojure-mode-hook #'aggressive-indent-mode)
 (global-aggressive-indent-mode 1)
 
 
-;; Doom-0mode line
+;; Doom-mode line
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
@@ -507,7 +478,40 @@ If point was already at that position, move point to beginning of line."
 
 ;; REST Client
 (require 'restclient)
-(add-to-list 'company-backends 'company-restclient)
 
+;; Rename current file and buffer
+(defun rename-file-and-buffer ()
+  "Rename the current buffer and file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if (not (and filename (file-exists-p filename)))
+        (message "Buffer is not visiting a file!")
+      (let ((new-name (read-file-name "New name: " filename)))
+        (cond
+         ((vc-backend filename) (vc-rename-file filename new-name))
+         (t
+          (rename-file filename new-name t)
+          (set-visited-file-name new-name t t)))))))
+
+(global-set-key (kbd "C-c r")  'rename-file-and-buffer)
+
+
+;; DotEnv-mode
+(require 'dotenv-mode) ; unless installed from a package
+(add-to-list 'auto-mode-alist '("\\.env\\..*\\'" . dotenv-mode)) ;;
+
+;; OX-Reveal (PPT generator)
+(require 'ox-reveal)
+
+;; habitica (Gamify TODO LIST)
+(load-file "~/.emacs.d/habitica-credit.el")
+
+
+(push '("\\.js[x]?\\'" . js2-mode) auto-mode-alist)
+;; associate some major modes with language server binaries
+(push '(js2-mode . ("/home/thomas.luquet/.nvm/versions/node/v10.14.1/bin/javascript-typescript-stdio")) eglot-server-programs)
+
+
+;;(setq debug-on-error t)
 
 ;;; Init.el ends here
