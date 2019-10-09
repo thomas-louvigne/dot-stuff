@@ -28,12 +28,10 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(hl-line-mode t)
+(global-hl-line-mode t)
 (setq-default visible-bell 0
               indent-tabs-mode nil)
 
-;; Kill all line
-(global-set-key (kbd "C-d") 'kill-whole-line) ;; fait un couper de toute la ligne, remplace du kill-char totalement uselss
 
 ;; Anable autosave
 (setq auto-save-default nil)
@@ -42,7 +40,7 @@
 ;; Auto-revert
 (global-auto-revert-mode t)
 
-;; Parentheses (&friends) helper
+;; Autoclose parentheses helper
 (electric-pair-mode -1)
 
 ;; Save adding :ensure t on every use package
@@ -57,8 +55,12 @@
   :bind ("M-d" . er/expand-region)
   )
 
-;; [test] Remove fucking warning
+;; [test] Remove fucking warning at launch
 (setq ad-redefinition-action 'accept)
+
+;; Kill all line
+(global-set-key (kbd "C-d") 'kill-whole-line) ;; fait un couper de toute la ligne, remplace du kill-char totalement uselss
+
 
 ;; Mouse trick to change windows focus or resizing with click
 (xterm-mouse-mode t)
@@ -66,29 +68,31 @@
 ;; Switch windows
 (global-set-key (kbd "<f6>") #'other-window)
 
-;; Git integration
+;; maGit integration
 (use-package magit
   :bind ("C-x g" . magit-status))
-(use-package github-browse-file)
 (use-package gist)
 
 (use-package helm
   :init (progn
-          (setq helm-autoresize-max-height 20)
+          (setq helm-autoresize-max-height 20) ;; Semble ne pas marché
+          (setq helm-autoresize-mode t) ;; Semble ne pas marché
           )
   :bind
   ("M-x" . helm-M-x)
   ("M-q" . helm-imenu)
   ("C-x C-f" . #'helm-find-files)
   ("C-x C-b" . #'helm-buffers-list)
-  ("C-s" . #'swiper-helm)
+  ("C-s" . #'helm-swoop)
   )
 (require 'helm-config)
 (helm-mode 1)
 
+
 ;; Searching with projectile
 (use-package helm-ag)
 (use-package helm-projectile)
+
 
 ;; Manage projects with a keystroke
 
@@ -96,9 +100,9 @@
   :init (progn
           (setq projectile-enable-caching t)
           (setq projectile-indexing-method 'native)
-          (setq projectile-globally-ignored-directories '("node_modules" "node_modules/"))
-          (setq projectile-ignored-directories '("_output" "node_modules" "node_modules/" "pkg" "dist" "dist/" "dist/js"))
-          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" "package-lock.json" "yarn.lock"))
+          (setq projectile-globally-ignored-directories '("node_modules" "node_modules/" "dist" "dist/" "coverage"))
+          (setq projectile-ignored-directories '("_output" "node_modules" "node_modules/" "pkg" "dist" "dist/" "dist/js" "coverage" ))
+          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" "package-lock.json" "yarn.lock" ".svg" "#" "~"))
           (setq helm-ag-command-option " -U" )
           )
   :bind (
@@ -125,8 +129,12 @@
   :mode ("\\.html\\'" . web-mode)
   :config (setq
 	   web-mode-markup-indent-offset 2
-	   web-mode-code-indent-offset 2))
-;; SCSS
+	   web-mode-code-indent-offset 2
+           web-mode-enable-current-element-highlight t
+           web-mode-enable-current-column-highlight t
+           ))
+
+;;SCSS
 (use-package scss-mode
   :mode ("\\.scss\\'" . scss-mode)
   :config (setq css-indent-offset 2)
@@ -149,6 +157,10 @@
     ))
 
 
+;; [TEST] ESLINTd
+(add-hook 'js2-mode-hook 'eslintd-fix-mode)
+
+
 ;; JS2-mode
 (use-package js2-mode
   :ensure t
@@ -157,7 +169,6 @@
                 js2-strict-missing-semi-warning nil
                 js2-missing-semi-one-line-override nil)
   )
-
 
 
 (autoload 'json-mode "json-mode"
@@ -194,6 +205,10 @@
 
 (add-hook 'js2-mode-hook 'my-javascript-mode-hook)
 
+(push '("\\.js[x]?\\'" . js2-mode) auto-mode-alist)
+;; associate some major modes with language server binaries
+(push '(js2-mode . ("/home/thomas.luquet/.nvm/versions/node/v10.14.1/bin/javascript-typescript-stdio")) eglot-server-programs)
+
 
 (defun my-json-mode-hook ()
   "Do some things when opening JSON files."
@@ -209,7 +224,7 @@
   (flymake-stylelint-enable)
   (subword-mode t))
 
-;; Maybe I can finally start using it (maybe)
+;; Jump on 'good' place in code
 (use-package ace-jump-mode
   :bind ("C-c ." . ace-jump-mode))
 
@@ -226,11 +241,11 @@
   :ensure t
   :config (load-theme 'monokai t))
 
+
 ;; color in parens
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 (add-hook 'prog-mode-hook 'show-paren-mode)
-
 
 ;; Line number
 (global-display-line-numbers-mode)
@@ -248,7 +263,7 @@
 ;; Change customize-* file
 (setq custom-file (concat user-emacs-directory "custom.el"))
 
-;; Trailing whitespace
+;; Stop trailing whitespace
 (setq-default show-trailing-whitespace t)
 (setq-default show-leading-whitespace t)
 (setq-default indicate-empty-lines t)
@@ -277,8 +292,6 @@ If point was already at that position, move point to beginning of line."
         ([f10] . mc/mark-next-word-like-this)
         ([f11] . mc/mark-all-word-like-this)
         ))
-
-
 
 ;; Playerctl
 ;; ------------------------------------------------------------
@@ -324,54 +337,56 @@ If point was already at that position, move point to beginning of line."
 (diminish 'lisp-mode)
 (diminish 'editorconfig-mode)
 (diminish 'whole-line-or-region-mode)
-(diminish 'helm-modes-using-escaped-strings)
 (diminish 'compilation-mode)
 (diminish 'emacs-lisp-mode)
 (diminish 'makefile-mode)
 
 
-;; Editor Config
-(use-package editorconfig
-  :ensure t
-  :config
-  (editorconfig-mode 1))
+;; ;; OLD Editor Config ()
+;; (use-package editorconfig
+;;   :ensure t
+;;   :config
+;;   (editorconfig-mode 1))
 
 ;; Dumb-jump
-(use-package dumb-jump
-  :bind (("M-g o" . dumb-jump-go-other-window)
-         ("M-RET" . dumb-jump-go)
-         ("M-g i" . dumb-jump-go-prompt)
-         ("M-g x" . dumb-jump-go-prefer-external)
-         ("M-g z" . dumb-jump-go-prefer-external-other-window))
-  :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'helm)
-  :ensure)
+;; (use-package dumb-jump
+;;   :bind (("M-g o" . dumb-jump-go-other-window)
+;;          ;; ("M-RET" . dumb-jump-go)
+;;          ;; ("M-g i" . dumb-jump-go-prompt)
+;;          ;; ("M-g x" . dumb-jump-go-prefer-external)
+;;          ;; ("M-g z" . dumb-jump-go-prefer-external-other-window)
+;;          )
+;;   :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'helm)
+;;   :ensure t)
 
-;; ibuffer
-(use-package ibuffer)
+;; Smart-Jump
+(use-package smart-jump
+  :bind (("M-RET" . smart-jump-go))
+  :ensure t)
 
-;; dired-sidebar
-(use-package dired-sidebar
-  :bind (("C-x C-n" . sidebar-toggle))
-  :ensure t
-  :commands (dired-sidebar-toggle-sidebar)
-  :init
-  (add-hook 'dired-sidebar-mode-hook
-            (lambda ()
-              (unless (file-remote-p default-directory)
-                (auto-revert-mode))))
-  :config
-  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+;; [useless] Dired-sidebar
+;; (use-package dired-sidebar
+;;   :bind (("C-x C-n" . sidebar-toggle))
+;;   :ensure t
+;;   :commands (dired-sidebar-toggle-sidebar)
+;;   :init
+;;   (add-hook 'dired-sidebar-mode-hook
+;;             (lambda ()
+;;               (unless (file-remote-p default-directory)
+;;                 (auto-revert-mode))))
+;;   :config
+;;   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+;;   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
 
-  (setq dired-sidebar-theme 'doom-themes) ;; j'ai pas l'impression que ca marche
-  (setq dired-sidebar-use-term-integration t)
-  (setq dired-sidebar-use-custom-font t))
+;;   (setq dired-sidebar-theme 'doom-themes) ;; j'ai pas l'impression que ca marche
+;;   (setq dired-sidebar-use-term-integration t)
+;;   (setq dired-sidebar-use-custom-font t))
 
-(defun sidebar-toggle ()
-  "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
-  (interactive)
-  (dired-sidebar-toggle-sidebar)
-  (ibuffer-sidebar-toggle-sidebar))
+;; (defun sidebar-toggle () ;; useless ?
+;;   "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
+;;   (interactive)
+;;   (dired-sidebar-toggle-sidebar)
+;;   (ibuffer-sidebar-toggle-sidebar))
 
 ;; Open the file name being pointed in an other window or dired
 ;; reference: http://kouzuka.blogspot.com/2011/02/emacsurlfinder.html
@@ -399,14 +414,15 @@ If point was already at that position, move point to beginning of line."
 
 ;;Switch to camelCase
 (use-package string-inflection
-  :bind ( "C-c c" . string-inflection-lower-camelcase )
+  :bind ( "C-c c" . string-inflection-all-cycle )
   )
 
-;; [TEST] double click
-(global-set-key [double-mouse-1] 'my-open-emacs-at-point)
-(global-set-key [double-down-mouse-1] 'ignore) ; mouse-drag-region
+;; [OLD] double click (?)
+;; (global-set-key [double-mouse-1] 'my-open-emacs-at-point)
+;; (global-set-key [double-down-mouse-1] 'ignore) ; mouse-drag-region
 
-;; Le you know what you have modified during this commit
+
+;; Let you know what you have modified during this commit
 (use-package git-gutter)
 ;; If you enable global minor mode
 (global-git-gutter-mode t)
@@ -414,46 +430,46 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
 
-;; Quote symbol at point
-(defun quotes-on-symbol-at-point ()
-  (interactive)
-  (save-excursion
-    (let
-        ((bounds (bounds-of-thing-at-point 'symbol)))
-      (goto-char (car bounds))
-      (insert "\"")
-      (goto-char (+ 1 (cdr bounds)))
-      (insert "\""))))
-(global-set-key (kbd "C-c q") 'quotes-on-symbol-at-point)
+;; [old] Quote symbol at point => SimpleParens
+;; (defun quotes-on-symbol-at-point ()
+;;   (interactive)
+;;   (save-excursion
+;;     (let
+;;         ((bounds (bounds-of-thing-at-point 'symbol)))
+;;       (goto-char (car bounds))
+;;       (insert "\"")
+;;       (goto-char (+ 1 (cdr bounds)))
+;;       (insert "\""))))
+;; (global-set-key (kbd "C-c q") 'quotes-on-symbol-at-point)
 
-;; Copy / past with linux
-(defun copy-to-clipboard ()
-  (interactive)
-  (if (display-graphic-p)
-      (progn
-        (message "Yanked region to x-clipboard!")
-        (call-interactively 'clipboard-kill-ring-save)
-        )
-    (if (region-active-p)
-        (progn
-          (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
-          (message "Yanked region to clipboard!")
-          (deactivate-mark))
-      (message "No region active; can't yank to clipboard!")))
-  )
+;; [TEST] Copy / past with linux
+;; (defun copy-to-clipboard ()
+;;   (interactive)
+;;   (if (display-graphic-p)
+;;       (progn
+;;         (message "Yanked region to x-clipboard!")
+;;         (call-interactively 'clipboard-kill-ring-save)
+;;         )
+;;     (if (region-active-p)
+;;         (progn
+;;           (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
+;;           (message "Yanked region to clipboard!")
+;;           (deactivate-mark))
+;;       (message "No region active; can't yank to clipboard!")))
+;;   )
 
-(defun paste-from-clipboard ()
-  (interactive)
-  (if (display-graphic-p)
-      (progn
-        (clipboard-yank)
-        (message "graphics active")
-        )
-    (insert (shell-command-to-string "xsel -o -b"))
-    )
-  )
+;; (defun paste-from-clipboard ()
+;;   (interactive)
+;;   (if (display-graphic-p)
+;;       (progn
+;;         (clipboard-yank)
+;;         (message "graphics active")
+;;         )
+;;     (insert (shell-command-to-string "xsel -o -b"))
+;;     )
+;;   )
 
-;; Cider
+;; Cider (For Clojure-LISP)
 (use-package cider
   :ensure t
   :pin melpa-stable)
@@ -479,23 +495,6 @@ If point was already at that position, move point to beginning of line."
 ;; REST Client
 (require 'restclient)
 
-;; Rename current file and buffer
-(defun rename-file-and-buffer ()
-  "Rename the current buffer and file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (message "Buffer is not visiting a file!")
-      (let ((new-name (read-file-name "New name: " filename)))
-        (cond
-         ((vc-backend filename) (vc-rename-file filename new-name))
-         (t
-          (rename-file filename new-name t)
-          (set-visited-file-name new-name t t)))))))
-
-(global-set-key (kbd "C-c r")  'rename-file-and-buffer)
-
-
 ;; DotEnv-mode
 (require 'dotenv-mode) ; unless installed from a package
 (add-to-list 'auto-mode-alist '("\\.env\\..*\\'" . dotenv-mode)) ;;
@@ -503,13 +502,29 @@ If point was already at that position, move point to beginning of line."
 ;; OX-Reveal (PPT generator)
 (require 'ox-reveal)
 
-;; habitica (Gamify TODO LIST)
-(load-file "~/.emacs.d/habitica-credit.el")
+;; JS2-Refactor
+(require 'js2-refactor)
+(add-hook 'js2-mode-hook #'js2-refactor-mode)
+(js2r-add-keybindings-with-prefix "C-c C-r")
+
+;; YAS
+(require 'yasnippet)
+(yas-global-mode 1)
+(yas-reload-all)
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+(global-set-key (kbd "<f4>") #'company-yasnippet)
 
 
-(push '("\\.js[x]?\\'" . js2-mode) auto-mode-alist)
-;; associate some major modes with language server binaries
-(push '(js2-mode . ("/home/thomas.luquet/.nvm/versions/node/v10.14.1/bin/javascript-typescript-stdio")) eglot-server-programs)
+;; Simple Parens
+(require 'simple-paren)
+(global-set-key (kbd "C-c '") 'simple-paren-singlequote)
+(global-set-key (kbd "C-c \"") 'simple-paren-doublequote)
+(global-set-key (kbd "C-c )") 'simple-paren-parentize)
+(global-set-key (kbd "C-c (") 'simple-paren-parentize)
+(global-set-key (kbd "C-c [") 'simple-paren-bracket)
+(global-set-key (kbd "C-c ]") 'simple-paren-bracket)
+(global-set-key (kbd "C-c {") 'simple-paren-curly-bracket)
+(global-set-key (kbd "C-c }") 'simple-paren-curly-bracket)
 
 
 ;;(setq debug-on-error t)
