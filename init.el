@@ -21,9 +21,6 @@
       backup-directory-alist     `(("." . ,(expand-file-name "~/.emacs.d/backups")))
       save-place-file            (expand-file-name "~/.emacs.d/saved-places"))
 
-
-
-
 ;; Remove cluttered toolbar
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -31,7 +28,6 @@
 (global-hl-line-mode t)
 (setq-default visible-bell 0
               indent-tabs-mode nil)
-
 
 ;; Anable autosave
 (setq auto-save-default nil)
@@ -46,8 +42,6 @@
 ;; Save adding :ensure t on every use package
 (setq use-package-always-ensure t)
 
-;; (use-package exec-path-from-shell
-;;   :config (exec-path-from-shell-initialize))
 
 ;; Expand region
 (use-package expand-region
@@ -67,6 +61,8 @@
 
 ;; Switch windows
 (global-set-key (kbd "<f6>") #'other-window)
+(global-set-key (kbd "M-TAB") #'other-window)
+(global-set-key (kbd "M-<tab>") #'other-window)
 
 ;; maGit integration
 (use-package magit
@@ -81,7 +77,7 @@
   :bind
   ("M-x" . helm-M-x)
   ("M-q" . helm-imenu)
-  ("C-x C-f" . #'helm-find-files)
+  ;;("C-x C-f" . #'helm-find-files)
   ("C-x C-b" . #'helm-buffers-list)
   ("C-s" . #'helm-swoop)
   )
@@ -100,9 +96,9 @@
   :init (progn
           (setq projectile-enable-caching t)
           (setq projectile-indexing-method 'native)
-          (setq projectile-globally-ignored-directories '("node_modules" "node_modules/" "dist" "dist/" "coverage"))
-          (setq projectile-ignored-directories '("_output" "node_modules" "node_modules/" "pkg" "dist" "dist/" "dist/js" "coverage" ))
-          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" "package-lock.json" "yarn.lock" ".svg" "#" "~"))
+          (setq projectile-globally-ignored-directories '("node_modules" "node_modules/" "dist" "dist/" "coverage" ))
+          (setq projectile-ignored-directories '("_output" "node_modules" "node_modules/" "pkg" "dist" "dist/" "dist/js" "coverage" ""))
+          (setq projectile-ignored-files '(".DS_Store" ".gitmodules" "package-lock.json" "yarn.lock" ".svg" "#" "~" "yarn-error.log" ".log" "*log" "yarn*"))
           (setq helm-ag-command-option " -U" )
           )
   :bind (
@@ -237,9 +233,9 @@
   :init (setq markdown-command "multimarkdown"))
 
 ;; 4daLookz
-(use-package monokai-pro-theme
-  :ensure t
-  :config (load-theme 'monokai t))
+;; (use-package monokai-pro-theme
+;;   :ensure t
+;;   :config (load-theme 'monokai t))
 
 
 ;; color in parens
@@ -252,11 +248,25 @@
 
 ;; Font
 (setq-default cursor-type 'box)
-(set-frame-font "Roboto Mono 11")
+;;(set-frame-font "Roboto Mono 10")
+
+;;[test]
+(global-font-lock-mode nil)
+(set-face-background 'hl-line "#171717")
+
+
+;; [Test] DOOM THEME
+(require 'doom-themes)
+;; Global settings (defaults)
+(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+(load-theme 'doom-challenger-deep t)
+(doom-themes-org-config)
+(setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
 
 ;; Disable backup files (# and ~ files)
 ;; http://ergoemacs.org/emacs/emacs_set_backup_into_a_directory.html
-;; but don't work
+;; Not sure it work
 (setq make-backup-files nil
       auto-save-default nil)
 
@@ -272,8 +282,8 @@
 ;; Smart C-a
 (defun smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line.
-Move point to the first non-whitespace character on this line.
-If point was already at that position, move point to beginning of line."
+  Move point to the first non-whitespace character on this line.
+  If point was already at that position, move point to beginning of line."
   (interactive)
   (let ((oldpos (point)))
     (back-to-indentation)
@@ -288,9 +298,9 @@ If point was already at that position, move point to beginning of line."
   :bind
   (:map global-map
         ("M-SPC" . set-rectangular-region-anchor)
-        ([f9] . mc/mark-previous-word-like-this)
-        ([f10] . mc/mark-next-word-like-this)
-        ([f11] . mc/mark-all-word-like-this)
+        ([f9] . mc/mark-previous-like-this)
+        ([f10] . mc/mark-next-like-this)
+        ([f11] . mc/mark-all-like-this)
         ))
 
 ;; Playerctl
@@ -342,51 +352,11 @@ If point was already at that position, move point to beginning of line."
 (diminish 'makefile-mode)
 
 
-;; ;; OLD Editor Config ()
-;; (use-package editorconfig
-;;   :ensure t
-;;   :config
-;;   (editorconfig-mode 1))
-
-;; Dumb-jump
-;; (use-package dumb-jump
-;;   :bind (("M-g o" . dumb-jump-go-other-window)
-;;          ;; ("M-RET" . dumb-jump-go)
-;;          ;; ("M-g i" . dumb-jump-go-prompt)
-;;          ;; ("M-g x" . dumb-jump-go-prefer-external)
-;;          ;; ("M-g z" . dumb-jump-go-prefer-external-other-window)
-;;          )
-;;   :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'helm)
-;;   :ensure t)
 
 ;; Smart-Jump
 (use-package smart-jump
   :bind (("M-RET" . smart-jump-go))
   :ensure t)
-
-;; [useless] Dired-sidebar
-;; (use-package dired-sidebar
-;;   :bind (("C-x C-n" . sidebar-toggle))
-;;   :ensure t
-;;   :commands (dired-sidebar-toggle-sidebar)
-;;   :init
-;;   (add-hook 'dired-sidebar-mode-hook
-;;             (lambda ()
-;;               (unless (file-remote-p default-directory)
-;;                 (auto-revert-mode))))
-;;   :config
-;;   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-;;   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
-
-;;   (setq dired-sidebar-theme 'doom-themes) ;; j'ai pas l'impression que ca marche
-;;   (setq dired-sidebar-use-term-integration t)
-;;   (setq dired-sidebar-use-custom-font t))
-
-;; (defun sidebar-toggle () ;; useless ?
-;;   "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
-;;   (interactive)
-;;   (dired-sidebar-toggle-sidebar)
-;;   (ibuffer-sidebar-toggle-sidebar))
 
 ;; Open the file name being pointed in an other window or dired
 ;; reference: http://kouzuka.blogspot.com/2011/02/emacsurlfinder.html
@@ -417,80 +387,37 @@ If point was already at that position, move point to beginning of line."
   :bind ( "C-c c" . string-inflection-all-cycle )
   )
 
-;; [OLD] double click (?)
-;; (global-set-key [double-mouse-1] 'my-open-emacs-at-point)
-;; (global-set-key [double-down-mouse-1] 'ignore) ; mouse-drag-region
-
-
 ;; Let you know what you have modified during this commit
-(use-package git-gutter)
-;; If you enable global minor mode
+(require 'git-gutter)
 (global-git-gutter-mode t)
 ;; Jump to next/previous hunk
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
 (global-set-key (kbd "C-x n") 'git-gutter:next-hunk)
 
-;; [old] Quote symbol at point => SimpleParens
-;; (defun quotes-on-symbol-at-point ()
-;;   (interactive)
-;;   (save-excursion
-;;     (let
-;;         ((bounds (bounds-of-thing-at-point 'symbol)))
-;;       (goto-char (car bounds))
-;;       (insert "\"")
-;;       (goto-char (+ 1 (cdr bounds)))
-;;       (insert "\""))))
-;; (global-set-key (kbd "C-c q") 'quotes-on-symbol-at-point)
-
-;; [TEST] Copy / past with linux
-;; (defun copy-to-clipboard ()
-;;   (interactive)
-;;   (if (display-graphic-p)
-;;       (progn
-;;         (message "Yanked region to x-clipboard!")
-;;         (call-interactively 'clipboard-kill-ring-save)
-;;         )
-;;     (if (region-active-p)
-;;         (progn
-;;           (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
-;;           (message "Yanked region to clipboard!")
-;;           (deactivate-mark))
-;;       (message "No region active; can't yank to clipboard!")))
-;;   )
-
-;; (defun paste-from-clipboard ()
-;;   (interactive)
-;;   (if (display-graphic-p)
-;;       (progn
-;;         (clipboard-yank)
-;;         (message "graphics active")
-;;         )
-;;     (insert (shell-command-to-string "xsel -o -b"))
-;;     )
-;;   )
-
-;; Cider (For Clojure-LISP)
-(use-package cider
-  :ensure t
-  :pin melpa-stable)
 
 ;; Aggressive-indent-mode
 (global-aggressive-indent-mode 1)
 
-
-;; Doom-mode line
+;;Doom-mode line
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode))
-(setq doom-modeline-icon t)
-(setq doom-modeline-buffer-file-name-style 'truncate-upto-project)
+(setq doom-modeline-buffer-file-name-style 'truncate-with-project)
 (setq doom-modeline-python-executable "python")
 (setq doom-modeline-icon t)
 (setq doom-modeline-major-mode-icon t)
-(setq doom-modeline-major-mode-color-icon nil)
+(setq doom-modeline-major-mode-color-icon t)
 (setq doom-modeline-minor-modes nil)
 (setq doom-modeline-persp-name t)
 (setq doom-modeline-lsp t)
+(setq doom-modeline-buffer-encoding nil)
+(setq doom-modeline-github t)
+(setq doom-modeline-env-version t)
+(setq doom-modeline-height 32)
+(setq doom-modeline-irc t)
+
+;; Nyan mode
+(require 'nyan-mode)
 
 ;; REST Client
 (require 'restclient)
@@ -513,6 +440,7 @@ If point was already at that position, move point to beginning of line."
 (yas-reload-all)
 (add-hook 'prog-mode-hook #'yas-minor-mode)
 (global-set-key (kbd "<f4>") #'company-yasnippet)
+(define-key yas-minor-mode-map (kbd "<tab>") 'yas-expand)
 
 
 ;; Simple Parens
@@ -526,6 +454,30 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "C-c {") 'simple-paren-curly-bracket)
 (global-set-key (kbd "C-c }") 'simple-paren-curly-bracket)
 
+(use-package all-the-icons)
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :init
+  :bind
+  (:map global-map
+        ("C-x t t"   . treemacs)
+        )
+  )
+
+(use-package treemacs-projectile
+  :after treemacs projectile
+  :ensure t)
+
+(use-package treemacs-icons-dired
+  :after treemacs dired
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after treemacs magit
+  :ensure t)
 
 ;;(setq debug-on-error t)
 
