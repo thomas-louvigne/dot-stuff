@@ -81,7 +81,7 @@
   ("C-x C-b" . #'helm-buffers-list)
   ("C-s" . #'helm-swoop)
   )
-(require 'helm-config)
+(use-package helm-config)
 (helm-mode 1)
 
 
@@ -181,7 +181,7 @@
   t)
 
 ;; EGLOT code analysis
-(require 'eglot)
+(use-package eglot)
 
 (defun my-javascript-mode-hook ()
   "Do some things when opening JavaScript files."
@@ -256,7 +256,8 @@
 
 
 ;; [Test] DOOM THEME
-(require 'doom-themes)
+(use-package doom-themes)
+
 ;; Global settings (defaults)
 (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
       doom-themes-enable-italic t) ; if nil, italics is universally disabled
@@ -367,7 +368,7 @@
 (defun my-open-emacs-at-point ()
   "Open the file with opening EMACS."
   (interactive)
-  (require 'ffap)
+  (use-package ffap)
   (let ((file (or (ffap-url-at-point)
                   (ffap-file-at-point))))
     (unless (stringp file)
@@ -388,7 +389,7 @@
   )
 
 ;; Let you know what you have modified during this commit
-(require 'git-gutter)
+(use-package git-gutter)
 (global-git-gutter-mode t)
 ;; Jump to next/previous hunk
 (global-set-key (kbd "C-x p") 'git-gutter:previous-hunk)
@@ -396,6 +397,7 @@
 
 
 ;; Aggressive-indent-mode
+(use-package aggressive-indent)
 (global-aggressive-indent-mode 1)
 
 ;;Doom-mode line
@@ -417,25 +419,25 @@
 (setq doom-modeline-irc t)
 
 ;; Nyan mode
-(require 'nyan-mode)
+(use-package nyan-mode)
 
 ;; REST Client
-(require 'restclient)
+(use-package restclient)
 
 ;; DotEnv-mode
-(require 'dotenv-mode) ; unless installed from a package
+(use-package dotenv-mode) ; unless installed from a package
 (add-to-list 'auto-mode-alist '("\\.env\\..*\\'" . dotenv-mode)) ;;
 
 ;; OX-Reveal (PPT generator)
-(require 'ox-reveal)
+(use-package ox-reveal)
 
 ;; JS2-Refactor
-(require 'js2-refactor)
+(use-package js2-refactor)
 (add-hook 'js2-mode-hook #'js2-refactor-mode)
 (js2r-add-keybindings-with-prefix "C-c C-r")
 
 ;; YAS
-(require 'yasnippet)
+(use-package yasnippet)
 (yas-global-mode 1)
 (yas-reload-all)
 (add-hook 'prog-mode-hook #'yas-minor-mode)
@@ -444,7 +446,7 @@
 
 
 ;; Simple Parens
-(require 'simple-paren)
+(use-package simple-paren)
 (global-set-key (kbd "C-c '") 'simple-paren-singlequote)
 (global-set-key (kbd "C-c \"") 'simple-paren-doublequote)
 (global-set-key (kbd "C-c )") 'simple-paren-parentize)
@@ -478,6 +480,11 @@
 (use-package treemacs-magit
   :after treemacs magit
   :ensure t)
+
+;; [TEST] Python
+(add-to-list 'eglot-server-programs
+             `(python-mode . ("pyls" "-v" "--tcp" "--host"
+                              "localhost" "--port" :autoport)))
 
 ;;(setq debug-on-error t)
 
