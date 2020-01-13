@@ -154,7 +154,8 @@
 
 
 ;; [TEST] ESLINTd
-(add-hook 'js2-mode-hook 'eslintd-fix-mode)
+;; TODO: delete
+;;(add-hook 'js2-mode-hook 'eslintd-fix-mode)
 
 
 ;; JS2-mode
@@ -231,12 +232,6 @@
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
-
-;; 4daLookz
-;; (use-package monokai-pro-theme
-;;   :ensure t
-;;   :config (load-theme 'monokai t))
-
 
 ;; color in parens
 (use-package rainbow-delimiters
@@ -481,10 +476,8 @@
   :after treemacs magit
   :ensure t)
 
-;; [TEST] Python
-(add-to-list 'eglot-server-programs
-             `(python-mode . ("pyls" "-v" "--tcp" "--host"
-                              "localhost" "--port" :autoport)))
+;; Hiligt cursor when you moove your buffer
+(beacon-mode t)
 
 ;;(setq debug-on-error t)
 
