@@ -5,9 +5,10 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
-#ZSH_THEME="cypher"
 
+#ZSH_THEME="robbyrussell"
+#ZSH_THEME="cypher"
+ZSH_THEME="agnoster"
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -47,35 +48,32 @@ HIST_STAMPS="dd.mm.yyyy"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-
 # User configuration
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/core_perl:/home/tlu/.local/bin/:"
 export PYENV_ROOT="$HOME/.pyenv"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 
-plugins=(git archlinux git extract common-aliases git-extras autojump zsh-nvm docker)
+plugins=(git archlinux git extract common-aliases git-extras autojump docker pyenv python ssh-agent)
+
+# [test] pour avoir l'agent-forwarding
+zstyle :omz:plugins:ssh-agent agent-forwarding on
 
 # c'est bizare de faire ca...
 source $ZSH/oh-my-zsh.sh
 
-
-export MANPATH="/usr/local/man:$MANPATH"
+#export MANPATH="/usr/local/man:$MANPATH"
 
 # Preferred editor for local and remote sessions
- if [[ -n $SSH_CONNECTION ]]; then
-   export EDITOR='leafpad'
- else
-   export EDITOR='nano'
- fi
+if [[ -n $SSH_CONNECTION ]]; then
+    export EDITOR='leafpad'
+else
+    export EDITOR='nano'
+fi
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
-
-# ssh
-export SSH_KEY_PATH="~/.ssh/dsa_id"
 
 # My Export
 export EDITOR="emacsclient -t"
@@ -98,7 +96,6 @@ export LANG="fr_FR.UTF-8"
 
 alias e="emacsclient -t"
 alias se="sudo emacs -nw"
-
 alias q="exit"
 alias l="ls"
 alias eog="gpicview"
@@ -108,16 +105,45 @@ alias batty="acpi"
 alias lycos="grep -nr --exclude-dir={downloads,venv,bower_components,misc,.vendors,.idea,.git,.cache,__pycache__,.tmp,libs,dist,node_modules,.vagrant,htmlcov,cov_html} --exclude=\*.{pyc,~,#,log,coverage}"
 alias z="xlock;"
 alias dodo="systemctl suspend"
-alias yasu="yaourt -Syu"
-alias agenda="emacsclient -t /home/tlu/Dropbox/agenda/agenda.org"
-alias todo="emacsclient -t /home/tlu/Dropbox/agenda/today.org"
-alias today="python2 /usr/bin/gcalcli agenda 7am 11:55pm"
-alias addcal="python2 /usr/bin/gcalcli add --calendar 'Thomas L.'"
-alias week="python2 /usr/bin/gcalcli agenda"
 
+# Calendar (broken)
+alias today="emacsclient -t ~/agenda/today.org"
+alias day="gcalcli agenda 7am 11:55pm"
+# alias addcal="python2 /usr/bin/gcalcli add --calendar 'Thomas L.'"
+# alias week="python2 /usr/bin/gcalcli agenda"
+
+# git Stuff
 alias forcepull="git fetch --all && git reset --hard origin/master"
+alias gs="git status"
+alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+alias connectwifi="nmtui-connect"
+
+# [TEST remove] SSH-agent,
+#eval `ssh-agent -s` > /dev/null
+
+# invivo
+alias iac_invivo="docker run -it -p 31444:31444 -v ~/.ssh/known_hosts:/home/ops/.ssh/known_hosts -v ~/working/invivo:/home/ops/invivo gitlab.tooling.invivodigitalfactory.com:5005/infra/terraform-wrapper/iac-wrapper:latest /bin/bash"
 
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Invivo
+export DOCKER_COMPOSE_SSH_AGENT_SOCKET=$SSH_AUTH_SOCK
+
+# TEST Vterm inside emacs
+vterm_prompt_begin() {
+    printf "\e]51;C\e\\"
+}
+vterm_prompt_end() {
+    printf "\e]51;A$(whoami)@$(hostname):$(pwd)\e\\";
+}
+PROMPT='%{$(vterm_prompt_begin)%}'$PROMPT'%{$(vterm_prompt_end)%}'
+
+autoload -U add-zsh-hook
+add-zsh-hook -Uz preexec(){printf "\e]51;B\e\\";}
+
+if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
+    alias clear='printf "\e]51;Evterm-clear-scrollback\e\\";tput clear'
+fi
