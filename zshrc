@@ -57,7 +57,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 
 plugins=(git archlinux git extract common-aliases git-extras autojump docker pyenv python ssh-agent)
 
-# [test] pour avoir l'agent-forwarding
+# pour avoir l'agent-forwarding
 zstyle :omz:plugins:ssh-agent agent-forwarding on
 
 # c'est bizare de faire ca...
@@ -66,11 +66,11 @@ source $ZSH/oh-my-zsh.sh
 #export MANPATH="/usr/local/man:$MANPATH"
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-    export EDITOR='leafpad'
-else
-    export EDITOR='nano'
-fi
+# if [[ -n $SSH_CONNECTION ]]; then
+#     export EDITOR='leafpad'
+# else
+#     export EDITOR='nano'
+# fi
 
 # Compilation flags
 export ARCHFLAGS="-arch x86_64"
@@ -92,8 +92,6 @@ export LC_TIME="fr_FR.UTF-8"
 export LANG="fr_FR.UTF-8"
 
 # Alias
-#alias emacs="emacs -nw"
-
 alias e="emacsclient -t"
 alias se="sudo emacs -nw"
 alias q="exit"
@@ -109,22 +107,20 @@ alias dodo="systemctl suspend"
 # Calendar (broken)
 alias today="emacsclient -t ~/agenda/today.org"
 alias day="gcalcli agenda 7am 11:55pm"
-# alias addcal="python2 /usr/bin/gcalcli add --calendar 'Thomas L.'"
-# alias week="python2 /usr/bin/gcalcli agenda"
 
-# git Stuff
+# git alias
 alias forcepull="git fetch --all && git reset --hard origin/master"
 alias gs="git status"
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
-alias connectwifi="nmtui-connect"
 
-# [TEST remove] SSH-agent,
-#eval `ssh-agent -s` > /dev/null
+# Wifi alias
+alias connectwifi="nmtui-connect"
 
 # invivo
 alias iac_invivo="docker run -it -p 31444:31444 -v ~/.ssh/known_hosts:/home/ops/.ssh/known_hosts -v ~/working/invivo:/home/ops/invivo gitlab.tooling.invivodigitalfactory.com:5005/infra/terraform-wrapper/iac-wrapper:latest /bin/bash"
 
 
+# Node & nvm
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
