@@ -101,10 +101,11 @@ alias dasize="du -a * | sort -nr | head -10"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
 alias lycos="grep -nr --exclude-dir={downloads,venv,bower_components,misc,.vendors,.idea,.git,.cache,__pycache__,.tmp,libs,dist,node_modules,.vagrant,htmlcov,cov_html} --exclude=\*.{pyc,~,#,log,coverage}"
-alias z="xlock;"
+alias z="xlock -nolock;"
 alias dodo="systemctl suspend"
+alias money="boobank list -f simple --select balance --no-keys --condition \"id=00040474642@boursorama\""
 
-# Calendar (broken)
+# Calendar
 alias today="emacsclient -t ~/agenda/today.org"
 alias day="gcalcli agenda 7am 11:55pm"
 
@@ -113,11 +114,18 @@ alias forcepull="git fetch --all && git reset --hard origin/master"
 alias gs="git status"
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
 
+
 # Wifi alias
 alias connectwifi="nmtui-connect"
 
 # invivo
-alias iac_invivo="docker run -it -p 31444:31444 -v ~/.ssh/known_hosts:/home/ops/.ssh/known_hosts -v ~/working/invivo:/home/ops/invivo gitlab.tooling.invivodigitalfactory.com:5005/infra/terraform-wrapper/iac-wrapper:latest /bin/bash"
+#alias iac_invivo="docker run -it -p 31444:31444 -v ~/.ssh/known_hosts:/home/ops/.ssh/known_hosts -v ~/working/invivo:/home/ops/invivo gitlab.tooling.invivodigitalfactory.com:5005/infra/terraform-wrapper/iac-wrapper:latest /bin/bash"
+alias iac_invivo="docker run --rm -it \
+    -p 31444:31444 \
+    -v ~/.ssh/known_hosts:/home/ops/.ssh/known_hosts \
+    -v /home/thomas.luquet/working/invivo/docker-compose:/home/ops/invivo \
+    gitlab.tooling.invivodigitalfactory.com:5005/infra/iac-tooling:latest \
+      /bin/bash"
 
 
 # Node & nvm
