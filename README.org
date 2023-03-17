@@ -15,3 +15,4 @@
 
 * TODO
 - Clean .emacs avec la configuration de purcell
+- retourner à un tiling window manager
