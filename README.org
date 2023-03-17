@@ -7,8 +7,11 @@
  - init.el (EMACS configuration file, ~$mv init.el ~/.emacs.d/~)
  - rc.lua ([[https://awesomewm.org/][Awesome WindowManager]] with [[https://github.com/lcpz/awesome-copycats][copycat]] ,  ~$mv rc.lua ~/.config/awesome/~ )
  - software_list.txt ( Use with ~$ yaourt -S software_list.txt -S~ )
- - termite config file ( ~$mv termite_config ~/.config/termite/congig~
  - zshrc ([[https://github.com/robbyrussell/oh-my-zsh][oh my Zsh]] config file)
 
 * After install
   - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh
+  - Add zoxide plugin in oh my zsh
+
+* TODO
+- Clean .emacs avec la configuration de purcell

@@ -4,9 +4,9 @@ hunspell-fr
 openssh
 playerctl
 steam
-termite
 the_silver_searcher
 tree
-weechat
 xsel
 zsh
+zoxide
+exa
