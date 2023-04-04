@@ -2,12 +2,12 @@
 #+AUTHOR:       Thomas L.
 
 * My dot stuff :
- - autoexec.cfg (CounterStrike configuration file)
  - gitignore (Globale, conf from : https://www.gitignore.io/)
- - init.el (EMACS configuration file, ~$mv init.el ~/.emacs.d/~)
- - rc.lua ([[https://awesomewm.org/][Awesome WindowManager]] with [[https://github.com/lcpz/awesome-copycats][copycat]] ,  ~$mv rc.lua ~/.config/awesome/~ )
+ - init-local.el (EMACS configuration file from emacs-purcell , ~$mv init-local.el ~/.emacs.d/lisp/~)
+ - rc.lua ([[https://awesomewm.org/][Awesome WindowManager]] with [[https://github.com/lcpz/awesome-copycats][copycat]] ,  ~$mv rc.lua ~/.config/awesome/~ ) // OLD
  - software_list.txt ( Use with ~$ yaourt -S software_list.txt -S~ )
- - zshrc ([[https://github.com/robbyrussell/oh-my-zsh][oh my Zsh]] config file)
+ - zshrc ([[https://github.com/robbyrussell/oh-my-zsh][oh my Zsh]] config file) // a revérfier
+ - autoexec.cfg (CounterStrike configuration file)
 
 * After install
   - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh
