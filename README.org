@@ -3,16 +3,18 @@
 
 * My dot stuff :
  - gitignore (Globale, conf from : https://www.gitignore.io/)
- - init-local.el (EMACS configuration file from emacs-purcell , ~$mv init-local.el ~/.emacs.d/lisp/~)
- - rc.lua ([[https://awesomewm.org/][Awesome WindowManager]] with [[https://github.com/lcpz/awesome-copycats][copycat]] ,  ~$mv rc.lua ~/.config/awesome/~ ) // OLD
- - software_list.txt ( Use with ~$ yaourt -S software_list.txt -S~ )
+ - init-local.el (EMACS configuration file from emacs-purcell `~/.emacs.d/lisp/`)
  - zshrc ([[https://github.com/robbyrussell/oh-my-zsh][oh my Zsh]] config file) // a revérfier
- - autoexec.cfg (CounterStrike configuration file)
 
 * After install
   - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh
   - Add zoxide plugin in oh my zsh
 
 * TODO
-- Clean .emacs avec la configuration de purcell
-- retourner à un tiling window manager
+ - Mettre un lien ici vers la page de mon blog ou je parles des applis que j'utise
+ - Clean .emacs avec la configuration de purcell
+ - retourner à un tiling window manager
+
+* Old Stuff
+ - autoexec.cfg (CounterStrike configuration file)
+ - rc.lua ([[https://awesomewm.org/][Awesome WindowManager]] with [[https://github.com/lcpz/awesome-copycats][copycat]] ,  ~$mv rc.lua ~/.config/awesome/~ ) // OLD
