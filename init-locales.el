@@ -5,7 +5,6 @@
 ;; MY CODE
 
 
-;; Use-package
 (require 'use-package)
 
 ;; Expand region
@@ -21,6 +20,7 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 
+;; Pas hyper utile
 (use-package easy-hugo
   :init
   (setq easy-hugo-default-ext ".org")
@@ -33,6 +33,22 @@
   (setq easy-hugo-postdir "content/posts")
   :bind ("C-c C-e" . easy-hugo))
 
+;; Correcteur gramaticale
+(with-eval-after-load 'flycheck
+  (flycheck-grammalecte-setup))
+(use-package flycheck-grammalecte
+  :hook (fountain-mode . flycheck-mode)
+  :init
+  (setq flycheck-grammalecte-report-apos nil
+        flycheck-grammalecte-report-esp nil
+        flycheck-grammalecte-report-nbsp nil)
+  :config
+  (add-to-list 'flycheck-grammalecte-enabled-modes 'fountain-mode)
+  (grammalecte-download-grammalecte)
+  (flycheck-grammalecte-setup))
+
+;; Bette org mode
+(global-org-bulletproof-mode +1)
 
 ;; END OF MY CODE
 (defun sanityinc/locale-var-encoding (v)
@@ -55,10 +71,7 @@
 (unless (eq system-type 'windows-nt)
   (set-selection-coding-system 'utf-8))
 
+;; Fin des conf locales
 (provide 'init-locales)
-
-
-
-
 
 ;;; init-locales.el ends here
