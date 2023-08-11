@@ -9,7 +9,7 @@ export ZSH="/home/thomas-luquet/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="agnoster"
+ZSH_THEME="jaischeema"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -112,7 +112,7 @@ export LANG="fr_FR.UTF-8"
 
 # Alias
 alias e="emacsclient -t"
-alias bl="emacsclient -t ~/Nextcloud/backlog.org"
+alias bl="emacsclient -t ~/Nextcloud/backlog.txt"
 alias se="sudo emacs -nw"
 alias q="exit"
 alias l="exa"
@@ -131,10 +131,9 @@ alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %
 alias connectwifi="nmtui-connect"
 alias tree2="exa --tree --level=2"
 alias cd=z #Zoxixde
-
+head ~/Nextcloud/backlog.txt
 
 # [TEST] Qu'est ce que c'est ? Surement un truc de vterm pour emacs
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
         source /etc/profile.d/vte.sh
 fi
-
