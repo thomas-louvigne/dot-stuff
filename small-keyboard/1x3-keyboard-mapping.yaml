@@ -1,0 +1,13 @@
+orientation: normal
+
+rows: 1
+columns: 3
+knobs: 1
+
+layers:
+  - buttons:
+      - ["ctrl-w","ctrl-shift-tab", "ctrl-tab"]
+    knobs:
+      - ccw: 'volumedown'
+        press: 'play'
+        cw: 'volumeup'
