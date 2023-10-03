@@ -131,7 +131,7 @@ alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %
 alias connectwifi="nmtui-connect"
 alias tree2="exa --tree --level=2"
 alias cd=z #Zoxixde
-head ~/Nextcloud/backlog.txt
+head ~/Nextcloud/backlog.org
 
 # [TEST] Qu'est ce que c'est ? Surement un truc de vterm pour emacs
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then

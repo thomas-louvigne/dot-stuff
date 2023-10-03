@@ -21,11 +21,7 @@
 (add-to-list 'auto-mode-alist '("\\.txt\\'" . text-mode))
 
 ;; Correcteur gramaticale
-
-;; Setup :
-;; (with-eval-after-load 'flycheck
-;;   (flycheck-grammalecte-setup))
-
+;; Marche une fois /sur 2
 (use-package flycheck-grammalecte
   :hook (fountain-mode . flycheck-mode)
   :init
@@ -41,7 +37,7 @@
                     "(?m)^[ \t]*(?:DEADLINE|SCHEDULED):.+$"
                     "(?m)^\\*+ .*[ \t]*(:[\\w:@]+:)[ \t]*$"
                     "(?m)^[ \t]*-[ \t]*" ;; tirets pour orgmode
-                    "(?im)^:[a-z]+:" ;; propriétés org-roam
+                    "(?im)^:[a-z]+:"     ;; propriétés org-roam
                     "(?im)^[ \t]*#\\+(?:caption|description|keywords|(?:sub)?title):"
                     "(?im)^[ \t]*#\\+(?!caption|description|keywords|(?:sub)?title)\\w+:.*$")
           (text-mode "(?m)^[ \t]*-[ \t]*" ;; tirets pour textmode
@@ -52,6 +48,7 @@
   (add-to-list 'flycheck-grammalecte-enabled-modes 'fountain-mode)
   (grammalecte-download-grammalecte)
   (flycheck-grammalecte-setup))
+
 
 ;; Better org mode
 (use-package org-bulletproof
