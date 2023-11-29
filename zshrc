@@ -1,4 +1,3 @@
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -112,7 +111,7 @@ export LANG="fr_FR.UTF-8"
 
 # Alias
 alias e="emacsclient -t"
-alias bl="emacsclient -t ~/Nextcloud/backlog.txt"
+alias bl="emacsclient -t ~/Nextcloud/backlog.org"
 alias se="sudo emacs -nw"
 alias q="exit"
 alias l="exa"
@@ -121,7 +120,7 @@ alias eog="gpicview"
 alias dasize="du -ah * | sort -nr | head -10"
 alias daclean="sudo pacman -Sc; sudo pacman -Rns $(pacman -Qtdq);"
 alias batty="acpi"
-alias lycos="grep -nr --exclude-dir={downloads,venv,bower_components,misc,.vendors,.idea,.git,.cache,__pycache__,.tmp,libs,dist,node_modules,.vagrant,htmlcov,cov_html} --exclude=\*.{pyc,~,#,log,coverage}"
+alias lycos="grep -nr --exclude-dir={downloads,venv,bower_components,misc,.vendors,.idea,.git,.cache,__pycache__,.tmp,libs,dist,node_modules,.vagrant,htmlcov,cov_html} --exclude=\*.{pyc,~,#,log,coverage,css,scss}"
 alias zlock="xlock -nolock;"
 alias dodo="systemctl suspend"
 alias money="boobank list -f simple --select balance --no-keys --condition \"id=00040474642@boursorama\""
