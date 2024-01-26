@@ -136,3 +136,5 @@ head ~/Nextcloud/backlog.org
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
         source /etc/profile.d/vte.sh
 fi
+
+source /home/thomas-luquet/.config/broot/launcher/bash/br
