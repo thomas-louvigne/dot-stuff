@@ -44,12 +44,10 @@
 ;; You can simply uncomment the following if you'd like to get started with
 ;; MELPA packages quickly:
 ;;
-
 (with-eval-after-load 'package
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
   )
-
 
 ;; If you want to turn off the welcome screen, uncomment this
 ;(setopt inhibit-splash-screen t)
@@ -150,7 +148,7 @@ If the new path's directories does not exist, create them."
 (setopt x-underline-at-descent-line nil)           ; Prettier underlines
 (setopt switch-to-buffer-obey-display-actions t)   ; Make switching buffers more consistent
 
-(setopt show-trailing-whitespace nil)      ; By default, don't underline trailing spaces
+(setopt show-trailing-whitespace t)      ; By default, don't underline trailing spaces
 (setopt indicate-buffer-boundaries 'left)  ; Show buffer top and bottom in the margin
 
 ;; Enable horizontal scrolling
@@ -251,7 +249,8 @@ If the new path's directories does not exist, create them."
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("603a831e0f2e466480cdc633ba37a0b1ae3c3e9a4e90183833bc4def3421a961" default))
- '(package-selected-packages '(kanban syncthing markdown-mode which-key)))
+ '(package-selected-packages
+   '(org-roam json-mode yaml-mode magit wgrep orderless kind-icon cape corfu-terminal corfu marginalia vertico embark-consult embark consult avy dracula-theme which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

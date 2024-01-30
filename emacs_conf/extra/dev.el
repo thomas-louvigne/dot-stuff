@@ -43,7 +43,8 @@
           (python-mode . python-ts-mode)))
   :hook
   ;; Auto parenthesis matching
-  ((prog-mode . electric-pair-mode)))
+  ;;((prog-mode . electric-pair-mode))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
