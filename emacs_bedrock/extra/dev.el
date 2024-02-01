@@ -41,7 +41,7 @@
           (json-mode . json-ts-mode)
           (css-mode . css-ts-mode)
           (python-mode . python-ts-mode)))
-  :hook
+  ;;:hook
   ;; Auto parenthesis matching
   ;;((prog-mode . electric-pair-mode))
   )
