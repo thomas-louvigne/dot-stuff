@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:/home/thomas-luquet/.cargo/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -68,18 +68,19 @@ HIST_STAMPS="dd/MM/yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git emacs ssh-agent zoxide extract common-aliases git-extras)
+plugins=(git emacs ssh-agent zoxide extract common-aliases git-extras kate man zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-# export MANPATH="/usr/local/man:$MANPATH"
+#export MANPATH="/usr/local/man:$MANPATH"
+
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-export ALTERNATE_EDITOR="nano"
+export ALTERNATE_EDITOR="emacsclient -t"
 export DIFFEDITCMD="emacs -diff"
 export DICTIONARY="fr-FR"
 export BROWSER="firefox"
@@ -87,7 +88,7 @@ export PYTEST_ADDOPTS="--color=yes"
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='emacs'
+  export EDITOR='emacsclient -t'
 else
   export EDITOR='emacsclient -t'
 fi
@@ -130,11 +131,10 @@ alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %
 alias connectwifi="nmtui-connect"
 alias tree2="exa --tree --level=2"
 alias cd=z #Zoxixde
-head ~/Nextcloud/backlog.org
+alias bc=tcalc
+bat -p Nextcloud/backlog.org --line-range 0:10
 
 # [TEST] Qu'est ce que c'est ? Surement un truc de vterm pour emacs
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
         source /etc/profile.d/vte.sh
 fi
-
-source /home/thomas-luquet/.config/broot/launcher/bash/br
