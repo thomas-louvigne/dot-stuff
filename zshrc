@@ -68,7 +68,7 @@ HIST_STAMPS="dd/MM/yyyy"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git emacs ssh-agent zoxide extract common-aliases git-extras kate man zsh-syntax-highlighting)
+plugins=(git emacs ssh-agent zoxide extract common-aliases git-extras kate man zsh-syntax-highlighting battery bgnotify web-search battery gradle httpie ssh zsh-navigation-tools)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -80,7 +80,7 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-export ALTERNATE_EDITOR="emacsclient -t"
+#export ALTERNATE_EDITOR="emacsclient -t"
 export DIFFEDITCMD="emacs -diff"
 export DICTIONARY="fr-FR"
 export BROWSER="firefox"
@@ -90,7 +90,7 @@ export PYTEST_ADDOPTS="--color=yes"
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='emacsclient -t'
 else
-  export EDITOR='emacsclient -t'
+  export EDITOR='nano'
 fi
 
 # Compilation flags
@@ -132,6 +132,7 @@ alias connectwifi="nmtui-connect"
 alias tree2="exa --tree --level=2"
 alias cd=z #Zoxixde
 alias bc=tcalc
+alias cat=bat
 bat -p Nextcloud/backlog.org --line-range 0:10
 
 # [TEST] Qu'est ce que c'est ? Surement un truc de vterm pour emacs
