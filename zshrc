@@ -133,9 +133,10 @@ alias tree2="exa --tree --level=2"
 alias cd=z #Zoxixde
 alias bc=tcalc
 alias cat=bat
-bat -p Nextcloud/backlog.org --line-range 0:10
+
+date; curl 'http://wttr.in/paris?format=4'; bat -p ~/Nextcloud/backlog.org --line-range 4:12
 
 # [TEST] Qu'est ce que c'est ? Surement un truc de vterm pour emacs
 if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-        source /etc/profile.d/vte.sh
+    source /etc/profile.d/vte.sh
 fi
