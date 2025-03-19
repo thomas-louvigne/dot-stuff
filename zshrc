@@ -67,8 +67,7 @@ HIST_STAMPS="dd/MM/yyyy"
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git emacs ssh-agent zoxide extract common-aliases git-extras kate man zsh-syntax-highlighting battery bgnotify web-search battery gradle httpie ssh zsh-navigation-tools)
+plugins=(git emacs ssh-agent zoxide extract common-aliases git-extras kate man battery bgnotify web-search battery gradle httpie ssh zsh-navigation-tools)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -82,8 +81,6 @@ source $ZSH/oh-my-zsh.sh
 
 #export ALTERNATE_EDITOR="emacsclient -t"
 export DIFFEDITCMD="emacs -diff"
-export DICTIONARY="fr-FR"
-export BROWSER="firefox"
 export PYTEST_ADDOPTS="--color=yes"
 
 # Preferred editor for local and remote sessions
