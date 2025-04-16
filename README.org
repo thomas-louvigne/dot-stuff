@@ -4,7 +4,6 @@
 Welcom to my dot-files config.
 You can find all the software i use on my [[https://thomas-louvigne.github.io/pages/software-list/][blog]] .
 
-
 * My dot stuff :
  - gitignore (Globale, conf from : https://www.gitignore.io/)
  - init-local.el (EMACS configuration file from emacs-purcell `~/.emacs.d/lisp/`)
@@ -13,8 +12,9 @@ You can find all the software i use on my [[https://thomas-louvigne.github.io/pa
    
 * After install
   - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh
-  - Add zoxide plugin in oh my zsh
-    
+  - Check [[software]] to get the list of needed software
+  - Install [[https://github.com/seagle0128/.emacs.d][Centaure emacs]] .
+     
 * TODO
  - Back to a tiling window manager
 
