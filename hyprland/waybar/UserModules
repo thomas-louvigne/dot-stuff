@@ -45,4 +45,15 @@
 	"on-click": "pgrep -x nwg-displays || $HOME/.local/bin/nwg-displays",
 },
 
+/* lowfi : musique lofi en arrière-plan */
+"custom/lowfi": {
+	"exec": "$HOME/.config/hypr/UserScripts/Lowfi.sh status",
+	"return-type": "json",
+	"interval": 3,
+	"signal": 9,
+	"tooltip": true,
+	"on-click": "$HOME/.config/hypr/UserScripts/Lowfi.sh toggle",
+	"on-click-right": "$HOME/.config/hypr/UserScripts/Lowfi.sh menu",
+},
+
 }

@@ -27,6 +27,8 @@
 	"custom/separator#blank",
 	"custom/playerctl",
 	"custom/separator#blank",
+	"custom/lowfi",
+	"custom/separator#blank",
 	"hyprland/window",
 	],
 

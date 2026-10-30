@@ -43,6 +43,9 @@ done
 sleep 0.1
 waybar &
 
+# relaunch workspace indicator feeder (waybar group/ws) if not running
+pgrep -f "UserScripts/WorkspaceState.py" >/dev/null || "${UserScripts}/WorkspaceState.py" >/dev/null 2>&1 &
+
 # relaunch swaync
 sleep 0.3
 swaync >/dev/null 2>&1 &

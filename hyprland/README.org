@@ -58,6 +58,7 @@ Pas dans apt pour noble, compilés sur le portable :
 | =quickshell= (=qs=) |  | vue d'ensemble des bureaux (Win+A) | https://quickshell.org                                               |
 | =hyprgammad= |        | lancé au démarrage               | binaire local =~/.local/bin/hyprgammad= du portable : le copier, ou retirer sa ligne dans =hypr/lua/startup.lua= |
 | =nwg-displays= |      | réglage des écrans (bouton barre) | =pipx install nwg-displays=                                              |
+| =lowfi=     |         | musique lofi (bouton barre)      | =cargo install lowfi --features mpris= (attendu dans =~/.cargo/bin/lowfi=) |
 
 Astuce : les scripts d'install de [[https://github.com/JaKooLit/Ubuntu-Hyprland][JaKooLit/Ubuntu-Hyprland]] (branche 24.04)
 savent compiler rofi-wayland, swww, wallust et swappy si on ne veut pas le faire à la main.
@@ -84,7 +85,13 @@ Attention : depuis Hyprland 0.57, seuls les fichiers =.lua= sont lus. Les =*.con
 - Barre : bureaux 1 à 6 toujours affichés, avec un point (•) quand le bureau contient des fenêtres
   (script =hypr/UserScripts/WorkspaceState.py=, lancé au démarrage) ; horloge 24h + date JJ/MM/AAAA ;
   bouton casque = choix sortie son (clic gauche) / entrée son (clic droit) via =UserScripts/AudioSwitch.sh=.
-- Kitty : police taille 11.
+- Barre : bouton *lowfi* (musique lofi en arrière-plan, script =hypr/UserScripts/Lowfi.sh=, module
+  =custom/lowfi= dans =waybar/UserModules=) :
+  - clic gauche : lancer / arrêter lowfi (TUI lancée dans un pseudo-terminal invisible, aucune fenêtre) ;
+  - clic droit : menu rofi pause/lecture, morceau suivant, arrêter ;
+  - icône/couleur selon l'état (vert = lecture, grisé = pause/chargement), titre en infobulle ;
+  - piloté via MPRIS (=playerctl -p lowfi=), donc lowfi doit être compilé avec la feature =mpris=.
+- Kitty : police taille 12.
 - Navigateur : Waterfox pour Win+B et la barre ; navigateur par défaut du système laissé à Edge
   (à régler avec =xdg-settings set default-web-browser ...= sur la nouvelle machine).
 

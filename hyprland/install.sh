@@ -57,7 +57,7 @@ install_configs() {
 check_missing() {
     echo "==> Vérification des outils (à installer à la main si MANQUANT, voir README.org)"
     for b in Hyprland waybar kitty rofi swww swww-daemon wallust swaync swappy hypridle hyprlock \
-             cliphist jq pactl wpctl playerctl brightnessctl thunar wlogout qs hyprgammad flatpak; do
+             cliphist jq pactl wpctl playerctl brightnessctl thunar wlogout qs hyprgammad flatpak lowfi; do
         command -v "$b" >/dev/null && printf '  ok       %s\n' "$b" || printf '  MANQUANT %s\n' "$b"
     done
 }

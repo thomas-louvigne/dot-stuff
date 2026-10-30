@@ -315,3 +315,7 @@ tooltip {
 #custom-ws4:hover, #custom-ws5:hover, #custom-ws6:hover {
     color: #ffd700;
 }
+
+#custom-lowfi { padding: 0 6px; }
+#custom-lowfi.playing { color: #a6e3a1; }
+#custom-lowfi.paused, #custom-lowfi.loading { opacity: 0.7; }

@@ -53,7 +53,7 @@ def main():
                     *lines, buf = buf.split(b"\n")
                     if any(line.startswith(TRIGGERS) for line in lines):
                         update()
-        except (OSError, ValueError):
+        except Exception:
             time.sleep(1)
 
 
