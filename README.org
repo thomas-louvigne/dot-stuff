@@ -9,6 +9,7 @@ You can find all the software i use on my [[https://thomas-louvigne.github.io/pa
  - init-local.el (EMACS configuration file from emacs-purcell `~/.emacs.d/lisp/`)
  - zshrc ([[https://github.com/robbyrussell/oh-my-zsh][oh my Zsh]] config file) 
  - [[https://sw.kovidgoyal.net/kitty/#][Kitty]] Terminal emulator
+ - [[file:hyprland/README.org][Hyprland]] : config complète Hyprland + waybar (voir hyprland/README.org)
    
 * After install
   - Oh My Zsh : https://github.com/robbyrussell/oh-my-zsh

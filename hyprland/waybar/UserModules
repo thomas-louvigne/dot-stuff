@@ -1,0 +1,48 @@
+//* ---- 💫 https://github.com/JaKooLit 💫 ---- *//
+/* Waybar Modules Extras */
+
+/* This is where you can add Extra Modules you wish. copy.sh will try to restore*/
+/* this file along with the unique configs and styles. */
+/* IMPORTANT, be mindful with , or ". else waybar will not start */
+
+{
+
+/* Luminosité écran interne (brightnessctl) */
+"custom/backlight": {
+	"exec": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh eDP-1",
+	"return-type": "json",
+	"interval": 5,
+	"signal": 8,
+	"tooltip": true,
+	"on-click": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh eDP-1 --inc",
+	"on-click-right": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh eDP-1 --dec",
+	"on-click-middle": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh eDP-1 --sync",
+	"on-scroll-up": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh eDP-1 --inc",
+	"on-scroll-down": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh eDP-1 --dec",
+	"smooth-scrolling-threshold": 1,
+},
+
+/* Luminosité écran externe (DDC/CI via ddcutil) */
+"custom/backlight#external": {
+	"exec": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh HDMI-A-1",
+	"return-type": "json",
+	"interval": 30,
+	"signal": 8,
+	"tooltip": true,
+	"on-click": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh HDMI-A-1 --inc",
+	"on-click-right": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh HDMI-A-1 --dec",
+	"on-click-middle": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh HDMI-A-1 --sync",
+	"on-scroll-up": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh HDMI-A-1 --inc",
+	"on-scroll-down": "$HOME/.config/hypr/UserScripts/BrightnessWidget.sh HDMI-A-1 --dec",
+	"smooth-scrolling-threshold": 1,
+},
+
+/* Configuration des écrans (nwg-displays) */
+"custom/displays": {
+	"format": "󰍹",
+	"tooltip": true,
+	"tooltip-format": "Configurer les écrans (nwg-displays)",
+	"on-click": "pgrep -x nwg-displays || $HOME/.local/bin/nwg-displays",
+},
+
+}

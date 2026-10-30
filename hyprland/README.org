@@ -1,0 +1,124 @@
+#+TITLE:        Hyprland config
+#+AUTHOR:       Thomas L.
+
+Ma config Hyprland complète (base [[https://github.com/JaKooLit/Hyprland-Dots][JaKooLit Hyprland-Dots]] v2.3.20, portée en Lua pour Hyprland 0.57),
+avec waybar, kitty, rofi, swaync, wlogout, wallust et quickshell.
+Testée sur Ubuntu 24.04 (noble).
+
+* Switch rapide (nouvelle machine)
+
+#+begin_src sh
+git clone <ce repo> ~/repo/dot-stuff
+cd ~/repo/dot-stuff/hyprland
+./install.sh              # paquets + polices + Waterfox + configs
+# ou : ./install.sh --configs   (copie juste les configs)
+#+end_src
+
+Puis :
+1. Installer à la main ce que le script signale comme =MANQUANT= (voir [[*À installer à la main][À installer à la main]]).
+2. Copier les fonds d'écran (1,1 Go, pas dans git) : =~/Pictures/wallpapers/=
+   #+begin_src sh
+   rsync -a portable:~/Pictures/wallpapers/ ~/Pictures/wallpapers/
+   #+end_src
+3. Se déconnecter et choisir la session *Hyprland* dans le gestionnaire de connexion.
+4. Adapter les écrans si besoin (voir [[*Spécifique à la machine][Spécifique à la machine]]).
+
+Les configs déjà présentes dans =~/.config= sont renommées en =<dossier>.bak-<date>= avant la copie.
+
+* Ce qu'il faut installer
+
+** Paquets apt (faits par =install.sh=)
+Depuis le PPA =ppa:cppiber/hyprland= (versions récentes de Hyprland pour Ubuntu) :
+
+| Rôle                     | Paquets                                                                            |
+|--------------------------+------------------------------------------------------------------------------------|
+| Compositeur              | =hyprland= (>= 0.57, obligatoire : la config est en Lua), =xdg-desktop-portal-hyprland=, =hyprland-guiutils= |
+| Verrouillage / veille    | =hyprlock=, =hypridle=                                                             |
+| Barre / notifs / logout  | =waybar= (0.14), =sway-notification-center=, =wlogout=                             |
+| Terminal / fichiers      | =kitty=, =thunar=                                                                  |
+| Réseau / bluetooth       | =network-manager-gnome=, =nm-tray=, =blueman=                                      |
+| Presse-papier / captures | =wl-clipboard=, =cliphist=, =grim=, =slurp=                                        |
+| Son / luminosité         | =pipewire-pulse=, =wireplumber=, =pulseaudio-utils=, =pamixer=, =pavucontrol=, =playerctl=, =brightnessctl= |
+| Divers scripts           | =jq=, =bc=, =imagemagick=, =libnotify-bin=, =python3=, =rsync=                     |
+| Thème Qt / polkit        | =polkit-kde-agent-1=, =qt5ct=, =qt6ct=, =qt5-style-kvantum=                        |
+
+** Autres (faits par =install.sh=)
+- *Waterfox* (Flatpak =net.waterfox.waterfox=) : lancé par Win+B et par le bouton navigateur de la barre.
+- *Polices* : =JetBrainsMono Nerd Font= (waybar) et =FantasqueSansM Nerd Font= (kitty), dans =~/.local/share/fonts=.
+
+** À installer à la main
+Pas dans apt pour noble, compilés sur le portable :
+
+| Outil       | Version | Utilisé pour                     | Installation                                                              |
+|-------------+---------+----------------------------------+---------------------------------------------------------------------------|
+| =rofi=      | 1.7.8+wayland1 | lanceur (Win+D), menus    | fork wayland : https://github.com/lbonn/rofi (meson, =/usr/local=)        |
+| =swww=      | 0.9.5   | fond d'écran                     | https://github.com/LGFae/swww (=cargo build --release=, copier dans =/usr/bin=) |
+| =wallust=   | 3.4.0   | couleurs depuis le fond d'écran  | =cargo install wallust=                                                   |
+| =swappy=    |         | annotation de captures (Win+Shift+S) | https://github.com/jtheoof/swappy (meson)                             |
+| =quickshell= (=qs=) |  | vue d'ensemble des bureaux (Win+A) | https://quickshell.org                                               |
+| =hyprgammad= |        | lancé au démarrage               | binaire local =~/.local/bin/hyprgammad= du portable : le copier, ou retirer sa ligne dans =hypr/lua/startup.lua= |
+| =nwg-displays= |      | réglage des écrans (bouton barre) | =pipx install nwg-displays=                                              |
+
+Astuce : les scripts d'install de [[https://github.com/JaKooLit/Ubuntu-Hyprland][JaKooLit/Ubuntu-Hyprland]] (branche 24.04)
+savent compiler rofi-wayland, swww, wallust et swappy si on ne veut pas le faire à la main.
+
+* Organisation de la config
+
+| Fichier                          | Contenu                                                                 |
+|----------------------------------+-------------------------------------------------------------------------|
+| =hypr/hyprland.lua=              | config principale : écrans, clavier, marges, bordures, règles, bureaux 1-6 persistants |
+| =hypr/lua/keybinds.lua=          | tous les raccourcis (port des raccourcis JaKooLit)                      |
+| =hypr/lua/startup.lua=           | programmes lancés au démarrage (waybar, swaync, swww, nm-applet...)     |
+| =hypr/themes/catppuccin-mocha.lua= | couleurs Catppuccin Mocha                                             |
+| =hypr/scripts/=, =hypr/UserScripts/= | scripts JaKooLit (certains corrigés pour 0.57) + scripts perso     |
+| =waybar/configs/[TOP] Default Laptop= | modules de la barre (lien =waybar/config=)                         |
+| =waybar/ModulesWorkspaces=, =ModulesCustom=, =Modules=, =style.css= | définition et style des modules     |
+
+Attention : depuis Hyprland 0.57, seuls les fichiers =.lua= sont lus. Les =*.conf= de JaKooLit
+(=hypr/configs/=, =hypr/UserConfigs/=) sont gardés pour référence mais *ignorés*.
+
+* Réglages perso
+- Clavier : =us= variante =intl= (touches mortes), Caps Lock = Ctrl (=ctrl:nocaps=).
+- Écran : échelle 1.2, aucune marge (=gaps_in= / =gaps_out= = 0).
+- Pas de bordure quand une seule fenêtre est visible ; bordure lavande dès 2 fenêtres.
+- Barre : bureaux 1 à 6 toujours affichés, avec un point (•) quand le bureau contient des fenêtres
+  (script =hypr/UserScripts/WorkspaceState.py=, lancé au démarrage) ; horloge 24h + date JJ/MM/AAAA ;
+  bouton casque = choix sortie son (clic gauche) / entrée son (clic droit) via =UserScripts/AudioSwitch.sh=.
+- Kitty : police taille 11.
+- Navigateur : Waterfox pour Win+B et la barre ; navigateur par défaut du système laissé à Edge
+  (à régler avec =xdg-settings set default-web-browser ...= sur la nouvelle machine).
+
+* Raccourcis principaux
+| Touches                | Action                                     |
+|------------------------+--------------------------------------------|
+| Win+Entrée             | terminal (kitty)                           |
+| Win+Shift+Entrée       | terminal déroulant                         |
+| Win+D                  | lanceur d'applications (rofi)              |
+| Win+B                  | Waterfox                                   |
+| Win+E                  | gestionnaire de fichiers (thunar)          |
+| Win+Q                  | fermer la fenêtre                          |
+| Win+1..0 / Win+Shift+1..0 | aller au bureau / y envoyer la fenêtre  |
+| Win+Espace             | fenêtre flottante                          |
+| Win+Shift+F            | plein écran                                |
+| Win+W / Ctrl+Alt+W     | choisir / fond d'écran au hasard           |
+| Win+Print, Win+Shift+S | captures d'écran                           |
+| Ctrl+Alt+L             | verrouiller                                |
+| Ctrl+Alt+P             | menu d'extinction                          |
+| Win+H                  | aide / liste des raccourcis                |
+
+Liste complète : =hypr/lua/keybinds.lua=.
+
+* Spécifique à la machine
+- *Écrans* : =hypr/hyprland.lua=, bloc =hl.monitor= (règle générique : résolution native, position auto,
+  échelle 1.2). Sur un PC fixe avec un grand écran, essayer =scale = 1= ; ajouter un bloc =hl.monitor({ output = "DP-1", ... })=
+  par écran pour fixer positions/résolutions (=hyprctl monitors= pour les noms).
+- *Barre* : la config waybar s'appelle « Laptop » (batterie, luminosité) ; sur un fixe ces modules
+  restent simplement vides. Win+Alt+B permet de choisir une autre disposition.
+- *Pavé tactile* : =hypr/UserConfigs/Laptops.conf= / =TouchPad.sh=, inutile sur un fixe.
+
+* Mettre à jour cette sauvegarde (depuis la machine de référence)
+#+begin_src sh
+D=~/repo/dot-stuff/hyprland
+rsync -a --delete --exclude 'wallpaper_effects/' ~/.config/hypr/ $D/hypr/
+for d in waybar kitty rofi swaync wlogout wallust quickshell; do rsync -a --delete ~/.config/$d/ $D/$d/; done
+#+end_src
