@@ -28,6 +28,8 @@ hl.monitor({
     position = "auto",
     scale    = 1.2,
 })
+-- per-output layout written by UserScripts/SaveMonitors.sh (after wdisplays) (overrides the fallback above)
+pcall(dofile, os.getenv("HOME") .. "/.config/hypr/monitors.lua")
 
 
 ---------------------

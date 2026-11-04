@@ -16,9 +16,9 @@ cd ~/repo/dot-stuff/hyprland
 
 Puis :
 1. Installer à la main ce que le script signale comme =MANQUANT= (voir [[*À installer à la main][À installer à la main]]).
-2. Copier les fonds d'écran (1,1 Go, pas dans git) : =~/Pictures/wallpapers/=
+2. Copier le fond d'écran utilisé (seul dans git, =install.sh= ne le copie pas) :
    #+begin_src sh
-   rsync -a portable:~/Pictures/wallpapers/ ~/Pictures/wallpapers/
+   cp -r wallpapers/. ~/Pictures/wallpapers/
    #+end_src
 3. Se déconnecter et choisir la session *Hyprland* dans le gestionnaire de connexion.
 4. Adapter les écrans si besoin (voir [[*Spécifique à la machine][Spécifique à la machine]]).
@@ -57,7 +57,7 @@ Pas dans apt pour noble, compilés sur le portable :
 | =swappy=    |         | annotation de captures (Win+Shift+S) | https://github.com/jtheoof/swappy (meson)                             |
 | =quickshell= (=qs=) |  | vue d'ensemble des bureaux (Win+A) | https://quickshell.org                                               |
 | =hyprgammad= |        | lancé au démarrage               | binaire local =~/.local/bin/hyprgammad= du portable : le copier, ou retirer sa ligne dans =hypr/lua/startup.lua= |
-| =nwg-displays= |      | réglage des écrans (bouton barre) | =pipx install nwg-displays=                                              |
+| =wdisplays= |         | réglage des écrans (bouton barre) | =sudo apt install wdisplays= (pas fait par =install.sh=)                  |
 | =lowfi=     |         | musique lofi (bouton barre)      | =cargo install lowfi --features mpris= (attendu dans =~/.cargo/bin/lowfi=) |
 
 Astuce : les scripts d'install de [[https://github.com/JaKooLit/Ubuntu-Hyprland][JaKooLit/Ubuntu-Hyprland]] (branche 24.04)
@@ -67,13 +67,15 @@ savent compiler rofi-wayland, swww, wallust et swappy si on ne veut pas le faire
 
 | Fichier                          | Contenu                                                                 |
 |----------------------------------+-------------------------------------------------------------------------|
-| =hypr/hyprland.lua=              | config principale : écrans, clavier, marges, bordures, règles, bureaux 1-6 persistants |
+| =hypr/hyprland.lua=              | config principale : écran par défaut, clavier, marges, bordures, règles, bureaux 1-6 persistants |
+| =hypr/monitors.lua=              | disposition des écrans, générée par =UserScripts/SaveMonitors.sh=       |
 | =hypr/lua/keybinds.lua=          | tous les raccourcis (port des raccourcis JaKooLit)                      |
 | =hypr/lua/startup.lua=           | programmes lancés au démarrage (waybar, swaync, swww, nm-applet...)     |
 | =hypr/themes/catppuccin-mocha.lua= | couleurs Catppuccin Mocha                                             |
 | =hypr/scripts/=, =hypr/UserScripts/= | scripts JaKooLit (certains corrigés pour 0.57) + scripts perso     |
 | =waybar/configs/[TOP] Default Laptop= | modules de la barre (lien =waybar/config=)                         |
 | =waybar/ModulesWorkspaces=, =ModulesCustom=, =Modules=, =style.css= | définition et style des modules     |
+| =wallpapers/=                    | le fond d'écran utilisé                                                 |
 
 Attention : depuis Hyprland 0.57, seuls les fichiers =.lua= sont lus. Les =*.conf= de JaKooLit
 (=hypr/configs/=, =hypr/UserConfigs/=) sont gardés pour référence mais *ignorés*.
@@ -91,6 +93,7 @@ Attention : depuis Hyprland 0.57, seuls les fichiers =.lua= sont lus. Les =*.con
   - clic droit : menu rofi pause/lecture, morceau suivant, arrêter ;
   - icône/couleur selon l'état (vert = lecture, grisé = pause/chargement), titre en infobulle ;
   - piloté via MPRIS (=playerctl -p lowfi=), donc lowfi doit être compilé avec la feature =mpris=.
+- Barre : bouton *écrans* : ouvre =wdisplays= ; à la fermeture, =UserScripts/SaveMonitors.sh= enregistre la disposition.
 - Kitty : police taille 12.
 - Navigateur : Waterfox pour Win+B et la barre ; navigateur par défaut du système laissé à Edge
   (à régler avec =xdg-settings set default-web-browser ...= sur la nouvelle machine).
@@ -116,9 +119,9 @@ Attention : depuis Hyprland 0.57, seuls les fichiers =.lua= sont lus. Les =*.con
 Liste complète : =hypr/lua/keybinds.lua=.
 
 * Spécifique à la machine
-- *Écrans* : =hypr/hyprland.lua=, bloc =hl.monitor= (règle générique : résolution native, position auto,
-  échelle 1.2). Sur un PC fixe avec un grand écran, essayer =scale = 1= ; ajouter un bloc =hl.monitor({ output = "DP-1", ... })=
-  par écran pour fixer positions/résolutions (=hyprctl monitors= pour les noms).
+- *Écrans* : régler avec le bouton écrans de la barre (=wdisplays=) ; la disposition est écrite dans =hypr/monitors.lua=,
+  qui contient les écrans du portable (=eDP-1=, =DP-5=). Pour tout autre écran, =hypr/hyprland.lua= applique une règle
+  générique (résolution native, position auto, échelle 1.2).
 - *Barre* : la config waybar s'appelle « Laptop » (batterie, luminosité) ; sur un fixe ces modules
   restent simplement vides. Win+Alt+B permet de choisir une autre disposition.
 - *Pavé tactile* : =hypr/UserConfigs/Laptops.conf= / =TouchPad.sh=, inutile sur un fixe.
@@ -129,3 +132,5 @@ D=~/repo/dot-stuff/hyprland
 rsync -a --delete --exclude 'wallpaper_effects/' ~/.config/hypr/ $D/hypr/
 for d in waybar kitty rofi swaync wlogout wallust quickshell; do rsync -a --delete ~/.config/$d/ $D/$d/; done
 #+end_src
+
+Si le fond d'écran a changé, remplacer l'image dans =wallpapers/= (=swww query= donne son chemin).

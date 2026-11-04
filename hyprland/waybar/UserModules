@@ -41,8 +41,8 @@
 "custom/displays": {
 	"format": "󰍹",
 	"tooltip": true,
-	"tooltip-format": "Configurer les écrans (nwg-displays)",
-	"on-click": "pgrep -x nwg-displays || $HOME/.local/bin/nwg-displays",
+	"tooltip-format": "Configurer les écrans (wdisplays, enregistré à la fermeture)",
+	"on-click": "pgrep -x wdisplays || { wdisplays; $HOME/.config/hypr/UserScripts/SaveMonitors.sh; }",
 },
 
 /* lowfi : musique lofi en arrière-plan */
