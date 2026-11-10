@@ -28,8 +28,6 @@ hl.monitor({
     position = "auto",
     scale    = 1.2,
 })
--- per-output layout written by UserScripts/SaveMonitors.sh (after wdisplays) (overrides the fallback above)
-pcall(dofile, os.getenv("HOME") .. "/.config/hypr/monitors.lua")
 
 
 ---------------------
@@ -347,3 +345,6 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
+-- hyprmon: managed monitor profile include
+require("hyprmon")

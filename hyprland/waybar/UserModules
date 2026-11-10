@@ -37,12 +37,12 @@
 	"smooth-scrolling-threshold": 1,
 },
 
-/* Configuration des écrans (nwg-displays) */
+/* Configuration des écrans (hyprmon) */
 "custom/displays": {
 	"format": "󰍹",
 	"tooltip": true,
-	"tooltip-format": "Configurer les écrans (wdisplays, enregistré à la fermeture)",
-	"on-click": "pgrep -x wdisplays || { wdisplays; $HOME/.config/hypr/UserScripts/SaveMonitors.sh; }",
+	"tooltip-format": "Configurer les écrans (hyprmon)",
+	"on-click": "pgrep -x hyprmon || kitty --class hyprmon -e $HOME/.local/bin/hyprmon",
 },
 
 /* lowfi : musique lofi en arrière-plan */

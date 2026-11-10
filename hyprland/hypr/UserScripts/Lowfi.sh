@@ -19,6 +19,7 @@ start() {
 	# Force la lecture une fois le lecteur MPRIS disponible
 	for _ in $(seq 20); do
 		playerctl -p lowfi status &>/dev/null && { playerctl -p lowfi play; break; }
+		refresh # affiche l'icône de chargement pendant l'attente
 		sleep 0.5
 	done
 }

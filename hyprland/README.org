@@ -57,7 +57,7 @@ Pas dans apt pour noble, compilés sur le portable :
 | =swappy=    |         | annotation de captures (Win+Shift+S) | https://github.com/jtheoof/swappy (meson)                             |
 | =quickshell= (=qs=) |  | vue d'ensemble des bureaux (Win+A) | https://quickshell.org                                               |
 | =hyprgammad= |        | lancé au démarrage               | binaire local =~/.local/bin/hyprgammad= du portable : le copier, ou retirer sa ligne dans =hypr/lua/startup.lua= |
-| =wdisplays= |         | réglage des écrans (bouton barre) | =sudo apt install wdisplays= (pas fait par =install.sh=)                  |
+| =hyprmon=   |         | réglage des écrans (bouton barre) | =go install github.com/erans/hyprmon@latest= (attendu dans =~/.local/bin/hyprmon=, pas fait par =install.sh=) |
 | =lowfi=     |         | musique lofi (bouton barre)      | =cargo install lowfi --features mpris= (attendu dans =~/.cargo/bin/lowfi=) |
 
 Astuce : les scripts d'install de [[https://github.com/JaKooLit/Ubuntu-Hyprland][JaKooLit/Ubuntu-Hyprland]] (branche 24.04)
@@ -68,7 +68,7 @@ savent compiler rofi-wayland, swww, wallust et swappy si on ne veut pas le faire
 | Fichier                          | Contenu                                                                 |
 |----------------------------------+-------------------------------------------------------------------------|
 | =hypr/hyprland.lua=              | config principale : écran par défaut, clavier, marges, bordures, règles, bureaux 1-6 persistants |
-| =hypr/monitors.lua=              | disposition des écrans, générée par =UserScripts/SaveMonitors.sh=       |
+| =hypr/hyprmon.lua=               | disposition des écrans, écrite par hyprmon (chargée par =require("hyprmon")= en fin de =hyprland.lua=) |
 | =hypr/lua/keybinds.lua=          | tous les raccourcis (port des raccourcis JaKooLit)                      |
 | =hypr/lua/startup.lua=           | programmes lancés au démarrage (waybar, swaync, swww, nm-applet...)     |
 | =hypr/themes/catppuccin-mocha.lua= | couleurs Catppuccin Mocha                                             |
@@ -93,7 +93,7 @@ Attention : depuis Hyprland 0.57, seuls les fichiers =.lua= sont lus. Les =*.con
   - clic droit : menu rofi pause/lecture, morceau suivant, arrêter ;
   - icône/couleur selon l'état (vert = lecture, grisé = pause/chargement), titre en infobulle ;
   - piloté via MPRIS (=playerctl -p lowfi=), donc lowfi doit être compilé avec la feature =mpris=.
-- Barre : bouton *écrans* : ouvre =wdisplays= ; à la fermeture, =UserScripts/SaveMonitors.sh= enregistre la disposition.
+- Barre : bouton *écrans* : ouvre =hyprmon= (TUI) dans kitty ; il applique en direct et enregistre dans =hypr/hyprmon.lua=.
 - Kitty : police taille 12.
 - Navigateur : Waterfox pour Win+B et la barre ; navigateur par défaut du système laissé à Edge
   (à régler avec =xdg-settings set default-web-browser ...= sur la nouvelle machine).
@@ -119,8 +119,8 @@ Attention : depuis Hyprland 0.57, seuls les fichiers =.lua= sont lus. Les =*.con
 Liste complète : =hypr/lua/keybinds.lua=.
 
 * Spécifique à la machine
-- *Écrans* : régler avec le bouton écrans de la barre (=wdisplays=) ; la disposition est écrite dans =hypr/monitors.lua=,
-  qui contient les écrans du portable (=eDP-1=, =DP-5=). Pour tout autre écran, =hypr/hyprland.lua= applique une règle
+- *Écrans* : régler avec le bouton écrans de la barre (=hyprmon=) ; la disposition est écrite dans =hypr/hyprmon.lua=,
+  qui contient les écrans du portable (=eDP-1=, =HDMI-A-1=). Pour tout autre écran, =hypr/hyprland.lua= applique une règle
   générique (résolution native, position auto, échelle 1.2).
 - *Barre* : la config waybar s'appelle « Laptop » (batterie, luminosité) ; sur un fixe ces modules
   restent simplement vides. Win+Alt+B permet de choisir une autre disposition.

@@ -30,7 +30,7 @@
 }
 
 window#waybar {
-    background: transparent;
+    background: #000000;
     border-radius: 0px;
     color: #cba6f7;
 }
@@ -52,9 +52,9 @@ tooltip {
 .modules-left,
 .modules-center,
 .modules-right {
-    background-color: @background-module;
-    border-radius:15px;
-    border-bottom:2px solid @border-color;
+    background-color: transparent;
+    border-radius: 0;
+    border-bottom: none;
 	padding-top: 2px;
 	padding-bottom: 0px;
 	padding-right: 4px;
@@ -63,8 +63,8 @@ tooltip {
 
 #workspaces {
     padding: 0px 1px;
-    border-radius: 15px;
-    border:2px solid @border-color;
+    border-radius: 0;
+    border: none;
     font-weight: bold;
     font-style: normal;
     opacity:0.8;
@@ -272,8 +272,8 @@ tooltip {
 
 #clock {
 	color: @sapphire;
-    border-radius: 15px;
-    border:2px solid @border-color;
+    border-radius: 0;
+    border: none;
 }
 #custom-updates {
     color: @yellow;
@@ -291,8 +291,8 @@ tooltip {
 /* Workspaces 1-6 (group/ws): dot = workspace has open windows */
 #ws {
     padding: 0px 4px;
-    border-radius: 15px;
-    border: 2px solid @border-color;
+    border-radius: 0;
+    border: none;
     font-weight: bold;
     opacity: 0.8;
 }
@@ -318,4 +318,5 @@ tooltip {
 
 #custom-lowfi { padding: 0 6px; }
 #custom-lowfi.playing { color: #a6e3a1; }
-#custom-lowfi.paused, #custom-lowfi.loading { opacity: 0.7; }
+#custom-lowfi.paused { opacity: 0.7; }
+#custom-lowfi.loading { color: #f9e2af; }
